@@ -42,7 +42,7 @@ class cs631lib {
                 stmt = con.createStatement();
                 
                 // AUTHOR
-                
+                System.out.println("AUTHOR");
                 String query = "SELECT * FROM AUTHOR;";
                 ResultSet rs = stmt.executeQuery(query);
                 System.out.println("AUTHORID\tANAME");
@@ -55,7 +55,7 @@ class cs631lib {
                   
                 
                 // BOOK
-                
+                System.out.println("BOOK");
                 query = "SELECT * FROM BOOK;";
                 rs = stmt.executeQuery(query);
                 System.out.println("DOCID\tISBN");
@@ -68,7 +68,7 @@ class cs631lib {
                  
                 
             	// BORROWS
-                
+                System.out.println("BORROWS");
                 query = "SELECT * FROM BORROWS;";
                 rs = stmt.executeQuery(query);
                 System.out.println("BORNUMBER\tREADERID\tCOPYNO\tDOCID\tLIBID\tBDTIME\tRDTIME");
@@ -86,7 +86,7 @@ class cs631lib {
                   
                 
                 // BRANCH
-                
+                System.out.println("BRANCH");
                 query = "SELECT * FROM BRANCH;";
                 rs = stmt.executeQuery(query);
                 System.out.println("LIBID\tLNAME\tLLOCATION");
@@ -100,7 +100,7 @@ class cs631lib {
                   
                 
                 // CHIEF_EDITOR
-                
+                System.out.println("CHIEF_EDITOR");
                 query = "SELECT * FROM CHIEF_EDITOR;";
                 rs = stmt.executeQuery(query);
                 System.out.println("EDITOR_ID\tENAME");
@@ -113,7 +113,7 @@ class cs631lib {
                  
                 
             	// COPY
-                
+                System.out.println("COPY");
                 query = "SELECT * FROM COPY;";
                 rs = stmt.executeQuery(query);
                 System.out.println("COPYNO\tDOCID\tLIBID\tPOSITION");
@@ -128,7 +128,7 @@ class cs631lib {
                   
                 
             	// DOCUMENT
-                
+                System.out.println("DOCUMENT");
                 query = "SELECT * FROM DOCUMENT;";
                 rs = stmt.executeQuery(query);
                 System.out.println("DOCID\tTITLE\tPDATE\tPUBLISHERID");
@@ -143,7 +143,7 @@ class cs631lib {
                   
                 
             	// INV_EDITOR
-                
+                System.out.println("INV_EDITOR");
                 query = "SELECT * FROM INV_EDITOR;";
                 rs = stmt.executeQuery(query);
                 System.out.println("DOCID\tISSUE_NO\tIENAME");
@@ -157,7 +157,7 @@ class cs631lib {
                   
                 
             	// JOURNAL_ISSUE
-                
+                System.out.println("JOURNAL_ISSUE");
                 query = "SELECT * FROM JOURNAL_ISSUE;";
                 rs = stmt.executeQuery(query);
                 System.out.println("DOCID\tISSUE_NO\tSCOPE");
@@ -171,7 +171,7 @@ class cs631lib {
                   
                 
             	// JOURNAL_VOLUME
-                
+                System.out.println("JOURNAL_VOLUME");
                 query = "SELECT * FROM JOURNAL_VOLUME;";
                 rs = stmt.executeQuery(query);
                 System.out.println("DOCID\tJVOLUME\tEDITOR_ID");
@@ -185,7 +185,7 @@ class cs631lib {
                  
                 
             	// PROCEEDINGS
-                
+                System.out.println("PROCEEDINGS");
                 query = "SELECT * FROM PROCEEDINGS;";
                 rs = stmt.executeQuery(query);
                 System.out.println("DOCID\tCDATE\tCLOCATION\tCEDITOR");
@@ -200,7 +200,7 @@ class cs631lib {
                   
                 
             	// PUBLISHER
-                
+                System.out.println("PUBLISHER");
                 query = "SELECT * FROM PUBLISHER;";
                 rs = stmt.executeQuery(query);
                 System.out.println("PUBLISHERID\tPUBNAME\tADDRESS");
@@ -214,7 +214,7 @@ class cs631lib {
                   
                 
             	// READER
-                
+                System.out.println("READER");
                 query = "SELECT * FROM READER;";
                 rs = stmt.executeQuery(query);
                 System.out.println("READERID\tRTYPE\tRNAME\tADDRESS");
@@ -229,7 +229,7 @@ class cs631lib {
                   
                 
             	// RESERVES
-                
+                System.out.println("RESERVES");
                 query = "SELECT * FROM RESERVES;";
                 rs = stmt.executeQuery(query);
                 System.out.println("RESNUMBER\tREADERID\tDOCID\tCOPYNO\tLIBID\tDTIME");
@@ -246,7 +246,7 @@ class cs631lib {
                   
                 
                 // WRITES
-                
+                System.out.println("WRITES");
                 query = "SELECT * FROM WRITES;";
                 rs = stmt.executeQuery(query);
                 System.out.println("AUTHORID\tDOCID");
