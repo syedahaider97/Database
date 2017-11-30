@@ -45,215 +45,215 @@ class cs631lib {
                 
                 String query = "SELECT * FROM AUTHOR;";
                 ResultSet rs = stmt.executeQuery(query);
-                System.out.println("  AUTHORID       ANAME");
+                System.out.println("AUTHORID\tANAME");
                 while (rs.next()) {
                     int s = rs.getInt("AUTHORID");
                     String n = rs.getString("ANAME");
-                    System.out.println(s + "   " + n);
+                    System.out.println(s + "\t" + n);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
                 // BOOK
                 
                 query = "SELECT * FROM BOOK;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  DOCID       ISBN");
+                System.out.println("DOCID\tISBN");
                 while (rs.next()) {
                     int s = rs.getInt("DOCID");
-                    int n = rs.getInt("ISBN");
-                    System.out.println(s + "   " + n);
+                    String n = rs.getString("ISBN");
+                    System.out.println(s + "\t" + n);
                 }
                 //close resources
-                stmt.close(); con.close();
+                 
                 
             	// BORROWS
                 
                 query = "SELECT * FROM BORROWS;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  BORNUMBER       READERID       COPYNO       DOCID       LIBID       BDTIME       RDTIME");
+                System.out.println("BORNUMBER\tREADERID\tCOPYNO\tDOCID\tLIBID\tBDTIME\tRDTIME");
                 while (rs.next()) {
                     int s = rs.getInt("BORNUMBER");
                     int n = rs.getInt("READERID");
                     int o = rs.getInt("COPYNO");
                     int p = rs.getInt("DOCID");
                     int q = rs.getInt("LIBID");
-                    Time r = rs.getTime("BDTIME");
-                    Time t = rs.getTime("RDTIME");
-                    System.out.println(s + "   " + n + "   " + o + "   " + p + "   " + q + "   " + r + "   " + t);
+                    Timestamp r = rs.getTimestamp("BDTIME");
+                    Timestamp t = rs.getTimestamp("RDTIME");
+                    System.out.println(s + "\t" + n + "\t" + o + "\t" + p + "\t" + q + "\t" + r + "\t" + t);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
                 // BRANCH
                 
                 query = "SELECT * FROM BRANCH;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  LIBID       LNAME       LLOCATION");
+                System.out.println("LIBID\tLNAME\tLLOCATION");
                 while (rs.next()) {
                     int s = rs.getInt("LIBID");
                     String n = rs.getString("LNAME");
                     String o = rs.getString("LLOCATION");
-                    System.out.println(s + "   " + n + "   " + o);
+                    System.out.println(s + "\t" + n + "\t" + o);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
                 // CHIEF_EDITOR
                 
                 query = "SELECT * FROM CHIEF_EDITOR;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  EDITOR_ID       ENAME");
+                System.out.println("EDITOR_ID\tENAME");
                 while (rs.next()) {
                     int s = rs.getInt("EDITOR_ID");
                     String n = rs.getString("ENAME");
-                    System.out.println(s + "   " + n);
+                    System.out.println(s + "\t" + n);
                 }
                 //close resources
-                stmt.close(); con.close();
+                 
                 
             	// COPY
                 
                 query = "SELECT * FROM COPY;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  COPYNO       DOCID       LIBID       POSITION");
+                System.out.println("COPYNO\tDOCID\tLIBID\tPOSITION");
                 while (rs.next()) {
                     int s = rs.getInt("COPYNO");
                     int n = rs.getInt("DOCID");
                     int o = rs.getInt("LIBID");
                     String p = rs.getString("POSITION");
-                    System.out.println(s + "   " + n + "   " + o + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + o + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// DOCUMENT
                 
-                query = "SELECT * FROM COPY;";
+                query = "SELECT * FROM DOCUMENT;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  DOCID       TITLE       PDATE       PUBLISHERID");
+                System.out.println("DOCID\tTITLE\tPDATE\tPUBLISHERID");
                 while (rs.next()) {
                     int s = rs.getInt("DOCID");
                     String n = rs.getString("TITLE");
                     Date o = rs.getDate("PDATE");
                     String p = rs.getString("PUBLISHERID");
-                    System.out.println(s + "   " + n + "   " + o + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + o + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// INV_EDITOR
                 
                 query = "SELECT * FROM INV_EDITOR;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  DOCID       ISSUE_NO       IENAME");
+                System.out.println("DOCID\tISSUE_NO\tIENAME");
                 while (rs.next()) {
                     int s = rs.getInt("DOCID");
                     int n = rs.getInt("ISSUE_NO");
                     String p = rs.getString("IENAME");
-                    System.out.println(s + "   " + n + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// JOURNAL_ISSUE
                 
                 query = "SELECT * FROM JOURNAL_ISSUE;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  DOCID       ISSUE_NO       SCOPE");
+                System.out.println("DOCID\tISSUE_NO\tSCOPE");
                 while (rs.next()) {
                     int s = rs.getInt("DOCID");
                     int n = rs.getInt("ISSUE_NO");
                     String p = rs.getString("SCOPE");
-                    System.out.println(s + "   " + n + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// JOURNAL_VOLUME
                 
                 query = "SELECT * FROM JOURNAL_VOLUME;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  DOCID       JVOLUME       EDITOR_ID");
+                System.out.println("DOCID\tJVOLUME\tEDITOR_ID");
                 while (rs.next()) {
                     int s = rs.getInt("DOCID");
                     int n = rs.getInt("JVOLUME");
                     int p = rs.getInt("EDITOR_ID");
-                    System.out.println(s + "   " + n + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                 
                 
             	// PROCEEDINGS
                 
                 query = "SELECT * FROM PROCEEDINGS;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  DOCID       CDATE       CLOCATION       CEDITOR");
+                System.out.println("DOCID\tCDATE\tCLOCATION\tCEDITOR");
                 while (rs.next()) {
                     int s = rs.getInt("DOCID");
                     Date n = rs.getDate("CDATE");
                     String o = rs.getString("CLOCATION");
                     String p = rs.getString("CEDITOR");
-                    System.out.println(s + "   " + n + "   " + o + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + o + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// PUBLISHER
                 
                 query = "SELECT * FROM PUBLISHER;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  PUBLISHERID       PUBNAME       ADDRESS");
+                System.out.println("PUBLISHERID\tPUBNAME\tADDRESS");
                 while (rs.next()) {
                     int s = rs.getInt("PUBLISHERID");
                     String o = rs.getString("PUBNAME");
                     String p = rs.getString("ADDRESS");
-                    System.out.println(s + "   " + o + "   " + p);
+                    System.out.println(s + "\t" + o + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// READER
                 
                 query = "SELECT * FROM READER;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  READERID       RTYPE       RNAME       ADDRESS");
+                System.out.println("READERID\tRTYPE\tRNAME\tADDRESS");
                 while (rs.next()) {
                     int s = rs.getInt("READERID");
                     String n = rs.getString("RTYPE");
                     String o = rs.getString("RNAME");
                     String p = rs.getString("ADDRESS");
-                    System.out.println(s + "   " + n + "   " + o + "   " + p);
+                    System.out.println(s + "\t" + n + "\t" + o + "\t" + p);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
             	// RESERVES
                 
                 query = "SELECT * FROM RESERVES;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  RESNUMBER       READERID       DOCID       COPYNO       LIBID       DTIME");
+                System.out.println("RESNUMBER\tREADERID\tDOCID\tCOPYNO\tLIBID\tDTIME");
                 while (rs.next()) {
                     int s = rs.getInt("RESNUMBER");
                     int n = rs.getInt("READERID");
                     int o = rs.getInt("DOCID");
                     int p = rs.getInt("COPYNO");
                     int q = rs.getInt("LIBID");
-                    Time r = rs.getTime("DTIME");
-                    System.out.println(s + "   " + n + "   " + o + "   " + p + "   " + q + "   " + r);
+                    Timestamp r = rs.getTimestamp("DTIME");
+                    System.out.println(s + "\t" + n + "\t" + o + "\t" + p + "\t" + q + "\t" + r);
                 }
                 //close resources
-                stmt.close(); con.close();
+                  
                 
                 // WRITES
                 
                 query = "SELECT * FROM WRITES;";
                 rs = stmt.executeQuery(query);
-                System.out.println("  AUTHORID       DOCID");
+                System.out.println("AUTHORID\tDOCID");
                 while (rs.next()) {
                     int s = rs.getInt("AUTHORID");
                     int n = rs.getInt("DOCID");
-                    System.out.println(s + "   " + n);
+                    System.out.println(s + "\t" + n);
                 }
                 //close resources
                 stmt.close(); con.close();
@@ -272,3 +272,4 @@ class cs631lib {
         }
     }
 }
+
