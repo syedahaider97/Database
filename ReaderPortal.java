@@ -55,7 +55,8 @@ public class ReaderPortal extends JFrame {
 	class Go implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("GO");
+			dispose();
+			new ReaderFunctions();
 		}
 		
 	}
