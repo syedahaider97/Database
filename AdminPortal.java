@@ -66,7 +66,8 @@ public class AdminPortal extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 		
-			System.out.println("Go");
+			dispose();
+			new AdminFunctions();
 		}
 		
 	}
