@@ -2,8 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AdminFunctions extends JFrame {
+	int adminID = 0;
+	
+	public AdminFunctions() {
+		popupMsg errWindow = new popupMsg("Error", "No Administrator ID entered.");
+	}
 
-    private static void Admin() {
+    public AdminFunctions(int adminID) {
+    	this.adminID = adminID;
+    	System.out.println(adminID);
 
         JFrame frame = new JFrame("Administrator Functions");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -157,11 +164,15 @@ public class AdminFunctions extends JFrame {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Admin();
+            	if (args.length > 0) {
+            		AdminFunctions adminFntn = new AdminFunctions(Integer.parseInt(args[0]));
+            	} else {
+            		AdminFunctions adminFntn = new AdminFunctions();
+            	}
             }
         });
-    }
+    }*/
 }
