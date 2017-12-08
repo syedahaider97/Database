@@ -10,9 +10,9 @@ class Server {
 	private static Connection con;
     private static Statement stmt;
 	
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
     	removeByID(1);
-    }
+    }*/
     
     private static void connectToDB() {
         System.out.println("Hello from MySQL!\n");
@@ -31,11 +31,10 @@ class Server {
 
                 // for local host
                 // String URL = "jdbc:mysql://localhost.njit.edu/UCID";
-
                 // for server
-                String UCID = "";
-                String passwd = "";
-                String URL = "jdbc:mysql://sql2.njit.edu/" + UCID;
+                String UCID = "root";
+                String passwd = "mySQLroot";
+                String URL = "jdbc:mysql://localhost/cs631";
                 //
                 // establishing connection 
                 // supply URL, user, password
@@ -76,7 +75,7 @@ class Server {
             //close resources
             stmt.close(); con.close();
 		} catch (SQLException e) {
-			//new popupMsg();
+			new popupMsg();
 			System.err.println(" SQL Exceptions \n");
             while (e != null) {
                 System.out.println("Error Description: " + e.getMessage());
