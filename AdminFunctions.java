@@ -2,27 +2,34 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AdminFunctions extends JFrame {
-	int adminID = 0;
+	private int adminID = 0;
 	
+	// Default Constructor -- Displays error if no input passed in to menu
 	public AdminFunctions() {
-		popupMsg errWindow = new popupMsg("Error", "No Administrator ID entered.");
+		this.adminID = 0;
+		// Show Error message
+		new popupMsg("Error", "No Administrator ID entered.");
 	}
 
+	// Create Admin Functions menu, based on administrator ID
     public AdminFunctions(int adminID) {
     	this.adminID = adminID;
     	System.out.println(adminID);
-
+    	
+    	// Create frame for content
         JFrame frame = new JFrame("Administrator Functions");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
+        // Create panel to display content on frame
         JPanel panel = (JPanel) frame.getContentPane();
         panel.setLayout(null);
-
+        
+        // Title for the window
         JLabel adminLabel = new JLabel("Administrator Functions:");
         panel.add(adminLabel);
         Dimension sizeAdmin = adminLabel.getPreferredSize();
         adminLabel.setBounds(25, 25, sizeAdmin.width, sizeAdmin.height);
-
+        
+        // Display LIBRARY BRANCH data
         JLabel branchLabel = new JLabel("<Branch Name>");
         panel.add(branchLabel);
         Dimension sizeBranch = branchLabel.getPreferredSize();
@@ -32,98 +39,102 @@ public class AdminFunctions extends JFrame {
         panel.add(branchLocLabel);
         Dimension sizeBranchLoc = branchLocLabel.getPreferredSize();
         branchLocLabel.setBounds(210, 55, sizeBranchLoc.width, sizeBranchLoc.height);
-
+        // END Display LIBRARY BRANCH data
+        
+        // Add Copy Text field
         JLabel addCopyLabel = new JLabel("Add Document Copy:");
         panel.add(addCopyLabel);
         Dimension sizeCopy = addCopyLabel.getPreferredSize();
         addCopyLabel.setBounds(25, 85, sizeCopy.width, sizeCopy.height);
-
+        
+        JButton addCopyBtn = new JButton("Search");
+        addCopyBtn.setBounds(450, 85, 55, 30);
+        addCopyBtn.setBorder(null);
+        panel.add(addCopyBtn);
+        
+        JTextField addCopyField = new JTextField(10);
+        addCopyField.setBounds(20, 100, 400, 20);
+        panel.add(addCopyField);
+        
+        // Add Reader Text field
         JLabel addReaderLabel = new JLabel("Add New Reader:");
         panel.add(addReaderLabel);
         Dimension sizeReader = addReaderLabel.getPreferredSize();
         addReaderLabel.setBounds(25, 135, sizeReader.width, sizeReader.height);
+        
+        JButton addReaderBtn = new JButton("Search");
+        addReaderBtn.setBounds(450, 135, 55, 30);
+        addReaderBtn.setBorder(null);
+        panel.add(addReaderBtn);
+        
+        JTextField addReaderField = new JTextField(10);
+        addReaderField.setBounds(20, 150, 400, 20);
+        panel.add(addReaderField);
 
+        // Search Copy Text field
         JLabel searchCopyLabel = new JLabel("Search Document Copy:");
         panel.add(searchCopyLabel);
         Dimension searchSize = searchCopyLabel.getPreferredSize();
         searchCopyLabel.setBounds(25, 185, searchSize.width, searchSize.height);
 
-        JButton addCopyBtn = new JButton("Go!");
-        addCopyBtn.setBounds(450, 85, 55, 30);
-        addCopyBtn.setBorder(null);
-        panel.add(addCopyBtn);
-
-        JButton addReaderBtn = new JButton("Go!");
-        addReaderBtn.setBounds(450, 135, 55, 30);
-        addReaderBtn.setBorder(null);
-        panel.add(addReaderBtn);
-
-        JButton searchBtn = new JButton("Go!");
+        JButton searchBtn = new JButton("Search");
         searchBtn.setBounds(450, 185, 55, 30);
         searchBtn.setBorder(null);
         panel.add(searchBtn);
 
-        JTextField addCopyField = new JTextField(10);
-        addCopyField.setBounds(20, 100, 400, 20);
-        panel.add(addCopyField);
-
-        JTextField addReaderField = new JTextField(10);
-        addReaderField.setBounds(20, 150, 400, 20);
-        panel.add(addReaderField);
-
         JTextField searchField = new JTextField(10);
         searchField.setBounds(20, 200, 400, 20);
         panel.add(searchField);
-
+        
+        // Average Fine display
         JLabel fineLabel = new JLabel("Avg. Fine for All:");
         panel.add(fineLabel);
         Dimension sizeFine = fineLabel.getPreferredSize();
         fineLabel.setBounds(25, 465, sizeFine.width, sizeFine.height);
-
-        JButton logOutBtn = new JButton("Logout!");
+        
+        // Log out button
+        JButton logOutBtn = new JButton("Log out");
         logOutBtn.setBounds(170, 500, 80, 30);
         logOutBtn.setBorder(null);
         panel.add(logOutBtn);
-
-        JButton modifyBtn = new JButton("Modify!");
+        
+        // Modify button
+        JButton modifyBtn = new JButton("Modify");
         modifyBtn.setBounds(270, 500, 80, 30);
         modifyBtn.setBorder(null);
         panel.add(modifyBtn);
-
+        
+        // Top 10 borrowed field
         JLabel topTenBorrowLabel = new JLabel("Top 10 Borrowers:");
         panel.add(topTenBorrowLabel);
         Dimension sizeTenBorrow = topTenBorrowLabel.getPreferredSize();
         topTenBorrowLabel.setBounds(25, 240, sizeTenBorrow.width, sizeTenBorrow.height);
+        
+        Object[][] topTenBorrowersData =
+            {{"RName 1", "13"},
+                    {"RName 2", "12"},
+                    {"RName 3", "35"},
+                    {"RName 4", "33"},
+                    {"RName 5", "13"},
+                    {"RName 6", "32"},
+                    {"RName 7", "100"},
+                    {"RName 8", "1"},
+                    {"RName 9", "0"},
+                    {"RName 10", "2"}};
 
+	    String[] topTenBorrowersColumns = {"Name", "# Borrowed"};
+	
+	    JTable borrowsTable = new JTable(topTenBorrowersData, topTenBorrowersColumns);
+	    JScrollPane scrollBorrows = new JScrollPane(borrowsTable);
+	    scrollBorrows.setBounds(10, 260, 175, 150);
+	    panel.add(scrollBorrows);
+        
+        // Top 10 books field
         JLabel topTenBooksLabel = new JLabel("Top 10 Books:");
         panel.add(topTenBooksLabel);
         Dimension sizeTenBooks = topTenBooksLabel.getPreferredSize();
         topTenBooksLabel.setBounds(200, 240, sizeTenBooks.width, sizeTenBooks.height);
-
-        JLabel topTenYr = new JLabel("Top 10 Books (Year):");
-        panel.add(topTenYr);
-        Dimension sizeTenYr = topTenYr.getPreferredSize();
-        topTenYr.setBounds(380, 240, sizeTenYr.width, sizeTenYr.height);
-
-        Object[][] topTenBorrowersData =
-                {{"RName 1", "13"},
-                        {"RName 2", "12"},
-                        {"RName 3", "35"},
-                        {"RName 4", "33"},
-                        {"RName 5", "13"},
-                        {"RName 6", "32"},
-                        {"RName 7", "100"},
-                        {"RName 8", "1"},
-                        {"RName 9", "0"},
-                        {"RName 10", "2"}};
-
-        String[] topTenBorrowersColumns = {"Name", "# Borrowed"};
-
-        JTable borrowsTable = new JTable(topTenBorrowersData, topTenBorrowersColumns);
-        JScrollPane scrollBorrows = new JScrollPane(borrowsTable);
-        scrollBorrows.setBounds(10, 260, 175, 150);
-        panel.add(scrollBorrows);
-
+        
         String[] topTenBooksColumns = {"Title"};
         Object[][] topTenBooksData =
                 {{"Book Name 1", "13"},
@@ -141,7 +152,13 @@ public class AdminFunctions extends JFrame {
         JScrollPane scrollTopTenBooks = new JScrollPane(topTenBooksTable);
         scrollTopTenBooks.setBounds(200, 260, 160, 150);
         panel.add(scrollTopTenBooks);
-
+        
+        // Top 10 this year label
+        JLabel topTenYr = new JLabel("Top 10 Books (Year):");
+        panel.add(topTenYr);
+        Dimension sizeTenYr = topTenYr.getPreferredSize();
+        topTenYr.setBounds(380, 240, sizeTenYr.width, sizeTenYr.height);
+        
         String[] topTenBooksYrColumns = {"Title"};
         Object[][] topTenBooksYrData =
                 {{"Book Name 1", "13"},
@@ -159,9 +176,13 @@ public class AdminFunctions extends JFrame {
         JScrollPane scrollTopTenBooksYr = new JScrollPane(topTenBooksYrTable);
         scrollTopTenBooksYr.setBounds(380, 260, 160, 150);
         panel.add(scrollTopTenBooksYr);
-
+        
+        // Set table characteristics
         frame.setSize(570, 600);
         frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
     }
 
     /*public static void main(String[] args) {
