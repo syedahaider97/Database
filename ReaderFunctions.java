@@ -14,7 +14,9 @@ import javax.swing.JTextField;
 
 public class ReaderFunctions extends JFrame{
 
-	public ReaderFunctions() {
+	JTextField docText, titleText, pubText;
+	
+	public ReaderFunctions(String readerId) {
 		super("Reader Functions");
 		
 		JPanel panel = new JPanel();
@@ -33,7 +35,7 @@ public class ReaderFunctions extends JFrame{
 		docSearch.add(dSearch);
 		
 		JPanel docPanel = new JPanel();
-		JTextField docText = new JTextField(30);
+		docText = new JTextField(30);
 		JButton docButton = new JButton("Search");
 		docButton.addActionListener(new DocButton());
 		docPanel.add(docText); docPanel.add(docButton);
@@ -43,7 +45,7 @@ public class ReaderFunctions extends JFrame{
 		titleSearch.add(tSearch);
 		
 		JPanel titlePanel = new JPanel();
-		JTextField titleText = new JTextField(30);
+		titleText = new JTextField(30);
 		JButton titleButton = new JButton("Search");
 		titleButton.addActionListener(new TitleButton());
 		titlePanel.add(titleText); titlePanel.add(titleButton);
@@ -53,7 +55,7 @@ public class ReaderFunctions extends JFrame{
 		pubSearch.add(pSearch);
 		
 		JPanel pubPanel = new JPanel();
-		JTextField pubText = new JTextField(30);
+		pubText = new JTextField(30);
 		JButton pubButton = new JButton("Search");
 		pubButton.addActionListener(new PubButton());
 		pubPanel.add(pubText); pubPanel.add(pubButton);
@@ -63,6 +65,9 @@ public class ReaderFunctions extends JFrame{
 		reservation.setFont(new Font("Helvetica",Font.BOLD,24));
 		
 		String[] columns = {"Title","Status","Fine","Date Borrowed"};
+		
+		
+		//COMPUTE ACTUAL DATA BASED ON PASSED IN READER ID
 		Object[][] data = {{"Harry Potter","Borrowed","$2","Today"},
 						   {"Hunger Games","Returned","$0","Tomorrow"},
 						   {"Hunger Games","Returned","$0","Tomorrow"},
@@ -107,30 +112,32 @@ public class ReaderFunctions extends JFrame{
 	}
 	
 	
-	
-	public static void main(String args[]) {
-		
-		new ReaderFunctions();
-	}
-	
+
 	class DocButton implements ActionListener {
 
 	    public void actionPerformed(ActionEvent e) {
-				
+	    	
+	    	//PERFORM QUERY TO OBTAIN OBJECT[][] BASED ON DOC ID
+	    	int docId = Integer.parseInt(docText.getText());
+			new SearchResult(null);
 		}
 	}
 	
 	class TitleButton implements ActionListener {
 
 	    public void actionPerformed(ActionEvent e) {
-				
+	    	//PERFORM QUERY TO OBTAIN OBJECT[][] BASED ON Title
+	    	String title = titleText.getText();
+			new SearchResult(null);
 		}
 	}
 	
 	class PubButton implements ActionListener {
 
 	    public void actionPerformed(ActionEvent e) {
-				
+	    	//PERFORM QUERY TO OBTAIN OBJECT[][] BASED ON Publisher
+	    	String publisher = pubText.getText();
+			new SearchResult(null);
 		}
 	}
 	

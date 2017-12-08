@@ -58,10 +58,6 @@ public class AdminPortal extends JFrame {
 		setLocationRelativeTo(null);
 	}
 	
-	public String hello(){
-		System.out.println("Hello");
-		return "Hello";
-	}
 	class Go implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {

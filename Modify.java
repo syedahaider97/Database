@@ -27,6 +27,10 @@ public class Modify extends JFrame {
 		addDoc.setAlignmentX(CENTER_ALIGNMENT);
 		addDoc.addActionListener(new AddDoc());
 		
+		JButton viewDoc = new JButton("View Documents");
+		viewDoc.setAlignmentX(CENTER_ALIGNMENT);
+		viewDoc.addActionListener(new ViewDoc());
+		
 		JButton remDoc = new JButton("Remove Documnts");
 		remDoc.setAlignmentX(CENTER_ALIGNMENT);
 		remDoc.addActionListener(new RemDoc());
@@ -45,18 +49,22 @@ public class Modify extends JFrame {
 		panel.add(new JLabel(" "));
 		panel.add(addDoc);
 		panel.add(new JLabel(" "));
+		panel.add(viewDoc);
+		panel.add(new JLabel(" "));
 		panel.add(remDoc);
 		panel.add(new JLabel(" "));
 		panel.add(updateDoc);
+		panel.add(new JLabel(" "));
 		panel.add(new JLabel(" "));
 		panel.add(back);
 		
 		add(panel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(250,320);
+		setSize(280,355
+);
 		setVisible(true);
 		setLocationRelativeTo(null);
-		
+		setResizable(false);
 	}
 	
 	public static void main(String args[]) {
@@ -68,35 +76,46 @@ public class Modify extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			new AddDocument("add","Add a Document");
 			
 		}
 	
+	}
+	class ViewDoc implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			//COMPUTE QUERY; Probably just a Select All
+			Object[][] data = {{"Harry Potter","Borrowed","$2","Today"},
+					   {"Hunger Games","Returned","$0","Tomorrow"},
+					   {"Hunger Games","Returned","$0","Tomorrow"},
+					   {"Hunger Games","Returned","$0","Tomorrow"},
+					   {"Hunger Games","Returned","$0","Tomorrow"},
+					   {"Hunger Games","Returned","$0","Tomorrow"},
+					   {"Hunger Games","Returned","$0","Tomorrow"},
+					   {"Hunger Games","Returned","$0","Tomorrow"}};
+			new ViewDocument(data);		
+		}
 	}
 	
 	class RemDoc implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			new RemoveDocument();
 			
 		}
-	
 	}
+	
 	class UpdateDoc implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			
+			new AddDocument("update","Update a Document");
 		}
 	}
+	
 	class Back implements ActionListener {
-
-		@Override
+		
 		public void actionPerformed(ActionEvent e) {
 			dispose();
 		}
-		
 	}
 }

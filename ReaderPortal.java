@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 
 public class ReaderPortal extends JFrame {
 
+	private JTextField text;
 	
 	public ReaderPortal() {
 		super("Reader Portal");
@@ -28,7 +29,7 @@ public class ReaderPortal extends JFrame {
 		line2.setAlignmentX(CENTER_ALIGNMENT);
 
 		JPanel submit = new JPanel(new FlowLayout());
-		JTextField text = new JTextField(20);
+		text = new JTextField(20);
 		JButton go = new JButton("Go");
 		go.addActionListener(new Go());
 		
@@ -55,8 +56,9 @@ public class ReaderPortal extends JFrame {
 	class Go implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
+			String readerId = text.getText(); 
 			dispose();
-			new ReaderFunctions();
+			new ReaderFunctions(readerId);
 		}
 		
 	}

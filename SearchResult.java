@@ -27,16 +27,16 @@ public class SearchResult extends JFrame {
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
 		
-		JButton quit = new JButton("Quit");
-		quit.setAlignmentX(CENTER_ALIGNMENT);
-		quit.addActionListener(new Quit());
+		JButton back = new JButton("Back");
+		back.setAlignmentX(CENTER_ALIGNMENT);
+		back.addActionListener(new Back());
 		
 		panel.add(new JLabel(" "));
 		panel.add(label);
 		panel.add(new JLabel(" "));
 		panel.add(scroll);
 		panel.add(new JLabel(" "));
-		panel.add(quit);
+		panel.add(back);
 		panel.add(new JLabel(" "));
 		add(panel);
 		
@@ -58,10 +58,10 @@ public class SearchResult extends JFrame {
 				   {"Hunger Games","Returned","$0"}};
 		new SearchResult(data);
 	}
-	class Quit implements ActionListener {
+	class Back implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			System.exit(0);
+			dispose();
 		}
 		
 		
