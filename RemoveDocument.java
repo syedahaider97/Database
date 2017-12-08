@@ -75,6 +75,7 @@ public class RemoveDocument extends JFrame {
 			
 			int docId = Integer.parseInt(docField.getText());
 			//Remove Query
+			Server.removeByID(docId);
 			//Success Message
 		}
 	}
