@@ -11,8 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class ReaderPortal extends JFrame {
-
-	private JTextField text;
+	private JTextField IDfield; // field for ID number
 	
 	public ReaderPortal() {
 		super("Reader Portal");
@@ -20,21 +19,24 @@ public class ReaderPortal extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 		
+		// Title
 		JLabel line1 = new JLabel("Please Enter");
 		line1.setFont(new Font("Helvetica",Font.BOLD,32));
 		line1.setAlignmentX(CENTER_ALIGNMENT);
-		
 		JLabel line2 = new JLabel("Card Number");
 		line2.setFont(new Font("Helvetica",Font.BOLD,32));
 		line2.setAlignmentX(CENTER_ALIGNMENT);
-
+		// End Title
+		
+		// Card ID text field
 		JPanel submit = new JPanel(new FlowLayout());
-		text = new JTextField(20);
-		JButton go = new JButton("Go");
+		IDfield = new JTextField(20);
+		JButton go = new JButton("Log in");
 		go.addActionListener(new Go());
 		
-		submit.add(text); submit.add(go);
+		submit.add(IDfield); submit.add(go);
 		
+		// Add items to panel
 		panel.add(new JLabel(" "));
 		panel.add(line1);
 		panel.add(line2);
@@ -44,6 +46,7 @@ public class ReaderPortal extends JFrame {
 		
 		add(panel);
 		
+		// Set window characteristics
 		setSize(350,220);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,14 +56,39 @@ public class ReaderPortal extends JFrame {
 	
 	
 	
-	class Go implements ActionListener {
+	// Go button actions
+		class Go implements ActionListener {
 
-		public void actionPerformed(ActionEvent e) {
-			String readerId = text.getText(); 
-			dispose();
-			new ReaderFunctions(readerId);
+			public void actionPerformed(ActionEvent e) {
+				// Fields for saving and converting input
+				int readerID=-1;
+				String IDstr = IDfield.getText();
+				boolean isValidInput = false; // flag if input is valid
+				
+				// Check if input is not null
+				if (IDstr != null) {
+					isValidInput = true; // assume input is valid
+					try { // try to convert ID to Integer
+	                    readerID = (Integer.parseInt(IDstr));
+	                    if (readerID < 1) { // If integer is negative, show Error
+	                    	isValidInput = false;
+	                    	new popupMsg("Error", "Invalid Card Number '" + IDstr + "' entered.");
+	                    }
+	                } catch (NumberFormatException nfe) { // If input is not a number, show Error
+	                	isValidInput = false;
+	                	new popupMsg("Error", "Invalid Card Number '" + IDstr + "' entered.");
+	                }
+					
+					// if no errors occurred, open Admin Functions
+					if (isValidInput) {
+						dispose();
+						new ReaderFunctions(readerID);
+					}
+	        	} else { // Call default Admin Functions window in default case
+	        		new ReaderFunctions();
+	        	}
+			}
+			
 		}
-		
-	}
 	
 }

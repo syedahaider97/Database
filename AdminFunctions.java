@@ -1,5 +1,8 @@
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AdminFunctions extends JFrame {
 	private int adminID = 0;
@@ -92,16 +95,18 @@ public class AdminFunctions extends JFrame {
         Dimension sizeFine = fineLabel.getPreferredSize();
         fineLabel.setBounds(25, 465, sizeFine.width, sizeFine.height);
         
-        // Log out button
-        JButton logOutBtn = new JButton("Log out");
+        // Quit button
+        JButton logOutBtn = new JButton("Quit");
         logOutBtn.setBounds(170, 500, 80, 30);
         logOutBtn.setBorder(null);
+        logOutBtn.addActionListener(new Quit());
         panel.add(logOutBtn);
         
         // Modify button
         JButton modifyBtn = new JButton("Modify");
         modifyBtn.setBounds(270, 500, 80, 30);
         modifyBtn.setBorder(null);
+        // MODIFY BUTTON FUNCTIONALITY GOES HERE
         panel.add(modifyBtn);
         
         // Top 10 borrowed field
@@ -184,7 +189,13 @@ public class AdminFunctions extends JFrame {
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
     }
-
+    
+    class Quit implements ActionListener {
+		
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	}
     /*public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

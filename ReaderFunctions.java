@@ -13,11 +13,19 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 public class ReaderFunctions extends JFrame{
-
-	JTextField docText, titleText, pubText;
+	private int readerId = 0;
+	private JTextField docText, titleText, pubText;
 	
-	public ReaderFunctions(String readerId) {
+	// Default Constructor -- Displays error if no input passed in to menu
+	public ReaderFunctions() {
+		this.readerId = 0;
+		// Show Error message
+		new popupMsg("Error", "No Reader ID entered.");
+	}
+	
+	public ReaderFunctions(int readerId) {
 		super("Reader Functions");
+		this.readerId = readerId;
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
