@@ -52,7 +52,11 @@ public class Server {
 		Statement stmt = connect();
 		String query = "DELETE FROM READER WHERE READERID = '" + docId +"';";
 		
-		stmt.executeQuery(sql)
+		try {
+			stmt.executeQuery(query);
+		} catch (SQLException e) {
+			new popupMsg();
+		}
 	}
 	
 }
