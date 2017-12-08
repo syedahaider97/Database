@@ -9,13 +9,13 @@
 import java.sql.*;
 
 public class Server {
+	private Connection con;
+	private Statement stmt;
 
 	public Statement connect() {
 		
 		try {
-			Connection con;
-			Statement stmt;
-
+			
 			// URL Syntax: jdbc:TYPE:machine:port/DB_NAME
 			// port omitted in this example
 
@@ -32,7 +32,7 @@ public class Server {
 			//
 
 			con = DriverManager.getConnection(URL, UCID, passwd);
-			return con.createStatement();
+			stmt = con.createStatement();
 			
 			// catch database exceptions and print info
 		} catch (SQLException e) {
@@ -49,7 +49,6 @@ public class Server {
 	}
 	public void removeByID(int docId) {
 		
-		Statement stmt = connect();
 		String query = "DELETE FROM READER WHERE READERID = '" + docId +"';";
 		
 		try {
