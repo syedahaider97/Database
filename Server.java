@@ -6,14 +6,12 @@
  */
 
 import java.sql.*;
+import java.util.Arrays;
 class Server {
 	private static Connection con;
     private static Statement stmt;
 	
-    /*public static void main(String[] args) {
-    	removeByID(1);
-    }*/
-    
+ 
     private static void connectToDB() {
         System.out.println("Connecting to MySQL\n");
 
@@ -33,7 +31,7 @@ class Server {
                 // String URL = "jdbc:mysql://localhost.njit.edu/UCID";
                 // for server
                 String UCID = "root";
-                String passwd = "mySQLroot";
+                String passwd = "root";
                 String URL = "jdbc:mysql://localhost/cs631";
                 //String URL = "jdbc:mysql://sql2.njit.edu/" + UCID;
                 //
@@ -57,37 +55,6 @@ class Server {
             }
         }
     }
-    
-    // Used in RemoveDocument.java
-    public static void removeByID(int docId) {
-    	
-    	connectToDB();
-		
-		try {
-			// AUTHOR
-            System.out.println("AUTHOR");
-            String query = "SELECT * FROM AUTHOR;";
-            ResultSet rs = stmt.executeQuery(query);
-            System.out.println("AUTHORID\tANAME");
-            while (rs.next()) {
-                int s = rs.getInt("AUTHORID");
-                String n = rs.getString("ANAME");
-                System.out.println(s + "\t" + n);
-            }
-            //close resources
-            stmt.close(); con.close();
-		} catch (SQLException e) {
-			new popupMsg();
-			System.err.println(" SQL Exceptions \n");
-            while (e != null) {
-                System.out.println("Error Description: " + e.getMessage());
-                System.out.println("SQL State:  " + e.getSQLState());
-                System.out.println("Vendor Error Code: " + e.getErrorCode());
-                e = e.getNextException();
-                System.out.println("");
-            }
-		}
-	}
     
     // Used in AdminPortal.java
     public static boolean libExists(int libID) {
@@ -382,5 +349,160 @@ class Server {
 		return false;
     }
     /**/
-}
 
+
+
+	//Used in removeDocument.java
+	public static void removeByID(int docId) {
+		connectToDB();
+		String query = "DELETE FROM READER WHERE READERID = " + docId + ";";
+		System.out.println(query);
+		try {
+			stmt.execute(query);
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	//Used in ReaderFunctions.java
+	public static Object[][] getReservationData(int readerId) {
+		connectToDB();
+		Object rtn[][] = new Object[30][4];
+		String query = "SELECT D.TITLE, R.DTIME "
+				+ "FROM DOCUMENT D, RESERVES R, COPY C "
+				+ "WHERE C.DOCID = R.DOCID AND C.LIBID = R.LIBID AND C.COPYNO = R.COPYNO AND R.READERID = " + readerId + " AND C.DOCID = D.DOCID;";
+		int i = 0;
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object entry[] = {rs.getString("TITLE"),"Reserved","$0",rs.getTimestamp("DTIME")};
+				rtn[i++] = entry;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		String query2 = "SELECT D.TITLE ,B.BDTIME "
+				+ "FROM DOCUMENT D, BORROWS B, COPY C "
+				+ "WHERE C.DOCID = B.DOCID AND C.LIBID = B.LIBID AND C.COPYNO = B.COPYNO AND C.DOCID = D.DOCID AND B.READERID = " + readerId +";";
+		try {
+			ResultSet rs = stmt.executeQuery(query2);
+			while(rs.next()) {
+				Object entry[] = {rs.getString("TITLE"),"Borrowed","$2",rs.getTimestamp("BDTIME")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
+		
+	}
+	//Used in ReaderFunctions
+	public static Object[][] searchByDocId(String docId) {
+		
+		connectToDB();
+		Object[][] rtn = new Object[30][3];
+		int i = 0;
+		
+		String query = "SELECT D.DOCID, D.TITLE, P.PUBNAME "
+				+ "FROM DOCUMENT D JOIN PUBLISHER P ON D.PUBLISHERID = P.PUBLISHERID "
+				+ "WHERE D.DOCID = " + docId + ";";
+		
+		try {
+			Integer.parseInt(docId);
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object[] entry = {rs.getInt("DOCID"),rs.getString("TITLE"),rs.getString("PUBNAME")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to search for document.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		} catch (Exception e) {
+			new popupMsg("Error","Please enter a valid Document ID");
+		}
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
+	}
+	//Used in ReaderFunctions.java
+	public static Object[][] searchByTitle(String title) {
+
+		connectToDB();
+		Object rtn[][] = new Object[30][3];
+		int i = 0;
+		
+		String query = "SELECT D.DOCID, D.TITLE, P.PUBNAME "
+				+ "FROM DOCUMENT D JOIN PUBLISHER P ON D.PUBLISHERID = P.PUBLISHERID "
+				+ "WHERE D.TITLE = '" + title + "';";
+		
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object[] entry = {rs.getInt("DOCID"),rs.getString("TITLE"),rs.getString("PUBNAME")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to search for document.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		} 
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
+	}
+
+	public static Object[][] searchByPublisher(String publisher) {
+
+		connectToDB();
+		Object rtn[][] = new Object[30][3];
+		int i = 0;
+		
+		String query = "SELECT D.DOCID, D.TITLE, P.PUBNAME "
+				+ "FROM DOCUMENT D JOIN PUBLISHER P ON D.PUBLISHERID = P.PUBLISHERID "
+				+ "WHERE P.PUBNAME = '" + publisher + "';";
+		
+		try {
+
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object[] entry = {rs.getInt("DOCID"),rs.getString("TITLE"),rs.getString("PUBNAME")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to search for document.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		} 
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
+		
+	}
+}

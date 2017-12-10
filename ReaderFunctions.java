@@ -16,7 +16,7 @@ public class ReaderFunctions extends JFrame{
 
 	JTextField docText, titleText, pubText;
 	
-	public ReaderFunctions(String readerId) {
+	public ReaderFunctions(int readerId) {
 		super("Reader Functions");
 		
 		JPanel panel = new JPanel();
@@ -104,10 +104,9 @@ public class ReaderFunctions extends JFrame{
 		setResizable(false);
 	}
 	
-	public Object[][] getReservationData(String readerId) {
+	public Object[][] getReservationData(int readerId) {
 		
-		Server server = new Server();
-		return server.getReservationData(readerId);
+		return Server.getReservationData(readerId);
 	}
 	
 	
@@ -115,28 +114,45 @@ public class ReaderFunctions extends JFrame{
 	class DocButton implements ActionListener {
 
 	    public void actionPerformed(ActionEvent e) {
-	    	
-	    	//PERFORM QUERY TO OBTAIN OBJECT[][] BASED ON DOC ID
-	    	int docId = Integer.parseInt(docText.getText());
-			new SearchResult(null);
+
+	    	String docId = docText.getText();
+	    	Object[][] table = Server.searchByDocId(docId);
+	    	if(table.length == 0) {
+	    		new popupMsg("Error","No results found.");
+	    	}
+	    	else{
+	    		new SearchResult(table);
+	    	}
 		}
 	}
 	
 	class TitleButton implements ActionListener {
 
 	    public void actionPerformed(ActionEvent e) {
-	    	//PERFORM QUERY TO OBTAIN OBJECT[][] BASED ON Title
+
 	    	String title = titleText.getText();
-			new SearchResult(null);
+	    	Object[][] table = Server.searchByTitle(title);
+	    	if(table.length == 0) {
+	    		new popupMsg("Error","No results found.");
+	    	}
+	    	else{
+	    		new SearchResult(table);
+	    	}
 		}
 	}
 	
 	class PubButton implements ActionListener {
 
 	    public void actionPerformed(ActionEvent e) {
-	    	//PERFORM QUERY TO OBTAIN OBJECT[][] BASED ON Publisher
+	    	
 	    	String publisher = pubText.getText();
-			new SearchResult(null);
+	    	Object table[][] = Server.searchByPublisher(publisher);
+	    	if(table.length == 0) {
+	    		new popupMsg("Error","No results found.");
+	    	}
+	    	else{
+	    		new SearchResult(table);
+	    	}
 		}
 	}
 	

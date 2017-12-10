@@ -22,10 +22,15 @@ public class SearchResult extends JFrame {
 		label.setAlignmentX(CENTER_ALIGNMENT);
 		label.setFont(new Font("Helvetica",Font.BOLD,24));
 		
+		JPanel tablePanel = new JPanel();
 		
 		String[] columns = {"DocID","Title","Publisher Name"};
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
+		
+		tablePanel.add(new JLabel(" "));
+		tablePanel.add(scroll);
+		tablePanel.add(new JLabel(" "));
 		
 		JButton back = new JButton("Back");
 		back.setAlignmentX(CENTER_ALIGNMENT);
@@ -34,7 +39,7 @@ public class SearchResult extends JFrame {
 		panel.add(new JLabel(" "));
 		panel.add(label);
 		panel.add(new JLabel(" "));
-		panel.add(scroll);
+		panel.add(tablePanel);
 		panel.add(new JLabel(" "));
 		panel.add(back);
 		panel.add(new JLabel(" "));
@@ -42,22 +47,13 @@ public class SearchResult extends JFrame {
 		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(400,275);
+		setSize(480,275);
 		setVisible(true);
+		setResizable(false);
 		setLocationRelativeTo(null);
 		
 	}
-	public static void main(String args[]) {
-		Object data[][] = {{"Harry Potter","Borrowed","$2"},
-				   {"Hunger Games","Returned","$0"},
-				   {"Hunger Games","Returned","$0"},
-				   {"Hunger Games","Returned","$0"},
-				   {"Hunger Games","Returned","$0"},
-				   {"Hunger Games","Returned","$0"},
-				   {"Hunger Games","Returned","$0"},
-				   {"Hunger Games","Returned","$0"}};
-		new SearchResult(data);
-	}
+
 	class Back implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
