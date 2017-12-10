@@ -15,7 +15,7 @@ class Server {
     }*/
     
     private static void connectToDB() {
-        System.out.println("Hello from MySQL!\n");
+        System.out.println("Connecting to MySQL\n");
 
         //loading driver, need to catch exceptions
         try {
@@ -57,6 +57,7 @@ class Server {
         }
     }
     
+    // Used in RemoveDocument.java
     public static void removeByID(int docId) {
     	
     	connectToDB();
@@ -87,7 +88,67 @@ class Server {
 		}
 	}
     
-    /**/
+    // Used in AdminFunctions.java
+    public static String getLibName(int adminID) {
+    	
+    	connectToDB();
+    	String n = "";
+    	
+		try {
+            String query = "SELECT LNAME FROM BRANCH WHERE LIBID="+adminID+";";
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                n = rs.getString("LNAME");
+                System.out.println(n);
+            }
+            //close resources
+            stmt.close(); con.close();
+		} catch (SQLException e) {
+			new popupMsg();
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		
+		return n;
+	}
+    
+    // Used in AdminFunctions.java
+    public static String getLibLoc(int adminID) {
+    	
+    	connectToDB();
+    	String n = "";
+    	
+		try {
+            String query = "SELECT LLOCATION FROM BRANCH WHERE LIBID="+adminID+";";
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                n = rs.getString("LLOCATION");
+                System.out.println(n);
+            }
+            //close resources
+            stmt.close(); con.close();
+		} catch (SQLException e) {
+			new popupMsg();
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		
+		return n;
+	}
+    
+    // Used in AdminFunctions.java
     public static void currentReserv(int readerIDReservations) {
 	    // Query to obtain current reservations by passed in ReaderID
 	    ResultSet readerIDRS;
@@ -102,6 +163,7 @@ class Server {
 		}
     }
 
+    // Used in AdminFunctions.java
     public static void topTenBorrowers(int libID) {
 	    // Query to obtain top 10 Borrowers
 	    ResultSet topTenReadersRS;
@@ -117,6 +179,7 @@ class Server {
 	    
     }
 
+ // Used in AdminFunctions.java
     public static void topTenBooks(int libID) {
 	    // Query to obtain top 10 Books
 	    ResultSet topTenBooksRS;
@@ -132,7 +195,8 @@ class Server {
 	    
 	}
 
-    public static void addReader(int addReaderID, int addReaderType, int addReaderName, int addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
+    // Used in AdminFunctions.java
+    public static void addReader(int addReaderID, String addReaderType, String addReaderName, String addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
 	    // Query to add Reader by passed in ReaderID
 	    ResultSet checkExistsRS;
 		try {
@@ -140,6 +204,7 @@ class Server {
 			if (!checkExistsRS.next()) {
 			 stmt.executeUpdate("INSERT INTO READER (READERID, RTYPE, RNAME, ADDRESS) " + "VALUES (" + addReaderID + ",'" + addReaderType + "','" + addReaderName + "','" + addReaderAddress + ",')");
 			 System.out.println("Reader added!");
+			 new popupMsg("Reader Added", "Added new reader " + addReaderName + " with reader ID " + addReaderID + ".");
 
 			} else {
 			 System.out.println("Reader already exists! Cannot add!");

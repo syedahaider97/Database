@@ -34,15 +34,10 @@ public class AdminFunctions extends JFrame {
         adminLabel.setBounds(25, 25, sizeAdmin.width, sizeAdmin.height);
         
         // Display LIBRARY BRANCH data
-        JLabel branchLabel = new JLabel("<Branch Name>");
+        JLabel branchLabel = new JLabel("Logged in as " + Server.getLibName(adminID) + " in " + Server.getLibLoc(adminID));
         panel.add(branchLabel);
         Dimension sizeBranch = branchLabel.getPreferredSize();
         branchLabel.setBounds(55, 55, sizeBranch.width, sizeBranch.height);
-
-        JLabel branchLocLabel = new JLabel("<Branch Location>");
-        panel.add(branchLocLabel);
-        Dimension sizeBranchLoc = branchLocLabel.getPreferredSize();
-        branchLocLabel.setBounds(210, 55, sizeBranchLoc.width, sizeBranchLoc.height);
         // END Display LIBRARY BRANCH data
         
         // Add Copy Text field
@@ -51,7 +46,7 @@ public class AdminFunctions extends JFrame {
         Dimension sizeCopy = addCopyLabel.getPreferredSize();
         addCopyLabel.setBounds(25, 85, sizeCopy.width, sizeCopy.height);
         
-        JButton addCopyBtn = new JButton("Search");
+        JButton addCopyBtn = new JButton("Add");
         addCopyBtn.setBounds(450, 85, 55, 30);
         addCopyBtn.setBorder(null);
         panel.add(addCopyBtn);
