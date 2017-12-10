@@ -386,17 +386,38 @@ class Server {
 
 
 	//Used in removeDocument.java
-	public static void removeByID(int docId) {
+	public static boolean removeByID(String docId) {
 		connectToDB();
+		String count  = "SELECT COUNT(*) "
+				+ " FROM READER WHERE READERID = " + docId + ";";
 		String query = "DELETE FROM READER WHERE READERID = " + docId + ";";
-		System.out.println(query);
+		
 		try {
+			Integer.parseInt(docId);
+			ResultSet countSet = stmt.executeQuery(count);
+			
+			if (countSet.next() && countSet.getInt("COUNT(*)") == 0) {
+				throw new Exception();
+			}
+			
 			stmt.execute(query);
 			stmt.close();
 			con.close();
+			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			new popupMsg("Error", "Unable to search for document.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		} catch (Exception e) {
+			new popupMsg("Error","Please enter a valid, existing Document ID to remove");
 		}
+		return false;
 	}
 	//Used in ReaderFunctions.java
 	public static Object[][] getReservationData(int readerId) {
