@@ -13,19 +13,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 public class ReaderFunctions extends JFrame{
-	private int readerId = 0;
-	private JTextField docText, titleText, pubText;
+
+	JTextField docText, titleText, pubText;
 	
-	// Default Constructor -- Displays error if no input passed in to menu
-	public ReaderFunctions() {
-		this.readerId = 0;
-		// Show Error message
-		new popupMsg("Error", "No Reader ID entered.");
-	}
-	
-	public ReaderFunctions(int readerId) {
+	public ReaderFunctions(String readerId) {
 		super("Reader Functions");
-		this.readerId = readerId;
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
@@ -76,14 +68,7 @@ public class ReaderFunctions extends JFrame{
 		
 		
 		//COMPUTE ACTUAL DATA BASED ON PASSED IN READER ID
-		Object[][] data = {{"Harry Potter","Borrowed","$2","Today"},
-						   {"Hunger Games","Returned","$0","Tomorrow"},
-						   {"Hunger Games","Returned","$0","Tomorrow"},
-						   {"Hunger Games","Returned","$0","Tomorrow"},
-						   {"Hunger Games","Returned","$0","Tomorrow"},
-						   {"Hunger Games","Returned","$0","Tomorrow"},
-						   {"Hunger Games","Returned","$0","Tomorrow"},
-						   {"Hunger Games","Returned","$0","Tomorrow"}};
+		Object[][] data = getReservationData(readerId);
 		
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
@@ -117,6 +102,12 @@ public class ReaderFunctions extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
+	}
+	
+	public Object[][] getReservationData(String readerId) {
+		
+		Server server = new Server();
+		return server.getReservationData(readerId);
 	}
 	
 	
