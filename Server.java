@@ -31,7 +31,7 @@ class Server {
                 // String URL = "jdbc:mysql://localhost.njit.edu/UCID";
                 // for server
                 String UCID = "root";
-                String passwd = "root";
+                String passwd = "mySQLroot";
                 String URL = "jdbc:mysql://localhost/cs631";
                 //String URL = "jdbc:mysql://sql2.njit.edu/" + UCID;
                 //

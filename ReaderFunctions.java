@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -34,6 +35,14 @@ public class ReaderFunctions extends JFrame{
 		JLabel title = new JLabel("Reader Functions Menu");
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		title.setFont(new Font("Helvetica",Font.BOLD,32));
+		
+		// Display READER data
+        JLabel readLabel = new JLabel("Logged in as " + Server.getRName(readID) + " with Card Number: " + readerID);
+        panel.add(readLabel);
+        Dimension sizeBranch = readLabel.getPreferredSize();
+        readLabel.setBounds(55, 100, sizeBranch.width, sizeBranch.height);
+        readLabel.setAlignmentX(CENTER_ALIGNMENT);
+        // END Display READER data
 		
 		JLabel search = new JLabel("Search");
 		search.setAlignmentX(CENTER_ALIGNMENT);
