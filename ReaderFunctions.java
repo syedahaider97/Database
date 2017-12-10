@@ -61,7 +61,7 @@ public class ReaderFunctions extends JFrame{
 		JPanel docPanel = new JPanel();
 		docText = new JTextField(30);
 		
-		String docTextMessage = "Enter Document ID";
+		String docTextMessage = "Enter Document ID or \"VIEW ALL *\" to see all";
 		docText.setText(docTextMessage);
 		// Focus Listener
 		docText.addFocusListener(new FocusListener() {
@@ -93,7 +93,7 @@ public class ReaderFunctions extends JFrame{
 		JPanel titlePanel = new JPanel();
 		titleText = new JTextField(30);
 		
-		String titleTextMessage = "Enter Title";
+		String titleTextMessage = "Enter Title or \"VIEW ALL *\" to see all";
 		titleText.setText(titleTextMessage);
 		// Focus Listener
 		titleText.addFocusListener(new FocusListener() {
@@ -125,7 +125,7 @@ public class ReaderFunctions extends JFrame{
 		JPanel pubPanel = new JPanel();
 		pubText = new JTextField(30);
 		
-		String pubTextMessage = "Enter Publisher Name";
+		String pubTextMessage = "Enter Publisher Name or \"VIEW ALL *\" to see all";
 		pubText.setText(pubTextMessage);
 		// Focus Listener
 		pubText.addFocusListener(new FocusListener() {
@@ -206,8 +206,15 @@ public class ReaderFunctions extends JFrame{
 	    public void actionPerformed(ActionEvent e) {
 
 	    	String docId = docText.getText();
-	    	Object[][] table = Server.searchByDocId(docId);
-	    	if(table.length == 0) {
+	    	Object[][] table = null;
+	    	
+	    	if (docId.compareTo("VIEW ALL *") == 0) {
+	    		table = Server.viewAllDocs();
+	    	} else {
+	    		table = Server.searchByDocId(docId);
+	    	}
+	    	
+	    	if(table == null || table.length == 0) {
 	    		new popupMsg("Error","No results found.");
 	    	}
 	    	else{
@@ -221,8 +228,13 @@ public class ReaderFunctions extends JFrame{
 	    public void actionPerformed(ActionEvent e) {
 
 	    	String title = titleText.getText();
-	    	Object[][] table = Server.searchByTitle(title);
-	    	if(table.length == 0) {
+	    	Object[][] table = null;
+	    	if (title.compareTo("VIEW ALL *") == 0) {
+	    		table = Server.viewAllDocs();
+	    	} else {
+	    		table = Server.searchByTitle(title);
+	    	}
+	    	if(table == null || table.length == 0) {
 	    		new popupMsg("Error","No results found.");
 	    	}
 	    	else{
@@ -236,8 +248,14 @@ public class ReaderFunctions extends JFrame{
 	    public void actionPerformed(ActionEvent e) {
 	    	
 	    	String publisher = pubText.getText();
-	    	Object table[][] = Server.searchByPublisher(publisher);
-	    	if(table.length == 0) {
+	    	
+	    	Object[][] table = null;
+	    	if (publisher.compareTo("VIEW ALL *") == 0) {
+	    		table = Server.viewAllDocs();
+	    	} else {
+	    		Server.searchByPublisher(publisher);
+	    	}
+	    	if(table == null || table.length == 0) {
 	    		new popupMsg("Error","No results found.");
 	    	}
 	    	else{
