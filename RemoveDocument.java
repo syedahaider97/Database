@@ -73,10 +73,11 @@ public class RemoveDocument extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			
-			int docId = Integer.parseInt(docField.getText());
-			//Remove Query
-			Server.removeByID(docId);
-			//Success Message
+			String docId = docField.getText();
+			if(Server.removeByID(docId)) {;
+				new popupMsg("Success","Document succesfully removed");
+				dispose();
+			}
 		}
 	}
 	
