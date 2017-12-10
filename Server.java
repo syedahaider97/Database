@@ -86,5 +86,68 @@ class Server {
             }
 		}
 	}
+    
+    /**/
+    public static void currentReserv(int readerIDReservations) {
+	    // Query to obtain current reservations by passed in ReaderID
+	    ResultSet readerIDRS;
+		try {
+			readerIDRS = stmt.executeQuery("SELECT RESUMBER FROM RESERVES WHERE readerID=" + readerIDReservations + ";");
+			while (readerIDRS.next()) {
+		     int rIDReservations = readerIDRS.getInt("DOCID");
+		     System.out.println(rIDReservations);
+		    }
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to obtain current reservations.");
+		}
+    }
+
+    public static void topTenBorrowers(int libID) {
+	    // Query to obtain top 10 Borrowers
+	    ResultSet topTenReadersRS;
+		try {
+			topTenReadersRS = stmt.executeQuery("SELECT READERID, COUNT(*) FROM BORROWS WHERE LIBID='" + libID + "' GROUP BY READERID ORDER BY COUNT(*) DESC LIMIT 10;");
+			while (topTenReadersRS.next()) {
+		     int topTenReaders = topTenReadersRS.getInt("READERID");
+		     System.out.println(topTenReaders); // Outputs top 10 READERIDs
+		    }
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to obtain top 10 readers.");
+		}
+	    
+    }
+
+    public static void topTenBooks(int libID) {
+	    // Query to obtain top 10 Books
+	    ResultSet topTenBooksRS;
+		try {
+			topTenBooksRS = stmt.executeQuery("SELECT DOCID, COUNT(*) FROM BORROWS WHERE LIBID='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
+			while (topTenBooksRS.next()) {
+		     String topTenBooks = topTenBooksRS.getString("DOCID");
+		     System.out.println(topTenBooks); // Outputs top 10 DOCIDs
+		    }
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to obtain top 10 books.");
+		}
+	    
+	}
+
+    public static void addReader(int addReaderID, int addReaderType, int addReaderName, int addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
+	    // Query to add Reader by passed in ReaderID
+	    ResultSet checkExistsRS;
+		try {
+			checkExistsRS = stmt.executeQuery("SELECT * FROM READER WHERE READERID = '" + addReaderID + "';");
+			if (!checkExistsRS.next()) {
+			 stmt.executeUpdate("INSERT INTO READER (READERID, RTYPE, RNAME, ADDRESS) " + "VALUES (" + addReaderID + ",'" + addReaderType + "','" + addReaderName + "','" + addReaderAddress + ",')");
+			 System.out.println("Reader added!");
+
+			} else {
+			 System.out.println("Reader already exists! Cannot add!");
+			}
+		} catch (SQLException e1) {
+			new popupMsg("Error", "Unable to add new reader to library.");
+		}
+    }
+    /**/
 }
 
