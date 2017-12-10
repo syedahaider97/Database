@@ -89,8 +89,10 @@ public class AdminPortal extends JFrame {
 				
 				// if no errors occurred, open Admin Functions
 				if (isValidInput) {
-					dispose();
-					new AdminFunctions(adminID);
+					if (Server.libExists(adminID)) {
+						dispose();
+						new AdminFunctions(adminID);
+					}
 				}
         	} else { // Call default Admin Functions window in default case
         		new AdminFunctions();

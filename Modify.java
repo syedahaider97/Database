@@ -67,10 +67,10 @@ public class Modify extends JFrame {
 		setResizable(false);
 	}
 	
-	public static void main(String args[]) {
+	/*public static void main(String args[]) {
 		
 		new Modify();
-	}
+	}*/
 	
 	class AddDoc implements ActionListener {
 

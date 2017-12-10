@@ -127,7 +127,7 @@ public class AdminFunctions extends JFrame {
         JButton modifyBtn = new JButton("Modify");
         modifyBtn.setBounds(270, 500, 80, 30);
         modifyBtn.setBorder(null);
-        // MODIFY BUTTON FUNCTIONALITY GOES HERE
+        modifyBtn.addActionListener(new modify());
         panel.add(modifyBtn);
         
         // Top 10 borrowed field
@@ -221,6 +221,13 @@ public class AdminFunctions extends JFrame {
 		
 		public void actionPerformed(ActionEvent e) {
 			System.exit(0);
+		}
+	}
+    
+    class modify implements ActionListener {
+		
+		public void actionPerformed(ActionEvent e) {
+			new Modify();
 		}
 	}
     

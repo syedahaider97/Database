@@ -89,6 +89,96 @@ class Server {
 		}
 	}
     
+    // Used in AdminPortal.java
+    public static boolean libExists(int libID) {
+    	
+    	connectToDB();
+    	String n = "";
+    	
+		try {
+            String query = "SELECT LIBID FROM BRANCH WHERE LIBID="+libID+";";
+            ResultSet rs = stmt.executeQuery(query);
+            if (!rs.next()) {
+            	new popupMsg("Error", "Invalid ID or password entered.");
+                return false;
+            }
+            //close resources
+            stmt.close(); con.close();
+		} catch (SQLException e) {
+			new popupMsg();
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		
+		return true;
+	}
+    
+    // Used in ReaderPortal.java
+    public static boolean readerExists(int readID) {
+    	
+    	connectToDB();
+    	String n = "";
+    	
+		try {
+            String query = "SELECT READERID FROM READER WHERE READERID="+readID+";";
+            ResultSet rs = stmt.executeQuery(query);
+            if (!rs.next()) {
+            	new popupMsg("Error", "Invalid Card Number entered.");
+                return false;
+            }
+            //close resources
+            stmt.close(); con.close();
+		} catch (SQLException e) {
+			new popupMsg();
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		
+		return true;
+	}
+    
+    // Used in ReaderFunctions.java
+    public static String getRName(int readID) {
+    	
+    	connectToDB();
+    	String n = "";
+    	
+		try {
+            String query = "SELECT RNAME FROM READER WHERE READERID="+readID+";";
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                n = rs.getString("RNAME");
+                System.out.println(n);
+            }
+            //close resources
+            stmt.close(); con.close();
+		} catch (SQLException e) {
+			new popupMsg();
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		
+		return n;
+	}
+    
     // Used in AdminFunctions.java
     public static String getLibName(int adminID) {
     	

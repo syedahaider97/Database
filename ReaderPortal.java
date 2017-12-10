@@ -81,8 +81,12 @@ public class ReaderPortal extends JFrame {
 					
 					// if no errors occurred, open Admin Functions
 					if (isValidInput) {
-						dispose();
-						new ReaderFunctions(readerID);
+						if (isValidInput) {
+							if (Server.readerExists(readerID)) {
+								dispose();
+								new ReaderFunctions(readerID);
+							}
+						}
 					}
 	        	} else { // Call default Admin Functions window in default case
 	        		new ReaderFunctions();
