@@ -86,10 +86,11 @@ public class AdminFunctions extends JFrame {
         addReaderAddress.setText("Reader Address");
         panel.add(addReaderAddress);
         
-        JButton readerBtn = new JButton("Add");
-        readerBtn.addActionListener(new addReader());
-        readerBtn.setAlignmentX(CENTER_ALIGNMENT);
-        panel.add(readerBtn);
+        JButton addreaderBtn = new JButton("Add");
+        addreaderBtn.setBounds(170, 500, 80, 30);
+        addreaderBtn.setBorder(null);
+        addreaderBtn.addActionListener(new addReader());
+        panel.add(addreaderBtn);
 
         // Search Copy Text field
         JLabel searchCopyLabel = new JLabel("Search Document Copy:");
@@ -97,10 +98,11 @@ public class AdminFunctions extends JFrame {
         Dimension searchSize = searchCopyLabel.getPreferredSize();
         searchCopyLabel.setBounds(25, 185, searchSize.width, searchSize.height);
 
-        JButton copyBtn = new JButton("Search");
-        copyBtn.addActionListener(new addReader());
-        copyBtn.setAlignmentX(CENTER_ALIGNMENT);
-        panel.add(copyBtn);
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(170, 500, 80, 30);
+        searchBtn.setBorder(null);
+        searchBtn.addActionListener(new Quit());
+        panel.add(searchBtn);
 
         searchField = new JTextField(10);
         searchField.setBounds(20, 200, 400, 20);
