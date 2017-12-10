@@ -598,4 +598,70 @@ class Server {
 		rtn = Arrays.copyOfRange(rtn, 0, i);
 		return rtn;
 	}
+	
+	//Used for AdminFunctions.java
+	public static Object[][] viewAllCopies(int libID) {
+		connectToDB();
+		Object[][] rtn = new Object[30][4];
+		int i = 0;
+		String query = "SELECT C.DOCID, C.COPYNO, C.POSITION "
+				+ "FROM COPY C WHERE LIBID = '"+libID+"';";
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object[] entry = {rs.getInt("DOCID"),rs.getInt("COPYNO"),rs.getString("POSITION")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to gather copies.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
+	}
+	
+	//Used in AdminFunctions.java
+	public static Object[][] searchByCopyID(String copyNO, int libID) {
+		
+		connectToDB();
+		Object[][] rtn = new Object[30][3];
+		int i = 0;
+		
+		String query = "SELECT C.DOCID, C.COPYNO, C.POSITION "
+				+ "FROM COPY C WHERE LIBID = '"+libID+"' AND COPYNO='"+copyNO+"';";
+		
+		try {
+			Integer.parseInt(copyNO);
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object[] entry = {rs.getInt("DOCID"),rs.getInt("COPYNO"),rs.getString("POSITION")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to search for copies.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		} catch (Exception e) {
+			new popupMsg("Error","Please enter a valid Copy Number");
+		}
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
+	}
 }

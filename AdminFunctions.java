@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class AdminFunctions extends JFrame {
 	private int libId = 0;
@@ -54,12 +56,52 @@ public class AdminFunctions extends JFrame {
         
         addCopyDocID = new JTextField(10);
         addCopyDocID.setBounds(20, 100, 200, 20);
-        addCopyDocID.setText("Doc ID");
+        
+        String CopyDocMessage = "Doc ID";
+        addCopyDocID.setText(CopyDocMessage);
+		// Focus Listener
+        addCopyDocID.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(addCopyDocID.getText());
+		  		if (addCopyDocID.getText().compareTo(CopyDocMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			addCopyDocID.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (addCopyDocID.getText().compareTo("") == 0) {
+		    	 addCopyDocID.setText(CopyDocMessage);
+		     }
+		   }
+		});
+        
         panel.add(addCopyDocID);
         
         addCopyLoc = new JTextField(10);
         addCopyLoc.setBounds(220, 100, 200, 20);
-        addCopyLoc.setText("###L##");
+        
+        String CopyLoc = "###L##";
+        addCopyLoc.setText(CopyLoc);
+		// Focus Listener
+        addCopyLoc.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(addCopyLoc);
+		  		if (addCopyLoc.getText().compareTo(CopyLoc) == 0) {
+		  			System.out.println("YES!!");
+		  			addCopyLoc.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (addCopyLoc.getText().compareTo("") == 0) {
+		    	 addCopyLoc.setText(CopyLoc);
+		     }
+		   }
+		});
+        
         panel.add(addCopyLoc);
         
         // Add Reader Text field
@@ -70,22 +112,102 @@ public class AdminFunctions extends JFrame {
         
         addReaderID = new JTextField(10);
         addReaderID.setBounds(20, 150, 100, 20);
-        addReaderID.setText("Reader ID");
+        
+        String ReaderIDMessage = "Reader ID";
+        addReaderID.setText(ReaderIDMessage);
+		// Focus Listener
+        addReaderID.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(addReaderID.getText());
+		  		if (addReaderID.getText().compareTo(ReaderIDMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			addReaderID.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (addReaderID.getText().compareTo("") == 0) {
+		    	 addReaderID.setText(ReaderIDMessage);
+		     }
+		   }
+		});
+        
         panel.add(addReaderID);
         
         addReaderType = new JTextField(10);
         addReaderType.setBounds(120, 150, 100, 20);
-        addReaderType.setText("Type");
+        
+        String ReaderTypeMessage = "Type";
+        addReaderType.setText(ReaderTypeMessage);
+		// Focus Listener
+        addReaderType.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(addReaderType.getText());
+		  		if (addReaderType.getText().compareTo(ReaderTypeMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			addReaderType.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (addReaderType.getText().compareTo("") == 0) {
+		    	 addReaderType.setText(ReaderTypeMessage);
+		     }
+		   }
+		});
+        
         panel.add(addReaderType);
         
         addReaderName = new JTextField(10);
         addReaderName.setBounds(220, 150, 100, 20);
-        addReaderName.setText("Name");
+        
+        String ReaderNameMessage = "Name";
+        addReaderName.setText(ReaderNameMessage);
+		// Focus Listener
+        addReaderName.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(addReaderName.getText());
+		  		if (addReaderName.getText().compareTo(ReaderNameMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			addReaderName.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (addReaderName.getText().compareTo("") == 0) {
+		    	 addReaderName.setText(ReaderNameMessage);
+		     }
+		   }
+		});
+        
         panel.add(addReaderName);
         
         addReaderAddress = new JTextField(10);
         addReaderAddress.setBounds(320, 150, 100, 20);
-        addReaderAddress.setText("Address");
+        
+        String ReaderAddressMessage = "Address";
+        addReaderAddress.setText(ReaderAddressMessage);
+		// Focus Listener
+        addReaderAddress.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(addReaderAddress.getText());
+		  		if (addReaderAddress.getText().compareTo(ReaderAddressMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			addReaderAddress.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (addReaderAddress.getText().compareTo("") == 0) {
+		    	 addReaderAddress.setText(ReaderAddressMessage);
+		     }
+		   }
+		});
+        
         panel.add(addReaderAddress);
         
         JButton addreaderBtn = new JButton("Add");
@@ -103,11 +225,32 @@ public class AdminFunctions extends JFrame {
         JButton searchBtn = new JButton("Search");
         searchBtn.setBounds(450, 185, 55, 30);
         searchBtn.setBorder(null);
-        searchBtn.addActionListener(new Quit());
+        searchBtn.addActionListener(new searchCopy());
         panel.add(searchBtn);
 
         searchField = new JTextField(10);
         searchField.setBounds(20, 200, 400, 20);
+        
+        String searchCopyMessage = "Enter Copy number or \"VIEW ALL *\" to see all";
+        searchField.setText(searchCopyMessage);
+		// Focus Listener
+        searchField.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(searchField.getText());
+		  		if (searchField.getText().compareTo(searchCopyMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			searchField.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (searchField.getText().compareTo("") == 0) {
+		    	 searchField.setText(searchCopyMessage);
+		     }
+		   }
+		});
+        
         panel.add(searchField);
         
         // Average Fine display
@@ -324,6 +467,28 @@ public class AdminFunctions extends JFrame {
 		}
 	}
 	
+	class searchCopy implements ActionListener {
+
+	    public void actionPerformed(ActionEvent e) {
+	    	
+	    	String copyID = searchField.getText();
+	    	
+	    	Object[][] table = null;
+	    	if (copyID.compareTo("VIEW ALL *") == 0) {
+	    		table = Server.viewAllCopies(libId);
+	    	} else {
+	    		table = Server.searchByCopyID(copyID, libId);
+	    	}
+	    	if(table == null || table.length == 0) {
+	    		new popupMsg("Error","No results found.");
+	    	}
+	    	else{
+	    		String[] colTitles = {"DocID","Copy #","Location"};
+	    		new SearchResult(table, colTitles);
+	    	}
+		}
+	}
+    
     public Object[][] topTenBorrowers(int libid) {
         return Server.topTenBorrowers(libid);
     }
