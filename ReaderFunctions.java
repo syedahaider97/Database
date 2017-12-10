@@ -3,6 +3,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -14,9 +16,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 public class ReaderFunctions extends JFrame{
-	int readerID = 0;
+	private int readerID = 0;
 
-	JTextField docText, titleText, pubText;
+	private JTextField docText, titleText, pubText;
 	
 	// Default Constructor -- Displays error if no input passed in to menu
 	public ReaderFunctions() {
@@ -26,12 +28,15 @@ public class ReaderFunctions extends JFrame{
 	}
 	
 	public ReaderFunctions(int readID) {
+		// Set Window title and set readerID variable for use
 		super("Reader Functions");
 		this.readerID = readID;
 		
+		// Set panel Layout
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		
+		// Set panel title
 		JLabel title = new JLabel("Reader Functions Menu");
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		title.setFont(new Font("Helvetica",Font.BOLD,32));
@@ -44,40 +49,107 @@ public class ReaderFunctions extends JFrame{
         readLabel.setAlignmentX(CENTER_ALIGNMENT);
         // END Display READER data
 		
+        // Search by Doc ID
 		JLabel search = new JLabel("Search");
 		search.setAlignmentX(CENTER_ALIGNMENT);
 		search.setFont(new Font("Helvetica",Font.BOLD,24));
 		
 		JPanel docSearch = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel dSearch = new JLabel("          Search by DocID");
+		JLabel dSearch = new JLabel("          Search by Document ID");
 		docSearch.add(dSearch);
 		
 		JPanel docPanel = new JPanel();
 		docText = new JTextField(30);
+		
+		String docTextMessage = "Enter Document ID";
+		docText.setText(docTextMessage);
+		// Focus Listener
+		docText.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(docText.getText());
+		  		if (docText.getText().compareTo(docTextMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			docText.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (docText.getText().compareTo("") == 0) {
+		    	 docText.setText(docTextMessage);
+		     }
+		   }
+		});
+		
 		JButton docButton = new JButton("Search");
 		docButton.addActionListener(new DocButton());
 		docPanel.add(docText); docPanel.add(docButton);
 		
+		// Search by Title
 		JPanel titleSearch = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel tSearch = new JLabel("          Search by Title");
 		titleSearch.add(tSearch);
 		
 		JPanel titlePanel = new JPanel();
 		titleText = new JTextField(30);
+		
+		String titleTextMessage = "Enter Title";
+		titleText.setText(titleTextMessage);
+		// Focus Listener
+		titleText.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(titleText.getText());
+		  		if (titleText.getText().compareTo(titleTextMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			titleText.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (titleText.getText().compareTo("") == 0) {
+		    	 titleText.setText(titleTextMessage);
+		     }
+		   }
+		});
+		
 		JButton titleButton = new JButton("Search");
 		titleButton.addActionListener(new TitleButton());
 		titlePanel.add(titleText); titlePanel.add(titleButton);
 		
+		// Search by Publisher
 		JPanel pubSearch = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel pSearch = new JLabel("          Search by Publisher Name");
 		pubSearch.add(pSearch);
 		
 		JPanel pubPanel = new JPanel();
 		pubText = new JTextField(30);
+		
+		String pubTextMessage = "Enter Publisher Name";
+		pubText.setText(pubTextMessage);
+		// Focus Listener
+		pubText.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(pubText.getText());
+		  		if (pubText.getText().compareTo(pubTextMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			pubText.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (pubText.getText().compareTo("") == 0) {
+		    	 pubText.setText(pubTextMessage);
+		     }
+		   }
+		});
+		
 		JButton pubButton = new JButton("Search");
 		pubButton.addActionListener(new PubButton());
 		pubPanel.add(pubText); pubPanel.add(pubButton);
 		
+		// Show reservations
 		JLabel reservation = new JLabel("Current Reservations");
 		reservation.setAlignmentX(CENTER_ALIGNMENT);
 		reservation.setFont(new Font("Helvetica",Font.BOLD,24));
