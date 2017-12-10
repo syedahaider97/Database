@@ -256,59 +256,68 @@ class Server {
 
     }
 
-    // Used in AdminFunctions.java
-    public static void topTenBorrowers(int libID) {
-    	
-    	connectToDB();
-	    // Query to obtain top 10 Borrowers
-	    ResultSet topTenReadersRS;
+	// Used in AdminFunctions.java
+	public static Object[][] topTenBorrowers(int libID) {
+
+		connectToDB();
+		// Query to obtain top 10 Borrowers
+		Object[][] result = new Object[10][2];
+		int i = 0;
+		ResultSet topTenReadersRS;
 		try {
 			topTenReadersRS = stmt.executeQuery("SELECT READERID, COUNT(*) FROM BORROWS WHERE LIBID='" + libID + "' GROUP BY READERID ORDER BY COUNT(*) DESC LIMIT 10;");
 			while (topTenReadersRS.next()) {
-		     int topTenReaders = topTenReadersRS.getInt("READERID");
-		     System.out.println(topTenReaders); // Outputs top 10 READERIDs
-		    }
+				Object entry[] = {topTenReadersRS.getInt("READERID"),""};
+				result[i++] = entry;
+			}
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to obtain top 10 readers.");
 		}
-	    
-    }
 
- // Used in AdminFunctions.java
-    public static void topTenBooks(int libID) {
-    	
-    	connectToDB();
-	    // Query to obtain top 10 Books
-	    ResultSet topTenBooksRS;
+		return result;
+	}
+
+	// Used in AdminFunctions.java
+	public static Object[][] topTenBooks(int libID) {
+
+		connectToDB();
+		// Query to obtain top 10 Books
+		Object[][] result = new Object[10][1];
+		int i = 0;
+		ResultSet topTenBooksRS;
 		try {
 			topTenBooksRS = stmt.executeQuery("SELECT DOCID, COUNT(*) FROM BORROWS WHERE LIBID='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
 			while (topTenBooksRS.next()) {
-		     String topTenBooks = topTenBooksRS.getString("DOCID");
-		     System.out.println(topTenBooks); // Outputs top 10 DOCIDs
-		    }
+				Object entry[] = {topTenBooksRS.getString("DOCID")};
+				result[i++] = entry;
+			}
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to obtain top 10 books.");
 		}
-	    
-	}
-    
-    // Used in AdminFunctions.java
-    public static void topTenBooksYr(int libID) {
 
-        connectToDB();
-        // Query to obtain top 10 Books (Year)
-        ResultSet topTenBooksYrRS;
-        try {
-            topTenBooksYrRS = stmt.executeQuery("SELECT DOCID, COUNT(*) FROM BORROWS WHERE YEAR(BDTIME) = 2017 AND LIBID ='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
-            while (topTenBooksYrRS.next()) {
-                String topTenBooksYr = topTenBooksYrRS.getString("DOCID");
-                System.out.println(topTenBooksYr); // Outputs top 10 DOCIDs (year)
-            }
-        } catch (SQLException e) {
-            new popupMsg("Error", "Unable to obtain top 10 books (year).");
-        }
-        
-    }
+		return result;
+	}
+
+	// Used in AdminFunctions.java
+	public static Object[][] topTenBooksYr(int libID) {
+
+		connectToDB();
+		// Query to obtain top 10 Books (Year)
+		Object[][] result = new Object[10][1];
+		int i = 0;
+		ResultSet topTenBooksYrRS;
+		try {
+			topTenBooksYrRS = stmt.executeQuery("SELECT DOCID,  COUNT(*) FROM BORROWS WHERE YEAR(BDTIME) = 2017 AND LIBID ='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
+			while (topTenBooksYrRS.next()) {
+				Object entry[] = {topTenBooksYrRS.getString("DOCID")};
+				result[i++] = entry;
+			}
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to obtain top 10 books (year).");
+		}
+
+		return result;
+	}
 
     // Used in AdminFunctions.java
     public static boolean addReader(int addReaderID, String addReaderType, String addReaderName, String addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
