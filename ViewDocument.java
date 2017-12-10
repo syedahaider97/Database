@@ -24,12 +24,13 @@ public class ViewDocument extends JFrame{
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
 		
-		String[] columns = {"Document ID","Title","Publisher Date","Publisher Name"};
+		String[] columns = {"Document ID","Title","Publisher Name","Publisher Date"};
+		
+		JPanel tablePanel = new JPanel();
 		
 		JTable data = new JTable(entries,columns);
 		JScrollPane scroll = new JScrollPane(data);
-		
-		
+	
 		
 		JButton back = new JButton("Back");
 		back.addActionListener(new Back());

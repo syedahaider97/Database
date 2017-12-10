@@ -60,17 +60,16 @@ public class Modify extends JFrame {
 		
 		add(panel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(280,355
-);
+		setSize(280,355);
 		setVisible(true);
 		setLocationRelativeTo(null);
 		setResizable(false);
 	}
 	
-	/*public static void main(String args[]) {
+	public static void main(String args[]) {
 		
 		new Modify();
-	}*/
+	}
 	
 	class AddDoc implements ActionListener {
 
@@ -85,15 +84,12 @@ public class Modify extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			//COMPUTE QUERY; Probably just a Select All
-			Object[][] data = {{"Harry Potter","Borrowed","$2","Today"},
-					   {"Hunger Games","Returned","$0","Tomorrow"},
-					   {"Hunger Games","Returned","$0","Tomorrow"},
-					   {"Hunger Games","Returned","$0","Tomorrow"},
-					   {"Hunger Games","Returned","$0","Tomorrow"},
-					   {"Hunger Games","Returned","$0","Tomorrow"},
-					   {"Hunger Games","Returned","$0","Tomorrow"},
-					   {"Hunger Games","Returned","$0","Tomorrow"}};
-			new ViewDocument(data);		
+			Object[][] table = Server.viewAllDocs();
+			if(table.length == 0) {
+				new popupMsg("Error","No documents to view.");
+			} else{
+				new ViewDocument(table);
+			}
 		}
 	}
 	

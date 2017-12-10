@@ -470,7 +470,8 @@ class Server {
 		rtn = Arrays.copyOfRange(rtn, 0, i);
 		return rtn;
 	}
-
+	
+	//Used for ReaderFunctions.java
 	public static Object[][] searchByPublisher(String publisher) {
 
 		connectToDB();
@@ -504,5 +505,34 @@ class Server {
 		rtn = Arrays.copyOfRange(rtn, 0, i);
 		return rtn;
 		
+	}
+	//Used for ViewDocument.java, found in Modify.java
+	public static Object[][] viewAllDocs() {
+		connectToDB();
+		Object[][] rtn = new Object[30][4];
+		int i = 0;
+		String query = "SELECT D.DOCID, D.TITLE, D.PDATE, P.PUBNAME "
+				+ "FROM DOCUMENT D JOIN PUBLISHER P ON D.PUBLISHERID = P.PUBLISHERID;";
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Object[] entry = {rs.getInt("DOCID"),rs.getString("TITLE"),rs.getString("PUBNAME"),rs.getTimestamp("PDATE")};
+				rtn[i++] = entry;
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to gather documents.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		rtn = Arrays.copyOfRange(rtn, 0, i);
+		return rtn;
 	}
 }
