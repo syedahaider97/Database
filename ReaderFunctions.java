@@ -253,7 +253,7 @@ public class ReaderFunctions extends JFrame{
 	    	if (publisher.compareTo("VIEW ALL *") == 0) {
 	    		table = Server.viewAllDocs();
 	    	} else {
-	    		Server.searchByPublisher(publisher);
+	    		table = Server.searchByPublisher(publisher);
 	    	}
 	    	if(table == null || table.length == 0) {
 	    		new popupMsg("Error","No results found.");
