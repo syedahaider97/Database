@@ -363,7 +363,7 @@ class Server {
 				
 			 stmt.executeUpdate("INSERT INTO COPY (DOCID, COPYNO, LIBID, POSITION) " + "VALUES (" + docID + ",'" + ++lastCopyNum + "','" + libID + "','" + position + ",')");
 			 System.out.println("Copy added!");
-			 new popupMsg("Reader Added", "Added new copy " + lastCopyNum + " with doc ID " + docID + ".");
+			 new popupMsg("Copy Added", "Added new copy " + lastCopyNum + " with doc ID " + docID + ".");
 			 return true;
 			} else {
 				new popupMsg("Error", "No Document with ID '" + docID + "' exists!");
