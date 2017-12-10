@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 public class AdminFunctions extends JFrame {
 	private int adminID = 0;
+	private JTextField addCopyField, addReaderID, addReaderType, addReaderName, addReaderAddress, searchField;
 	
 	// Default Constructor -- Displays error if no input passed in to menu
 	public AdminFunctions() {
@@ -55,7 +56,7 @@ public class AdminFunctions extends JFrame {
         addCopyBtn.setBorder(null);
         panel.add(addCopyBtn);
         
-        JTextField addCopyField = new JTextField(10);
+        addCopyField = new JTextField(10);
         addCopyField.setBounds(20, 100, 400, 20);
         panel.add(addCopyField);
         
@@ -65,14 +66,30 @@ public class AdminFunctions extends JFrame {
         Dimension sizeReader = addReaderLabel.getPreferredSize();
         addReaderLabel.setBounds(25, 135, sizeReader.width, sizeReader.height);
         
-        JButton addReaderBtn = new JButton("Search");
-        addReaderBtn.setBounds(450, 135, 55, 30);
-        addReaderBtn.setBorder(null);
-        panel.add(addReaderBtn);
+        addReaderID = new JTextField(10);
+        addReaderID.setBounds(20, 150, 400, 20);
+        addReaderID.setText("Reader ID");
+        panel.add(addReaderID);
         
-        JTextField addReaderField = new JTextField(10);
-        addReaderField.setBounds(20, 150, 400, 20);
-        panel.add(addReaderField);
+        addReaderType = new JTextField(10);
+        addReaderType.setBounds(20, 150, 400, 20);
+        addReaderType.setText("Reader Type");
+        panel.add(addReaderType);
+        
+        addReaderName = new JTextField(10);
+        addReaderName.setBounds(20, 150, 400, 20);
+        addReaderName.setText("Reader Name");
+        panel.add(addReaderName);
+        
+        addReaderAddress = new JTextField(10);
+        addReaderAddress.setBounds(20, 150, 400, 20);
+        addReaderAddress.setText("Reader Address");
+        panel.add(addReaderAddress);
+        
+        JButton readerBtn = new JButton("Add");
+        readerBtn.addActionListener(new addReader());
+        readerBtn.setAlignmentX(CENTER_ALIGNMENT);
+        panel.add(readerBtn);
 
         // Search Copy Text field
         JLabel searchCopyLabel = new JLabel("Search Document Copy:");
@@ -80,12 +97,12 @@ public class AdminFunctions extends JFrame {
         Dimension searchSize = searchCopyLabel.getPreferredSize();
         searchCopyLabel.setBounds(25, 185, searchSize.width, searchSize.height);
 
-        JButton searchBtn = new JButton("Search");
-        searchBtn.setBounds(450, 185, 55, 30);
-        searchBtn.setBorder(null);
-        panel.add(searchBtn);
+        JButton copyBtn = new JButton("Search");
+        copyBtn.addActionListener(new addReader());
+        copyBtn.setAlignmentX(CENTER_ALIGNMENT);
+        panel.add(copyBtn);
 
-        JTextField searchField = new JTextField(10);
+        searchField = new JTextField(10);
         searchField.setBounds(20, 200, 400, 20);
         panel.add(searchField);
         
@@ -128,6 +145,8 @@ public class AdminFunctions extends JFrame {
                     {"RName 10", "2"}};
 
 	    String[] topTenBorrowersColumns = {"Name", "# Borrowed"};
+	    
+	    //Server.topTenBorrowers(adminID);
 	
 	    JTable borrowsTable = new JTable(topTenBorrowersData, topTenBorrowersColumns);
 	    JScrollPane scrollBorrows = new JScrollPane(borrowsTable);
@@ -139,6 +158,8 @@ public class AdminFunctions extends JFrame {
         panel.add(topTenBooksLabel);
         Dimension sizeTenBooks = topTenBooksLabel.getPreferredSize();
         topTenBooksLabel.setBounds(200, 240, sizeTenBooks.width, sizeTenBooks.height);
+        
+        //Server.topTenBooks(adminID);
         
         String[] topTenBooksColumns = {"Title"};
         Object[][] topTenBooksData =
@@ -163,6 +184,8 @@ public class AdminFunctions extends JFrame {
         panel.add(topTenYr);
         Dimension sizeTenYr = topTenYr.getPreferredSize();
         topTenYr.setBounds(380, 240, sizeTenYr.width, sizeTenYr.height);
+        
+        
         
         String[] topTenBooksYrColumns = {"Title"};
         Object[][] topTenBooksYrData =
@@ -196,6 +219,46 @@ public class AdminFunctions extends JFrame {
 			System.exit(0);
 		}
 	}
+    
+    class addReader implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			
+			String readerID = addReaderID.getText();
+			String readerType = addReaderType.getText();
+			String readerName = addReaderName.getText();
+			String readerAddr = addReaderAddress.getText();
+			
+			boolean isValidInput = false; // flag if input is valid
+			
+			// Check if input is not null
+			if (readerID != null && readerType != null && readerName != null && readerAddr != null) {
+				int readID = (Integer.parseInt(readerID));
+				isValidInput = true; // assume input is valid
+				try { // try to convert ID to Integer
+                    
+                    if (readID < 1) { // If integer is negative, show Error
+                    	isValidInput = false;
+                    	new popupMsg("Error", "Invalid Reader ID '" + readID + "' entered.");
+                    }
+                    
+                  
+                } catch (NumberFormatException nfe) { // If input is not a number, show Error
+                	isValidInput = false;
+                	new popupMsg("Error", "Invalid Reader ID '" + readID + "' entered.");
+                }
+				
+				// if no errors occurred, open Admin Functions
+				if (isValidInput) {
+					//Run Query
+        			Server.addReader(readID, readerType, readerName, readerAddr);
+				}
+        	} else {
+        		new popupMsg("Error", "Some reader information is missing. Check input.");
+        	}
+		}
+	}
+    
     /*public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
