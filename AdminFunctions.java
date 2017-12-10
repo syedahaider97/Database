@@ -136,7 +136,7 @@ public class AdminFunctions extends JFrame {
         Dimension sizeTenBorrow = topTenBorrowLabel.getPreferredSize();
         topTenBorrowLabel.setBounds(25, 240, sizeTenBorrow.width, sizeTenBorrow.height);
         
-        Object[][] topTenBorrowersData =
+        /*Object[][] topTenBorrowersData =
             {{"RName 1", "13"},
                     {"RName 2", "12"},
                     {"RName 3", "35"},
@@ -146,7 +146,9 @@ public class AdminFunctions extends JFrame {
                     {"RName 7", "100"},
                     {"RName 8", "1"},
                     {"RName 9", "0"},
-                    {"RName 10", "2"}};
+                    {"RName 10", "2"}};*/
+	    
+	    Object[][] topTenBorrowersData = topTenBorrowers(libId);
 
 	    String[] topTenBorrowersColumns = {"Name", "# Borrowed"};
 	    
@@ -166,7 +168,7 @@ public class AdminFunctions extends JFrame {
         Server.topTenBooks(libId);
         
         String[] topTenBooksColumns = {"Title"};
-        Object[][] topTenBooksData =
+        /*Object[][] topTenBooksData =
                 {{"Book Name 1", "13"},
                         {"Book Name 2", ""},
                         {"Book Name 3", ""},
@@ -176,7 +178,8 @@ public class AdminFunctions extends JFrame {
                         {"Book Name 7", ""},
                         {"Book Name 8", ""},
                         {"Book Name 9", ""},
-                        {"Book Name 10", ""}};
+                        {"Book Name 10", ""}};*/
+	     Object[][] topTenBooksData = topTenBooks(libId);
 
         JTable topTenBooksTable = new JTable(topTenBooksData, topTenBooksColumns);
         JScrollPane scrollTopTenBooks = new JScrollPane(topTenBooksTable);
@@ -193,7 +196,7 @@ public class AdminFunctions extends JFrame {
         
         String[] topTenBooksYrColumns = {"Title"};
         Object[][] topTenBooksYrData =
-                {{"Book Name 1", "13"},
+                /*{{"Book Name 1", "13"},
                         {"Book Name 2", ""},
                         {"Book Name 3", ""},
                         {"Book Name 4", ""},
@@ -202,7 +205,9 @@ public class AdminFunctions extends JFrame {
                         {"Book Name 7", ""},
                         {"Book Name 8", ""},
                         {"Book Name 9", ""},
-                        {"Book Name 10", ""}};
+                        {"Book Name 10", ""}};*/
+	    
+	    Object[][] topTenBooksYrData = topTenBooksYr(libId);
 
         JTable topTenBooksYrTable = new JTable(topTenBooksYrData, topTenBooksYrColumns);
         JScrollPane scrollTopTenBooksYr = new JScrollPane(topTenBooksYrTable);
@@ -318,6 +323,16 @@ public class AdminFunctions extends JFrame {
         	}
 		}
 	}
+	
+    public Object[][] topTenBorrowers(int libid) {
+        return Server.topTenBorrowers(libid);
+    }
+    public Object[][] topTenBooks(int libid) {
+        return Server.topTenBooks(libid);
+    }
+    public Object[][] topTenBooksYr(int libid) {
+        return Server.topTenBooksYr(libid);
+    }
     
     /*public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
