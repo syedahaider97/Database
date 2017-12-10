@@ -201,6 +201,24 @@ class Server {
 		}
 	    
 	}
+	
+ // Used in AdminFunctions.java
+    public static void topTenBooksYr(int libID) {
+
+        connectToDB();
+        // Query to obtain top 10 Books (Year)
+        ResultSet topTenBooksYrRS;
+        try {
+            topTenBooksYrRS = stmt.executeQuery("SELECT DOCID, COUNT(*) FROM BORROWS WHERE YEAR(BDTIME) = 2017 AND LIBID ='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
+            while (topTenBooksYrRS.next()) {
+                String topTenBooksYr = topTenBooksYrRS.getString("DOCID");
+                System.out.println(topTenBooksYr); // Outputs top 10 DOCIDs (year)
+            }
+        } catch (SQLException e) {
+            new popupMsg("Error", "Unable to obtain top 10 books (year).");
+        }
+        
+    }
 
     // Used in AdminFunctions.java
     public static boolean addReader(int addReaderID, String addReaderType, String addReaderName, String addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
