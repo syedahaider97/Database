@@ -13,11 +13,20 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 public class ReaderFunctions extends JFrame{
+	int readerID = 0;
 
 	JTextField docText, titleText, pubText;
 	
-	public ReaderFunctions(int readerId) {
+	// Default Constructor -- Displays error if no input passed in to menu
+	public ReaderFunctions() {
+		this.readerID = 0;
+		// Show Error message
+		new popupMsg("Error", "No Card Number entered.");
+	}
+	
+	public ReaderFunctions(int readID) {
 		super("Reader Functions");
+		this.readerID = readID;
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
@@ -68,7 +77,7 @@ public class ReaderFunctions extends JFrame{
 		
 		
 		//COMPUTE ACTUAL DATA BASED ON PASSED IN READER ID
-		Object[][] data = getReservationData(readerId);
+		Object[][] data = getReservationData(readerID);
 		
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
