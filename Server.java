@@ -35,6 +35,7 @@ class Server {
                 String UCID = "root";
                 String passwd = "mySQLroot";
                 String URL = "jdbc:mysql://localhost/cs631";
+                //String URL = "jdbc:mysql://sql2.njit.edu/" + UCID;
                 //
                 // establishing connection 
                 // supply URL, user, password
@@ -220,6 +221,42 @@ class Server {
 			}
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new reader to library.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
+		}
+		return false;
+    }
+    
+    // Used in AdminFunctions.java
+    public static boolean addDocCopy(int docID, int copyNO, int libID, String position) {
+    	
+    	connectToDB();
+	    // Query to add Reader by passed in ReaderID
+	    ResultSet checkExistsRS;
+		try {
+			checkExistsRS = stmt.executeQuery("SELECT * FROM COPY AS C WHERE C.COPYNO = '" + copyNO + "' AND C.LIBID = '" + libID + "' AND C.DOCID = '" + docID + "';");
+			if (!checkExistsRS.next()) {
+				checkExistsRS = stmt.executeQuery("SELECT * FROM DOCUMENT AS D WHERE D.DOCID = '" + docID + "';");
+				if (checkExistsRS.next()) {				
+				 stmt.executeUpdate("INSERT INTO COPY (DOCID, COPYNO, LIBID, POSITION) " + "VALUES (" + docID + ",'" + copyNO + "','" + libID + "','" + position + ",')");
+				 System.out.println("Copy added!");
+				 new popupMsg("Reader Added", "Added new copy " + copyNO + " with doc ID " + docID + ".");
+				 return true;
+				} else {
+					new popupMsg("Error", "No Document with ID " + docID + "exists!");
+				}
+			} else {
+			 System.out.println("Copy already exists! Cannot add!");
+			 new popupMsg("Error", "Copy already exists! Please enter another.");
+			}
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to add new copy to library.");
 			System.err.println(" SQL Exceptions \n");
             while (e != null) {
                 System.out.println("Error Description: " + e.getMessage());

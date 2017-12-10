@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class AdminFunctions extends JFrame {
 	private int adminID = 0;
-	private JTextField addCopyField, addReaderID, addReaderType, addReaderName, addReaderAddress, searchField;
+	private JTextField addCopyDocID, addCopyNO, addCopyLoc, addReaderID, addReaderType, addReaderName, addReaderAddress, searchField;
 	
 	// Default Constructor -- Displays error if no input passed in to menu
 	public AdminFunctions() {
@@ -49,11 +49,23 @@ public class AdminFunctions extends JFrame {
         JButton addCopyBtn = new JButton("Add");
         addCopyBtn.setBounds(450, 85, 55, 30);
         addCopyBtn.setBorder(null);
+        addCopyBtn.addActionListener(new addCopy());
         panel.add(addCopyBtn);
         
-        addCopyField = new JTextField(10);
-        addCopyField.setBounds(20, 100, 400, 20);
-        panel.add(addCopyField);
+        addCopyDocID = new JTextField(10);
+        addCopyDocID.setBounds(20, 100, 133, 20);
+        addCopyDocID.setText("Doc ID");
+        panel.add(addCopyDocID);
+        
+        addCopyNO = new JTextField(10);
+        addCopyNO.setBounds(153, 100, 133, 20);
+        addCopyNO.setText("Copy #");
+        panel.add(addCopyNO);
+        
+        addCopyLoc = new JTextField(10);
+        addCopyLoc.setBounds(286, 100, 133, 20);
+        addCopyLoc.setText("###L##");
+        panel.add(addCopyLoc);
         
         // Add Reader Text field
         JLabel addReaderLabel = new JLabel("Add New Reader:");
@@ -143,7 +155,7 @@ public class AdminFunctions extends JFrame {
 
 	    String[] topTenBorrowersColumns = {"Name", "# Borrowed"};
 	    
-	    //Server.topTenBorrowers(adminID);
+	    Server.topTenBorrowers(adminID);
 	
 	    JTable borrowsTable = new JTable(topTenBorrowersData, topTenBorrowersColumns);
 	    JScrollPane scrollBorrows = new JScrollPane(borrowsTable);
@@ -156,7 +168,7 @@ public class AdminFunctions extends JFrame {
         Dimension sizeTenBooks = topTenBooksLabel.getPreferredSize();
         topTenBooksLabel.setBounds(200, 240, sizeTenBooks.width, sizeTenBooks.height);
         
-        //Server.topTenBooks(adminID);
+        Server.topTenBooks(adminID);
         
         String[] topTenBooksColumns = {"Title"};
         Object[][] topTenBooksData =
@@ -255,6 +267,52 @@ public class AdminFunctions extends JFrame {
         		        addReaderType.setText("Type");
         		        addReaderName.setText("Name");
         		        addReaderAddress.setText("Address");
+        			}
+				}
+        	} else {
+        		new popupMsg("Error", "Some reader information is missing. Check input.");
+        	}
+		}
+	}
+    
+    class addCopy implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			
+			String docid = addCopyDocID.getText();
+			String copyno = addCopyNO.getText();
+			String position = addCopyLoc.getText();
+			
+			boolean isValidInput = false; // flag if input is valid
+			
+			// Check if input is not null
+			if (docid != null && copyno != null && position != null) {
+				int docID = 0;
+				int copyNO = 0;
+				isValidInput = true; // assume input is valid
+				try { // try to convert ID to Integer
+					docID = (Integer.parseInt(docid));
+					copyNO = Integer.parseInt(copyno);
+                    
+                    if (docID < 1 || copyNO < 1) { // If integer is negative, show Error
+                    	isValidInput = false;
+                    	new popupMsg("Error", "Invalid Document ID/ Copy Number entered.");
+                    }
+                    
+                  
+                } catch (NumberFormatException nfe) { // If input is not a number, show Error
+                	isValidInput = false;
+                	new popupMsg("Error", "Invalid Document ID/ Copy Number entered.");
+                }
+				
+				// if no errors occurred, open Admin Functions
+				if (isValidInput) {
+					//Run Query
+        			boolean querySuccess = Server.addDocCopy(docID, copyNO, adminID, position);
+        			if (querySuccess) {
+        				addCopyDocID.setText("Doc ID");
+        		        addCopyNO.setText("Copy #");
+        		        addCopyLoc.setText("###L##");
         			}
 				}
         	} else {
