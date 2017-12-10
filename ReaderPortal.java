@@ -2,6 +2,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -33,6 +35,26 @@ public class ReaderPortal extends JFrame {
 		IDfield = new JTextField(20);
 		JButton go = new JButton("Log in");
 		go.addActionListener(new Go());
+		
+		String IDfieldMessage = "Enter Card Number here";
+		IDfield.setText(IDfieldMessage);
+		// Focus Listener
+		IDfield.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(IDfield.getText());
+		  		if (IDfield.getText().compareTo(IDfieldMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			IDfield.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (IDfield.getText().compareTo("") == 0) {
+		    	 IDfield.setText(IDfieldMessage);
+		     }
+		   }
+		});
 		
 		submit.add(IDfield); submit.add(go);
 		
