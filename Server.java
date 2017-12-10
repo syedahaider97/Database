@@ -150,6 +150,8 @@ class Server {
     
     // Used in AdminFunctions.java
     public static void currentReserv(int readerIDReservations) {
+    	
+    	connectToDB();
 	    // Query to obtain current reservations by passed in ReaderID
 	    ResultSet readerIDRS;
 		try {
@@ -165,6 +167,8 @@ class Server {
 
     // Used in AdminFunctions.java
     public static void topTenBorrowers(int libID) {
+    	
+    	connectToDB();
 	    // Query to obtain top 10 Borrowers
 	    ResultSet topTenReadersRS;
 		try {
@@ -181,6 +185,8 @@ class Server {
 
  // Used in AdminFunctions.java
     public static void topTenBooks(int libID) {
+    	
+    	connectToDB();
 	    // Query to obtain top 10 Books
 	    ResultSet topTenBooksRS;
 		try {
@@ -196,7 +202,9 @@ class Server {
 	}
 
     // Used in AdminFunctions.java
-    public static void addReader(int addReaderID, String addReaderType, String addReaderName, String addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
+    public static boolean addReader(int addReaderID, String addReaderType, String addReaderName, String addReaderAddress) { // passed in READERID, RTYPE, RNAME, ADDRESS from text field
+    	
+    	connectToDB();
 	    // Query to add Reader by passed in ReaderID
 	    ResultSet checkExistsRS;
 		try {
@@ -205,13 +213,23 @@ class Server {
 			 stmt.executeUpdate("INSERT INTO READER (READERID, RTYPE, RNAME, ADDRESS) " + "VALUES (" + addReaderID + ",'" + addReaderType + "','" + addReaderName + "','" + addReaderAddress + ",')");
 			 System.out.println("Reader added!");
 			 new popupMsg("Reader Added", "Added new reader " + addReaderName + " with reader ID " + addReaderID + ".");
-
+			 return true;
 			} else {
 			 System.out.println("Reader already exists! Cannot add!");
+			 new popupMsg("Error", "Reader ID already exists! Please enter another ID.");
 			}
-		} catch (SQLException e1) {
+		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new reader to library.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
 		}
+		return false;
     }
     /**/
 }

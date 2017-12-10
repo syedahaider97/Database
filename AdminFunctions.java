@@ -68,17 +68,17 @@ public class AdminFunctions extends JFrame {
         
         addReaderType = new JTextField(10);
         addReaderType.setBounds(120, 150, 100, 20);
-        addReaderType.setText("Reader Type");
+        addReaderType.setText("Type");
         panel.add(addReaderType);
         
         addReaderName = new JTextField(10);
         addReaderName.setBounds(220, 150, 100, 20);
-        addReaderName.setText("Reader Name");
+        addReaderName.setText("Name");
         panel.add(addReaderName);
         
         addReaderAddress = new JTextField(10);
         addReaderAddress.setBounds(320, 150, 100, 20);
-        addReaderAddress.setText("Reader Address");
+        addReaderAddress.setText("Address");
         panel.add(addReaderAddress);
         
         JButton addreaderBtn = new JButton("Add");
@@ -230,9 +230,10 @@ public class AdminFunctions extends JFrame {
 			
 			// Check if input is not null
 			if (readerID != null && readerType != null && readerName != null && readerAddr != null) {
-				int readID = (Integer.parseInt(readerID));
+				int readID = 0;
 				isValidInput = true; // assume input is valid
 				try { // try to convert ID to Integer
+					readID = (Integer.parseInt(readerID));
                     
                     if (readID < 1) { // If integer is negative, show Error
                     	isValidInput = false;
@@ -248,7 +249,13 @@ public class AdminFunctions extends JFrame {
 				// if no errors occurred, open Admin Functions
 				if (isValidInput) {
 					//Run Query
-        			Server.addReader(readID, readerType, readerName, readerAddr);
+        			boolean querySuccess = Server.addReader(readID, readerType, readerName, readerAddr);
+        			if (querySuccess) {
+        				addReaderID.setText("Reader ID");
+        		        addReaderType.setText("Type");
+        		        addReaderName.setText("Name");
+        		        addReaderAddress.setText("Address");
+        			}
 				}
         	} else {
         		new popupMsg("Error", "Some reader information is missing. Check input.");
