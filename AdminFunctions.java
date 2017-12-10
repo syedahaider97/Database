@@ -5,20 +5,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AdminFunctions extends JFrame {
-	private int adminID = 0;
-	private JTextField addCopyDocID, addCopyNO, addCopyLoc, addReaderID, addReaderType, addReaderName, addReaderAddress, searchField;
+	private int libId = 0;
+	private JTextField addCopyDocID, addCopyLoc, addReaderID, addReaderType, addReaderName, addReaderAddress, searchField;
 	
 	// Default Constructor -- Displays error if no input passed in to menu
 	public AdminFunctions() {
-		this.adminID = 0;
+		this.libId = 0;
 		// Show Error message
 		new popupMsg("Error", "No Administrator ID entered.");
 	}
 
 	// Create Admin Functions menu, based on administrator ID
-    public AdminFunctions(int adminID) {
-    	this.adminID = adminID;
-    	System.out.println(adminID);
+    public AdminFunctions(int libId) {
+    	this.libId = libId;
+    	System.out.println(libId);
     	
     	// Create frame for content
         JFrame frame = new JFrame("Administrator Functions");
@@ -34,7 +34,7 @@ public class AdminFunctions extends JFrame {
         adminLabel.setBounds(25, 25, sizeAdmin.width, sizeAdmin.height);
         
         // Display LIBRARY BRANCH data
-        JLabel branchLabel = new JLabel("Logged in as " + Server.getLibName(adminID) + " in " + Server.getLibLoc(adminID));
+        JLabel branchLabel = new JLabel("Logged in as " + Server.getLibName(libId) + " in " + Server.getLibLoc(libId));
         panel.add(branchLabel);
         Dimension sizeBranch = branchLabel.getPreferredSize();
         branchLabel.setBounds(55, 55, sizeBranch.width, sizeBranch.height);
@@ -53,17 +53,12 @@ public class AdminFunctions extends JFrame {
         panel.add(addCopyBtn);
         
         addCopyDocID = new JTextField(10);
-        addCopyDocID.setBounds(20, 100, 133, 20);
+        addCopyDocID.setBounds(20, 100, 200, 20);
         addCopyDocID.setText("Doc ID");
         panel.add(addCopyDocID);
         
-        addCopyNO = new JTextField(10);
-        addCopyNO.setBounds(153, 100, 133, 20);
-        addCopyNO.setText("Copy #");
-        panel.add(addCopyNO);
-        
         addCopyLoc = new JTextField(10);
-        addCopyLoc.setBounds(286, 100, 133, 20);
+        addCopyLoc.setBounds(220, 100, 200, 20);
         addCopyLoc.setText("###L##");
         panel.add(addCopyLoc);
         
@@ -155,7 +150,7 @@ public class AdminFunctions extends JFrame {
 
 	    String[] topTenBorrowersColumns = {"Name", "# Borrowed"};
 	    
-	    Server.topTenBorrowers(adminID);
+	    Server.topTenBorrowers(libId);
 	
 	    JTable borrowsTable = new JTable(topTenBorrowersData, topTenBorrowersColumns);
 	    JScrollPane scrollBorrows = new JScrollPane(borrowsTable);
@@ -168,7 +163,7 @@ public class AdminFunctions extends JFrame {
         Dimension sizeTenBooks = topTenBooksLabel.getPreferredSize();
         topTenBooksLabel.setBounds(200, 240, sizeTenBooks.width, sizeTenBooks.height);
         
-        Server.topTenBooks(adminID);
+        Server.topTenBooks(libId);
         
         String[] topTenBooksColumns = {"Title"};
         Object[][] topTenBooksData =
@@ -194,7 +189,7 @@ public class AdminFunctions extends JFrame {
         Dimension sizeTenYr = topTenYr.getPreferredSize();
         topTenYr.setBounds(380, 240, sizeTenYr.width, sizeTenYr.height);
         
-        
+        Server.topTenBooksYr(libId);
         
         String[] topTenBooksYrColumns = {"Title"};
         Object[][] topTenBooksYrData =
@@ -280,38 +275,34 @@ public class AdminFunctions extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			String docid = addCopyDocID.getText();
-			String copyno = addCopyNO.getText();
 			String position = addCopyLoc.getText();
 			
 			boolean isValidInput = false; // flag if input is valid
 			
 			// Check if input is not null
-			if (docid != null && copyno != null && position != null) {
+			if (docid != null && position != null) {
 				int docID = 0;
-				int copyNO = 0;
 				isValidInput = true; // assume input is valid
 				try { // try to convert ID to Integer
 					docID = (Integer.parseInt(docid));
-					copyNO = Integer.parseInt(copyno);
                     
-                    if (docID < 1 || copyNO < 1) { // If integer is negative, show Error
+                    if (docID < 1) { // If integer is negative, show Error
                     	isValidInput = false;
-                    	new popupMsg("Error", "Invalid Document ID/ Copy Number entered.");
+                    	new popupMsg("Error", "Invalid Document ID '"+docid+"' entered.");
                     }
                     
                   
                 } catch (NumberFormatException nfe) { // If input is not a number, show Error
                 	isValidInput = false;
-                	new popupMsg("Error", "Invalid Document ID/ Copy Number entered.");
+                	new popupMsg("Error", "Invalid Document ID '"+docid+"' entered.");
                 }
 				
 				// if no errors occurred, open Admin Functions
 				if (isValidInput) {
 					//Run Query
-        			boolean querySuccess = Server.addDocCopy(docID, copyNO, adminID, position);
+        			boolean querySuccess = Server.addDocCopy(docID, libId, position);
         			if (querySuccess) {
         				addCopyDocID.setText("Doc ID");
-        		        addCopyNO.setText("Copy #");
         		        addCopyLoc.setText("###L##");
         			}
 				}

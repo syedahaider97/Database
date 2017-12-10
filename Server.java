@@ -201,8 +201,8 @@ class Server {
 		}
 	    
 	}
-	
- // Used in AdminFunctions.java
+    
+    // Used in AdminFunctions.java
     public static void topTenBooksYr(int libID) {
 
         connectToDB();
@@ -252,26 +252,31 @@ class Server {
     }
     
     // Used in AdminFunctions.java
-    public static boolean addDocCopy(int docID, int copyNO, int libID, String position) {
+    public static boolean addDocCopy(int docID, int libID, String position) {
     	
     	connectToDB();
 	    // Query to add Reader by passed in ReaderID
 	    ResultSet checkExistsRS;
 		try {
-			checkExistsRS = stmt.executeQuery("SELECT * FROM COPY AS C WHERE C.COPYNO = '" + copyNO + "' AND C.LIBID = '" + libID + "' AND C.DOCID = '" + docID + "';");
-			if (!checkExistsRS.next()) {
-				checkExistsRS = stmt.executeQuery("SELECT * FROM DOCUMENT AS D WHERE D.DOCID = '" + docID + "';");
-				if (checkExistsRS.next()) {				
-				 stmt.executeUpdate("INSERT INTO COPY (DOCID, COPYNO, LIBID, POSITION) " + "VALUES (" + docID + ",'" + copyNO + "','" + libID + "','" + position + ",')");
-				 System.out.println("Copy added!");
-				 new popupMsg("Reader Added", "Added new copy " + copyNO + " with doc ID " + docID + ".");
-				 return true;
-				} else {
-					new popupMsg("Error", "No Document with ID " + docID + "exists!");
-				}
+			checkExistsRS = stmt.executeQuery("SELECT * FROM DOCUMENT AS D WHERE D.DOCID = '" + docID + "';");
+			if (checkExistsRS.next()) {			
+				
+				// Figure out new Copy Number
+				String query = "SELECT COPYNO FROM COPY WHERE LIBID='"+libID+"' AND DOCID='"+docID+"';";
+	            ResultSet rs = stmt.executeQuery(query);
+	            System.out.println("Current copies:");
+	            int lastCopyNum = 0;
+	            while (rs.next()) {
+	                lastCopyNum = rs.getInt("COPYNO");
+	                System.out.println(lastCopyNum);
+	            }
+				
+			 stmt.executeUpdate("INSERT INTO COPY (DOCID, COPYNO, LIBID, POSITION) " + "VALUES (" + docID + ",'" + ++lastCopyNum + "','" + libID + "','" + position + ",')");
+			 System.out.println("Copy added!");
+			 new popupMsg("Reader Added", "Added new copy " + lastCopyNum + " with doc ID " + docID + ".");
+			 return true;
 			} else {
-			 System.out.println("Copy already exists! Cannot add!");
-			 new popupMsg("Error", "Copy already exists! Please enter another.");
+				new popupMsg("Error", "No Document with ID '" + docID + "' exists!");
 			}
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new copy to library.");
