@@ -206,7 +206,7 @@ class Server {
 		return n;
 	}
     
-    // Used in AdminFunctions.java
+    // Used in ReaderFunctions.java
     public static void currentReserv(int readerIDReservations) {
     	
     	connectToDB();
@@ -221,6 +221,39 @@ class Server {
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to obtain current reservations.");
 		}
+    }
+	
+	
+    // Used in AdminFunctions.java
+    public static void searchDoc(int docID, int libID, int copyNo) {
+
+        connectToDB();
+        // Query to Search Documents
+        ResultSet searchDocCopyRS;
+        ResultSet searchDocBorrowsRS;
+        ResultSet searchDocReservesRS;
+        try {
+            searchDocCopyRS = stmt.executeQuery("SELECT * FROM COPY WHERE DOCID = " + docID + " AND COPYNO = " + copyNo + "AND LIBID = " + libID + ";");
+            searchDocBorrowsRS = stmt.executeQuery("SELECT * FROM BORROWS WHERE DOCID = " + docID + " AND COPYNO = " + copyNo + "AND LIBID = " + libID + ";");
+            searchDocReservesRS = stmt.executeQuery("SELECT * FROM RESERVES WHERE DOCID = " + docID + " AND COPYNO = " + copyNo + "AND LIBID = " + libID + ";");
+
+            while (searchDocCopyRS.next()) {
+                String searchDocCopy = searchDocCopyRS.getString("DOCID");
+                System.out.println(searchDocCopy); // Outputs Search Results for Document Copies. If empty, doesn't exist.
+            }
+            while (searchDocBorrowsRS.next()) {
+                String searchDocBorrows = searchDocBorrowsRS.getString("DOCID");
+                System.out.println(searchDocBorrows); // Outputs Search Results for Documents Borrowed
+            }
+            while (searchDocReservesRS.next()) {
+                String searchDocReserves = searchDocReservesRS.getString("DOCID");
+                System.out.println(searchDocReserves); // Outputs Search Results for Documents Reserves
+            }
+
+        } catch (SQLException e) {
+            new popupMsg("Error", "Unable to search for documents.");
+        }
+
     }
 
     // Used in AdminFunctions.java
