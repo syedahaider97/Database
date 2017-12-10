@@ -3,6 +3,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -30,9 +32,28 @@ public class AdminPortal extends JFrame {
 		JLabel name = new JLabel("ID:             ");
 		name.setFont(new Font("Helvetica",Font.BOLD,20));
 		IDfield = new JTextField(20); // set text field to accept value
-		IDfield.setText("Enter ID number here"); // set temporary text
 		ID.setPreferredSize(new Dimension(250,50));
 		ID.add(name); ID.add(IDfield);
+		
+		String IDfieldMessage = "Enter ID number here";
+		IDfield.setText(IDfieldMessage);
+		// Focus Listener
+		IDfield.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(IDfield.getText());
+		  		if (IDfield.getText().compareTo(IDfieldMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			IDfield.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (IDfield.getText().compareTo("") == 0) {
+		    	 IDfield.setText(IDfieldMessage);
+		     }
+		   }
+		});
 		
 		// Password Text field
 		JPanel pass = new JPanel(new FlowLayout());
@@ -41,6 +62,26 @@ public class AdminPortal extends JFrame {
 		JTextField passText = new JTextField(20);
 		pass.setPreferredSize(new Dimension(250,50));
 		pass.add(passLabel); pass.add(passText);
+		
+		String passMessage = "Enter password here";
+		passText.setText(passMessage);
+		// Focus Listener
+		passText.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+		  
+				System.out.println(passText.getText());
+		  		if (passText.getText().compareTo(passMessage) == 0) {
+		  			System.out.println("YES!!");
+		  			passText.setText("");
+		  		}
+		   }
+		
+		   public void focusLost(FocusEvent e) {
+		     if (passText.getText().compareTo("") == 0) {
+		    	 passText.setText(passMessage);
+		     }
+		   }
+		});
 		
 		// Action button
 		JButton go = new JButton("Log in");
