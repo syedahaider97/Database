@@ -67,27 +67,27 @@ public class AdminFunctions extends JFrame {
         addReaderLabel.setBounds(25, 135, sizeReader.width, sizeReader.height);
         
         addReaderID = new JTextField(10);
-        addReaderID.setBounds(20, 150, 400, 20);
+        addReaderID.setBounds(20, 150, 100, 20);
         addReaderID.setText("Reader ID");
         panel.add(addReaderID);
         
         addReaderType = new JTextField(10);
-        addReaderType.setBounds(20, 150, 400, 20);
+        addReaderType.setBounds(120, 150, 100, 20);
         addReaderType.setText("Reader Type");
         panel.add(addReaderType);
         
         addReaderName = new JTextField(10);
-        addReaderName.setBounds(20, 150, 400, 20);
+        addReaderName.setBounds(220, 150, 100, 20);
         addReaderName.setText("Reader Name");
         panel.add(addReaderName);
         
         addReaderAddress = new JTextField(10);
-        addReaderAddress.setBounds(20, 150, 400, 20);
+        addReaderAddress.setBounds(320, 150, 100, 20);
         addReaderAddress.setText("Reader Address");
         panel.add(addReaderAddress);
         
         JButton addreaderBtn = new JButton("Add");
-        addreaderBtn.setBounds(170, 500, 80, 30);
+        addreaderBtn.setBounds(450, 135, 55, 30);
         addreaderBtn.setBorder(null);
         addreaderBtn.addActionListener(new addReader());
         panel.add(addreaderBtn);
@@ -99,7 +99,7 @@ public class AdminFunctions extends JFrame {
         searchCopyLabel.setBounds(25, 185, searchSize.width, searchSize.height);
 
         JButton searchBtn = new JButton("Search");
-        searchBtn.setBounds(170, 500, 80, 30);
+        searchBtn.setBounds(450, 185, 55, 30);
         searchBtn.setBorder(null);
         searchBtn.addActionListener(new Quit());
         panel.add(searchBtn);
