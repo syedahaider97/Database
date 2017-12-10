@@ -195,8 +195,8 @@ public class AdminFunctions extends JFrame {
         Server.topTenBooksYr(libId);
         
         String[] topTenBooksYrColumns = {"Title"};
-        Object[][] topTenBooksYrData =
-                /*{{"Book Name 1", "13"},
+        /*Object[][] topTenBooksYrData =
+                {{"Book Name 1", "13"},
                         {"Book Name 2", ""},
                         {"Book Name 3", ""},
                         {"Book Name 4", ""},
