@@ -389,8 +389,8 @@ class Server {
 	public static boolean removeByID(String docId) {
 		connectToDB();
 		String count  = "SELECT COUNT(*) "
-				+ " FROM READER WHERE READERID = " + docId + ";";
-		String query = "DELETE FROM READER WHERE READERID = " + docId + ";";
+				+ " FROM DOCUMENT WHERE DOCID = " + docId + ";";
+		String query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";";
 		
 		try {
 			Integer.parseInt(docId);
