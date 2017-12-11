@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 
 public class ReaderFunctions extends JFrame{
 	private int readerID = 0;
-
+	ReaderFunctions frame;
 	private JTextField docText, titleText, pubText;
 	
 	// Default Constructor -- Displays error if no input passed in to menu
@@ -31,6 +31,7 @@ public class ReaderFunctions extends JFrame{
 		// Set Window title and set readerID variable for use
 		super("Reader Functions");
 		this.readerID = readID;
+		frame = this;
 		
 		// Set panel Layout
 		JPanel panel = new JPanel();
@@ -163,6 +164,14 @@ public class ReaderFunctions extends JFrame{
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
 		
+		JButton reserve = new JButton("New Reservation");
+		reserve.setAlignmentX(CENTER_ALIGNMENT);
+		reserve.addActionListener(new Reserve());
+		
+		JButton borrow = new JButton("Borrow a Book");
+		borrow.setAlignmentX(CENTER_ALIGNMENT);
+		borrow.addActionListener(new Reserve());
+		
 		JButton quit = new JButton("Quit");
 		quit.setAlignmentX(CENTER_ALIGNMENT);
 		quit.addActionListener(new Quit());
@@ -183,11 +192,13 @@ public class ReaderFunctions extends JFrame{
 		panel.add(new JLabel(" "));
 		panel.add(scroll);
 		panel.add(new JLabel(" "));
+		panel.add(reserve);
+		panel.add(new JLabel(" "));
 		panel.add(quit);
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setSize(500,550);
+		setSize(500,600);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -263,7 +274,15 @@ public class ReaderFunctions extends JFrame{
 	    	}
 		}
 	}
-	
+	class Reserve implements ActionListener {
+
+		
+		public void actionPerformed(ActionEvent e) {
+			new Reservation(frame,readerID,"Reserve");
+			
+		}
+		
+	}
 	class Quit implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
