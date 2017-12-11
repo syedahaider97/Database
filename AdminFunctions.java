@@ -431,6 +431,9 @@ public class AdminFunctions extends JFrame {
 			
 			String docid = addCopyDocID.getText();
 			String position = addCopyLoc.getText();
+
+			Pattern pattern = Pattern.compile("[0-1]{3}[a-zA-Z]{1}\\d{2}");
+			Matcher matcher = pattern.matcher(position);
 			
 			boolean isValidInput = false; // flag if input is valid
 			
@@ -453,7 +456,7 @@ public class AdminFunctions extends JFrame {
                 }
 				
 				// if no errors occurred, open Admin Functions
-				if (isValidInput) {
+				if (isValidInput && matcher.matches()) {
 					//Run Query
         			boolean querySuccess = Server.addDocCopy(docID, libId, position);
         			if (querySuccess) {
@@ -461,6 +464,9 @@ public class AdminFunctions extends JFrame {
         		        addCopyLoc.setText("###L##");
         			}
 				}
+				else {
+				    new popupMsg("Error", "Invalid Location Entered. Check input.");
+                }
         	} else {
         		new popupMsg("Error", "Some reader information is missing. Check input.");
         	}
