@@ -330,11 +330,16 @@ class Server {
 		int i = 0;
 		ResultSet topTenBooksYrRS;
 		try {
-			topTenBooksYrRS = stmt.executeQuery("SELECT D.TITLE, D.DOCID FROM DOCUMENT AS D WHERE EXISTS (SELECT B.DOCID, COUNT(*) FROM BORROWS AS B WHERE B.LIBID='" + libID + "' AND D.DOCID=B.DOCID GROUP BY B.DOCID ORDER BY COUNT(*)) LIMIT 10;");
+			topTenBooksYrRS = stmt.executeQuery("SELECT D.TITLE, B2.BDTIME FROM DOCUMENT AS D, BORROWS AS B2 WHERE EXISTS (SELECT B.DOCID, COUNT(*) FROM BORROWS AS B WHERE B.LIBID='" + libID + "' AND D.DOCID=B.DOCID AND B.DOCID=B2.DOCID GROUP BY B.DOCID ORDER BY COUNT(*)) LIMIT 10;");
 			while (topTenBooksYrRS.next()) {
-				Object entry[] = {topTenBooksYrRS.getString("TITLE")};
-				result[i++] = entry;
+				Object entry[] = {topTenBooksYrRS.getString("TITLE"), topTenBooksYrRS.getString("BDTIME")};
+			
+				// Check if borrow was made in 2017. If it was, add to result
+				if (((String) entry[1]).substring(0,4).compareTo(year) == 0) {
+					result[i++] = entry;
+				}
 			}
+			
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to obtain top 10 books (year).");
 		}

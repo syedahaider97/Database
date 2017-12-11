@@ -435,13 +435,13 @@ public class AdminFunctions extends JFrame {
 			String docid = addCopyDocID.getText();
 			String position = addCopyLoc.getText();
 
-			Pattern pattern = Pattern.compile("[0-1]{3}[a-zA-Z]{1}\\d{2}");
+			Pattern pattern = Pattern.compile("[0-1]{3}[a-zA-Z]{1}\\d{2}"); // REGEX to check if first three numbers are integers, followed by a letter, followed by 2 integers
 			Matcher matcher = pattern.matcher(position);
 			
 			boolean isValidInput = false; // flag if input is valid
 			
 			// Check if input is not null
-			if (docid != null && position != null) {
+			if (docid != null && position != null && position.length() == 6) {
 				int docID = 0;
 				isValidInput = true; // assume input is valid
 				try { // try to convert ID to Integer
