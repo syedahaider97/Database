@@ -6,7 +6,11 @@
  */
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 class Server {
 	private static Connection con;
     private static Statement stmt;
@@ -265,13 +269,21 @@ class Server {
 		int i = 0;
 		ResultSet topTenReadersRS;
 		try {
-			topTenReadersRS = stmt.executeQuery("SELECT READERID, COUNT(*) FROM BORROWS WHERE LIBID='" + libID + "' GROUP BY READERID ORDER BY COUNT(*) DESC LIMIT 10;");
+			topTenReadersRS = stmt.executeQuery("SELECT R.RNAME, COUNT(*) FROM BORROWS AS B, READER AS R WHERE B.LIBID='"+libID+"' AND B.READERID=R.READERID GROUP BY R.READERID ORDER BY COUNT(*) LIMIT 10;");
 			while (topTenReadersRS.next()) {
-				Object entry[] = {topTenReadersRS.getInt("READERID"),""};
+				Object entry[] = {topTenReadersRS.getString("RNAME"),topTenReadersRS.getInt("COUNT(*)")};
 				result[i++] = entry;
 			}
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to obtain top 10 readers.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            }
 		}
 
 		return result;
@@ -286,9 +298,9 @@ class Server {
 		int i = 0;
 		ResultSet topTenBooksRS;
 		try {
-			topTenBooksRS = stmt.executeQuery("SELECT DOCID, COUNT(*) FROM BORROWS WHERE LIBID='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
+			topTenBooksRS = stmt.executeQuery("SELECT D.TITLE, D.DOCID FROM DOCUMENT AS D WHERE EXISTS (SELECT B.DOCID, COUNT(*) FROM BORROWS AS B WHERE B.LIBID='" + libID + "' AND D.DOCID=B.DOCID GROUP BY B.DOCID ORDER BY COUNT(*)) LIMIT 10;");
 			while (topTenBooksRS.next()) {
-				Object entry[] = {topTenBooksRS.getString("DOCID")};
+				Object entry[] = {topTenBooksRS.getString("TITLE"),""};
 				result[i++] = entry;
 			}
 		} catch (SQLException e) {
@@ -297,19 +309,30 @@ class Server {
 
 		return result;
 	}
-
+	
+	public static String getDate() {
+		// Get the current date
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+		String date = sdf.format(cal.getTime());
+		return date;
+	}
+	
 	// Used in AdminFunctions.java
 	public static Object[][] topTenBooksYr(int libID) {
 
 		connectToDB();
 		// Query to obtain top 10 Books (Year)
+		String year = getDate().substring(0, 4);
+		System.out.println(year);
+		
 		Object[][] result = new Object[10][1];
 		int i = 0;
 		ResultSet topTenBooksYrRS;
 		try {
-			topTenBooksYrRS = stmt.executeQuery("SELECT DOCID,  COUNT(*) FROM BORROWS WHERE YEAR(BDTIME) = 2017 AND LIBID ='" + libID + "' GROUP BY DOCID ORDER BY COUNT(*) DESC LIMIT 10;");
+			topTenBooksYrRS = stmt.executeQuery("SELECT D.TITLE, D.DOCID FROM DOCUMENT AS D WHERE EXISTS (SELECT B.DOCID, COUNT(*) FROM BORROWS AS B WHERE B.LIBID='" + libID + "' AND D.DOCID=B.DOCID GROUP BY B.DOCID ORDER BY COUNT(*)) LIMIT 10;");
 			while (topTenBooksYrRS.next()) {
-				Object entry[] = {topTenBooksYrRS.getString("DOCID")};
+				Object entry[] = {topTenBooksYrRS.getString("TITLE")};
 				result[i++] = entry;
 			}
 		} catch (SQLException e) {
@@ -698,9 +721,7 @@ class Server {
 				 new popupMsg("Error","No more copies left. Please check again later");
 				 return false;
 			} else{
-				DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Calendar cal = Calendar.getInstance();
-				String date = sdf.format(cal.getTime());
+				String date = getDate();
 				System.out.println(date);
 				String query = String.format("INSERT INTO RESERVES (RESUMBER,READERID,DOCID,COPYNO,LIBID,DTIME) "
 										    +"VALUES (%d,%d,%s,%d,%s,'%s');",resNumber,readerId,docId,copyno,libId,date);
