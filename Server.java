@@ -384,26 +384,32 @@ class Server {
     	connectToDB();
 	    // Query to add Reader by passed in ReaderID
 	    ResultSet checkExistsRS;
+	    ResultSet POSrs;
 		try {
-			checkExistsRS = stmt.executeQuery("SELECT * FROM DOCUMENT AS D WHERE D.DOCID = '" + docID + "';");
-			if (checkExistsRS.next()) {			
-				
+			// Check if docid exists and location already exists for document.
+			POSrs = stmt.executeQuery("SELECT C.POSITION FROM COPY AS C WHERE C.POSITION='"+position+"' AND C.LIBID='"+libID+"';");
+			if (!POSrs.next()) {
+				checkExistsRS = stmt.executeQuery("SELECT * FROM DOCUMENT AS D WHERE D.DOCID = '" + docID + "';");
+				if (checkExistsRS.next()) {
 				// Figure out new Copy Number
 				String query = "SELECT COPYNO FROM COPY WHERE LIBID='"+libID+"' AND DOCID='"+docID+"';";
-	            ResultSet rs = stmt.executeQuery(query);
-	            System.out.println("Current copies:");
-	            int lastCopyNum = 0;
-	            while (rs.next()) {
-	                lastCopyNum = rs.getInt("COPYNO");
-	                System.out.println(lastCopyNum);
-	            }
+				ResultSet rs = stmt.executeQuery(query);
+				System.out.println("Current copies:");
+				int lastCopyNum = 0;
+				while (rs.next()) {
+				    lastCopyNum = rs.getInt("COPYNO");
+				    System.out.println(lastCopyNum);
+				}
 				
-			 stmt.executeUpdate("INSERT INTO COPY (DOCID, COPYNO, LIBID, POSITION) " + "VALUES (" + docID + ",'" + ++lastCopyNum + "','" + libID + "','" + position + ",')");
-			 System.out.println("Copy added!");
-			 new popupMsg("Copy Added", "Added new copy " + lastCopyNum + " with doc ID " + docID + ".");
-			 return true;
+				 stmt.executeUpdate("INSERT INTO COPY (DOCID, COPYNO, LIBID, POSITION) " + "VALUES (" + docID + ",'" + ++lastCopyNum + "','" + libID + "','" + position + "')");
+				 System.out.println("Copy added!");
+				 new popupMsg("Copy Added", "Added new copy " + lastCopyNum + " with doc ID " + docID + ".");
+				 return true;
+				} else {
+					new popupMsg("Error", "No Document with ID '" + docID + "' exists!");
+				}
 			} else {
-				new popupMsg("Error", "No Document with ID '" + docID + "' exists!");
+				new popupMsg("Error", "Copy at '"+position+"' already exists!");
 			}
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new copy to library.");
@@ -817,6 +823,11 @@ class Server {
 			e.printStackTrace();
 			new popupMsg("Error","Please enter valid Document Id and Library Id");
 		}
+		return false;
+	}
+
+	public static boolean pickup(int readerId, String text, int libId) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

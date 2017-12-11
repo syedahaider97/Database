@@ -423,7 +423,7 @@ public class AdminFunctions extends JFrame {
         			}
 				}
         	} else {
-        		new popupMsg("Error", "Some reader information is missing. Check input.");
+        		new popupMsg("Error", "Invalid Reader information. Check input.");
         	}
 		}
 	}
@@ -435,7 +435,7 @@ public class AdminFunctions extends JFrame {
 			String docid = addCopyDocID.getText();
 			String position = addCopyLoc.getText();
 
-			Pattern pattern = Pattern.compile("[0-1]{3}[a-zA-Z]{1}\\d{2}"); // REGEX to check if first three numbers are integers, followed by a letter, followed by 2 integers
+			Pattern pattern = Pattern.compile("(100|010|001)[A-Z]{1}[0-9]{2}"); // REGEX to check if first three numbers are integers, followed by a letter, followed by 2 integers
 			Matcher matcher = pattern.matcher(position);
 			
 			boolean isValidInput = false; // flag if input is valid
@@ -466,12 +466,11 @@ public class AdminFunctions extends JFrame {
         				addCopyDocID.setText("Doc ID");
         		        addCopyLoc.setText("###L##");
         			}
-				}
-				else {
+				} else {
 				    new popupMsg("Error", "Invalid Location Entered. Check input.");
                 }
         	} else {
-        		new popupMsg("Error", "Some reader information is missing. Check input.");
+        		new popupMsg("Error", "Invalid Copy information. Check input.");
         	}
 		}
 	}
