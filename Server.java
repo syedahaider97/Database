@@ -754,8 +754,69 @@ class Server {
 		
 	}
 	//For Use with ReaderFunction -> Borrow.java
-	public static void borrow(int readerId, String docId, String libId) {
-		// TODO Auto-generated method stub
-		
+	public static boolean borrow(int readerId, String docId, String libId) {
+		connectToDB();
+		int borNumber = 0;
+		int copyno = 0;
+		try {
+			//Integer.parseInt(docId); Integer.parseInt(libId);
+
+			String borCountQuery = "SELECT COUNT(*) FROM BORROWS;";
+			ResultSet rs = stmt.executeQuery(borCountQuery);
+			if(rs.next()) {
+				borNumber = rs.getInt("COUNT(*)") + 1;
+			}
+			
+			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
+			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+			ResultSet rs1 = stmt.executeQuery(resCountCopy);
+			while(rs1.next()) {
+				copiesTaken.add(rs1.getInt("COPYNO"));
+			}
+			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId + " AND DOCID = " + docId +";";
+			ResultSet rs2 = stmt.executeQuery(borCountCopy);
+			while(rs2.next()) {
+				copiesTaken.add(rs2.getInt("COPYNO"));
+			}
+			
+			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+			ResultSet rs3 = stmt.executeQuery(copyQuery);
+			while(rs3.next()) {
+				if(!copiesTaken.contains(rs3.getInt("COPYNO"))) {
+					copyno = rs3.getInt("COPYNO");
+					break;
+				}
+			}
+			if(copyno == 0) {
+				 new popupMsg("Error","No more copies left. Please check again later");
+				 return false;
+			} else{
+				DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Calendar cal = Calendar.getInstance();
+				String date = sdf.format(cal.getTime());
+				System.out.println(date);
+				String query = String.format("INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
+										    +"VALUES (%d,%d,%s,%d,%s,'%s',NULL);",borNumber,readerId,docId,copyno,libId,date);
+				System.out.println(query);
+				stmt.execute(query);
+			}
+			stmt.close();
+			con.close();
+			return true;
+		} catch(SQLException e) {
+			new popupMsg("Error", "Unable to process request.");
+			System.err.println(" SQL Exceptions \n");
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            } 
+		} catch (Exception e) {
+			e.printStackTrace();
+			new popupMsg("Error","Please enter valid Document Id and Library Id");
+		}
+		return false;
 	}
 }
