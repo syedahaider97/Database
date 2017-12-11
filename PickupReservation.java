@@ -9,25 +9,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Reservation extends JFrame {
 
-	JTextField docField, libField;
-	String type;
+public class PickupReservation extends JFrame {
+	
+	JTextField docField;
+	int libId;
 	int readerId;
 	ReaderFunctions frame;
 	
-	public Reservation(ReaderFunctions frame,int readerID, String type) {
+	public PickupReservation(ReaderFunctions frame,int readerId) {
 		
-		super(type + " A Book");
-		System.out.println(type);
-		this.type = type;
-		this.readerId = readerID;
+		this.readerId = readerId;
 		this.frame = frame;
-		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 		
-		JLabel title = new JLabel(type + " A Book");
+		JLabel title = new JLabel("Pickup A Reservation");
 		title.setFont(new Font("Helvetica",Font.BOLD,24));
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -36,23 +33,12 @@ public class Reservation extends JFrame {
 		docField = new JTextField(15);
 		docIdPanel.add(docLabel); docIdPanel.add(docField);
 		
-		JPanel libIdPanel = new JPanel();
-		JLabel libLabel = new JLabel("Library ID:             ");
-		libField = new JTextField(15);
-		libIdPanel.add(libLabel); libIdPanel.add(libField);
-		
-		JButton submit = new JButton(type);
+		JButton submit = new JButton("Submit");
 		submit.setAlignmentX(CENTER_ALIGNMENT);
 		submit.addActionListener(new Submit());
-
-		panel.add(new JLabel(" "));
+		
 		panel.add(title);
-		panel.add(new JLabel(" "));
 		panel.add(docIdPanel);
-		panel.add(libIdPanel);
-		panel.add(new JLabel(" "));
-		panel.add(submit);
-		panel.add(new JLabel(" "));
 		
 		add(panel);
 		setSize(300,250);
@@ -60,28 +46,16 @@ public class Reservation extends JFrame {
 		setVisible(true);
 		setLocationRelativeTo(null);
 	}
-
 	
 	class Submit implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			if(type.equals("Reserve")) {
-				if(Server.reserve(readerId,docField.getText(),libField.getText())) {
-					dispose();
-					frame.dispose();
-					new ReaderFunctions(readerId);
-				}
-				
-			}
-			else if (type.equals("Borrow")) {
-				if(Server.borrow(readerId,docField.getText(),libField.getText())) {
-					dispose();
-					frame.dispose();
-					new ReaderFunctions(readerId);
-				}
+			if(Server.pickup(readerId,docField.getText(),libId)) {
+				dispose();
+				frame.dispose();
+				new ReaderFunctions(readerId);
 			}
 		}
-		
 		
 	}
 }

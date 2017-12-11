@@ -164,13 +164,25 @@ public class ReaderFunctions extends JFrame{
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
 		
+		JPanel buttonPanel = new JPanel();
+		
 		JButton reserve = new JButton("New Reservation");
 		reserve.setAlignmentX(CENTER_ALIGNMENT);
 		reserve.addActionListener(new Reserve());
 		
+		JButton pickup = new JButton("Pickup Reservation");
+		pickup.setAlignmentX(CENTER_ALIGNMENT);
+		pickup.addActionListener(new Pickup());
+		
 		JButton borrow = new JButton("Borrow a Book");
 		borrow.setAlignmentX(CENTER_ALIGNMENT);
-		borrow.addActionListener(new Reserve());
+		borrow.addActionListener(new Borrow());
+		
+		JButton rtnCopy = new JButton("Return Book");
+		rtnCopy.setAlignmentX(CENTER_ALIGNMENT);
+		rtnCopy.addActionListener(new Return());
+		buttonPanel.add(reserve);
+		buttonPanel.add(borrow);
 		
 		JButton quit = new JButton("Quit");
 		quit.setAlignmentX(CENTER_ALIGNMENT);
@@ -192,7 +204,7 @@ public class ReaderFunctions extends JFrame{
 		panel.add(new JLabel(" "));
 		panel.add(scroll);
 		panel.add(new JLabel(" "));
-		panel.add(reserve);
+		panel.add(buttonPanel);
 		panel.add(new JLabel(" "));
 		panel.add(quit);
 		panel.add(new JLabel(" "));
@@ -276,9 +288,31 @@ public class ReaderFunctions extends JFrame{
 	}
 	class Reserve implements ActionListener {
 
-		
 		public void actionPerformed(ActionEvent e) {
 			new Reservation(frame,readerID,"Reserve");
+			
+		}
+	}
+	
+	class Pickup implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			new PickupReservation(frame,readerID);
+			
+		}
+	}
+	
+	class Return implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			new Reservation(frame,readerID,"Reserve");
+			
+		}
+	}
+	class Borrow implements ActionListener {
+		
+		public void actionPerformed(ActionEvent e) {
+			new Reservation(frame,readerID,"Borrow");
 			
 		}
 		
