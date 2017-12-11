@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class AdminFunctions extends JFrame {
 	private int libId = 0;
 	private JTextField addCopyDocID, addCopyLoc, addReaderID, addReaderType, addReaderName, addReaderAddress, searchField;
