@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 
 public class AddProceeding extends JFrame {
 	
-	private JTextField titleField, pyearField, pmonthField, pdayField, publisherField, paddrField, cdatefield, clocfield, chairfield;
+	private JTextField titleField, pyearField, pmonthField, pdayField, publisherField, paddrField, clocfield, chairfield;
 	
 	private int type = 0; // 0 = add, 1 = update
 	
@@ -91,13 +91,13 @@ public class AddProceeding extends JFrame {
 		panel.add(paddrPanel);
 		
 		// Conference Date entry field
-		JPanel cdatepanel = new JPanel();
+		/*JPanel cdatepanel = new JPanel();
 		JLabel cdatelabel = new JLabel("Conference Date:");
 		cdatefield = new JTextField(15);
-		cdatepanel.add(cdatelabel); cdatepanel.add(cdatefield);
+		cdatepanel.add(cdatelabel); cdatepanel.add(cdatefield);*/
 		
 		//panel.add(new JLabel(" "));
-		panel.add(cdatepanel);
+		//panel.add(cdatepanel);
 		
 		// Conference Location entry field
 		JPanel clocpanel = new JPanel();
@@ -160,6 +160,10 @@ public class AddProceeding extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			
+			//String cdate = cdatefield.getText(); 
+			String cloc = clocfield.getText();
+			String chair = chairfield.getText();
+			
 			String title = titleField.getText(); 
 			String pubName = publisherField.getText(); 
 			String pubAddr = paddrField.getText();
@@ -199,7 +203,9 @@ public class AddProceeding extends JFrame {
 					
 					System.out.println(pubDate);
 					if(type == 0) {
-						Server.addNewDoc(title, pubDate, pubName, pubAddr);
+						boolean DocAdded = Server.addNewDoc(title, pubDate, pubName, pubAddr);
+						if (DocAdded)
+							Server.addNewProceeding(pubDate, cloc, chair, title);
 					}
 					else if(type == 1) {
 						//Update Query

@@ -405,7 +405,7 @@ class Server {
 	public static boolean addDocCopy(int docID, int libID, String position) {
 
 		connectToDB();
-		// Query to add Reader by passed in ReaderID
+		
 		ResultSet checkExistsRS;
 		ResultSet POSrs;
 		try {
@@ -792,7 +792,7 @@ class Server {
 	public static boolean addNewDoc(String titleField, String pdateField, String publisherField, String paddrField) {
 
 		connectToDB();
-		// Query to add Reader by passed in ReaderID
+		
 		ResultSet checkExistsRS;
 		try {
 
@@ -865,7 +865,7 @@ class Server {
 	public static boolean addNewBook(String isbn, String author, String title) {
 
 		connectToDB();
-		// Query to add Reader by passed in ReaderID
+		
 		ResultSet checkExistsRS;
 		try {
 			// Check if author already exists
@@ -949,6 +949,131 @@ class Server {
 			e.printStackTrace();
 		}
 		
+		return false;
+	}
+	
+	// Used in AddJournal.java
+	public static boolean addNewJournal(String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
+		
+		/*
+		 * Arguments
+		 * 
+		 * jvol = Journal Volume #
+		 * jiss = Journal Issue #
+		 * scope = Scope
+		 * ceditor = Chief Editor Name
+		 * inveditor = Inv Editor Name
+		 * title = Document title
+		 */
+		
+		connectToDB();
+		
+		ResultSet checkExistsRS;
+		try {
+			
+			/*
+			 * Get DOCID by searching for TITLE='title' in DOCUMENT
+			 */
+			int docid = 0;
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			if (checkExistsRS.next()) {
+				docid = checkExistsRS.getInt("DOCID");
+			}
+			
+			/* Check if Journal Volume already exists
+			 * -- If volume already exists, show popupMsg that Journal Volume must be changed
+			 */
+			
+			/*
+			 * Check if Chief Editor already exists
+			 * -- If Chief Editor exists, save Chief Editor's EDITOR_ID
+			 * - If Chief Editor does not exists, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
+			 */
+			
+			/*
+			 * Check if Journal issue already exists for selected Journal Volume
+			 * -- If already exists, show popupMsg and return false
+			 * -- If does not exist, proceed
+			 */
+			
+			/*
+			 * 1. Insert new JOURNAL_VOLUME
+			 * 2. Insert new JOURNAL_ISSUE
+			 */
+			
+			/*
+			 * Check if INV Editor already exists
+			 * -- If Inv editor exists, (IENAME matches inveditor) do nothing
+			 * -- If Inv editor does not exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
+			 */
+			
+			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has been added.
+			System.out.println("Success");
+			return true;
+			
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to add new Journal to library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddJournal.java
+	public static boolean addNewProceeding(String pubDate, String cloc, String chair, String title) {
+		
+		/*
+		 * Arguments
+		 * 
+		 * pubDate = Conference Date
+		 * cloc = Conference Location
+		 * chair = Conference Chair Name
+		 * title = Document title
+		 */
+		
+		connectToDB();
+		
+		ResultSet checkExistsRS;
+		try {
+			
+			/*
+			 * Get DOCID by searching for TITLE='title' in DOCUMENT
+			 */
+			int docid = 0;
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			if (checkExistsRS.next()) {
+				docid = checkExistsRS.getInt("DOCID");
+			}
+			
+			/* Check if Proceedings already exists (same Date, Location, and Editor)
+			 * -- If exists, do nothing and show popupMsg and return false;
+			 */
+			
+			/*
+			 * INSERT new Proceedings
+			 */
+			
+			// SHOW POPUPMSG stating that Conference Proceedings has been added.
+			System.out.println("Success");
+			return true;
+			
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to add new Journal to library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
 		return false;
 	}
 

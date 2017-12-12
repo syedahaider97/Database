@@ -178,6 +178,12 @@ public class AddJournal extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			
+			String jvol = jvolfield.getText();
+			String jiss = jissfield.getText();
+			String scope = scopefield.getText(); 
+			String ceditor = cedfield.getText(); 
+			String inveditor = invfield.getText();
+			
 			String title = titleField.getText(); 
 			String pubName = publisherField.getText(); 
 			String pubAddr = paddrField.getText();
@@ -197,36 +203,42 @@ public class AddJournal extends JFrame {
 			Pattern dpattern = Pattern.compile("((0?[1-9])|([1-2][0-9])|(3[01]))"); //day format from 01 or 31
 			Matcher dmatcher = mopattern.matcher(day);
 			
-			if (yrmatcher.matches() && momatcher.matches() && dmatcher.matches()) {
-				if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0)) {
-					String pubDate = "";
-					if (Integer.parseInt(month) < 10) {
-						month = "0" + month;
-					}
-					
-					if (Integer.parseInt(day) < 10) {
-						day = "0" + day;
-					}
-					
-					if (Integer.parseInt(year) < currYr) {
-						pubDate = year+"-"+month+"-"+day;
+			if (Integer.parseInt(jiss) > 10 || Integer.parseInt(jiss) < 1) {
+				new popupMsg("Error", "Journal Issue must be between 1-10");
+			} else {
+				if (yrmatcher.matches() && momatcher.matches() && dmatcher.matches()) {
+					if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0)) {
+						String pubDate = "";
+						if (Integer.parseInt(month) < 10) {
+							month = "0" + month;
+						}
+						
+						if (Integer.parseInt(day) < 10) {
+							day = "0" + day;
+						}
+						
+						if (Integer.parseInt(year) < currYr) {
+							pubDate = year+"-"+month+"-"+day;
+						} else {
+							pubDate = "2017-"+month+"-"+day;
+							pyearField.setText("2017");
+						}
+						
+						System.out.println(pubDate);
+						if(type == 0) {
+							boolean DocAdded = Server.addNewDoc(title, pubDate, pubName, pubAddr);
+							if (DocAdded)
+								Server.addNewJournal(jvol, jiss, scope, ceditor, inveditor, title);
+						}
+						else if(type == 1) {
+							//Update Query
+						}
 					} else {
-						pubDate = "2017-"+month+"-"+day;
-						pyearField.setText("2017");
-					}
-					
-					System.out.println(pubDate);
-					if(type == 0) {
-						Server.addNewDoc(title, pubDate, pubName, pubAddr);
-					}
-					else if(type == 1) {
-						//Update Query
+						new popupMsg("Error", "Document information is missing.");
 					}
 				} else {
-					new popupMsg("Error", "Document information is missing.");
+					new popupMsg("Error", "Date is invalid.");
 				}
-			} else {
-				new popupMsg("Error", "Date is invalid.");
 			}
 			
 		}
