@@ -1054,12 +1054,21 @@ class Server {
 			/* Check if Proceedings already exists (same Date, Location, and Editor)
 			 * -- If exists, do nothing and show popupMsg and return false;
 			 */
-			
-			/*
-			 * INSERT new Proceedings
-			 */
+			checkExistsRS = stmt.executeQuery("SELECT * FROM PROCEEDINGS WHERE DOCID='"+docid+"' AND CDATE='"+pubDate+"' AND CLOCATION='"+cloc+"' AND CEDITOR='"+chair+"';");
+			if (!checkExistsRS.next()) {
+				/*
+				 * INSERT new Proceedings
+				 */
+				stmt.executeUpdate("INSERT INTO PROCEEDINGS (DOCID, CDATE, CLOCATION, CEDITOR) " + "VALUES (" + docid
+						+ ",'" + pubDate + "','" + cloc + "','" + chair + "')");
+				System.out.println("New Proceedings Added!");
+			} else {
+				new popupMsg("Error", "Conference Proceeding already exists.");
+				return false;
+			}
 			
 			// SHOW POPUPMSG stating that Conference Proceedings has been added.
+			new popupMsg("Document Added", "Conference Proceeding Added.");
 			System.out.println("Success");
 			return true;
 			
