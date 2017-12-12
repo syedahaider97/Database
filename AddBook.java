@@ -1,6 +1,9 @@
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -11,11 +14,11 @@ import javax.swing.JTextField;
 
 public class AddBook extends JFrame {
 	
-	private JTextField titleField, pdateField, publisherField, paddrField, isbnfield, authorfield;
+	private JTextField titleField, pyearField, pmonthField, pdayField, publisherField, paddrField, isbnfield, authorfield;
 	
-	private String type;
+	private int type = 0; // 0 = add, 1 = update
 	
-	public AddBook(String type, String line) {
+	public AddBook(int type, String line) {
 		// Set Title and Type of Operation to perform (type Add or Update)
 		super(line);
 		type = this.type;
@@ -42,13 +45,33 @@ public class AddBook extends JFrame {
 		panel.add(titlePanel);
 		
 		// Publisher date entry field
-		JPanel pdatePanel = new JPanel();
-		JLabel pdateLabel = new JLabel("Publisher Date:");
-		pdateField = new JTextField(15);
-		pdatePanel.add(pdateLabel); pdatePanel.add(pdateField);
+		
+		// Year published
+		JPanel pyearPanel = new JPanel();
+		JLabel pyearLabel = new JLabel("Year:");
+		pyearField = new JTextField(4);
+		pyearPanel.add(pyearLabel); pyearPanel.add(pyearField);
 		
 		//panel.add(new JLabel(" "));
-		panel.add(pdatePanel);
+		panel.add(pyearPanel);
+		
+		// Month published
+		JPanel pmonthPanel = new JPanel();
+		JLabel pmonthLabel = new JLabel("Month:");
+		pmonthField = new JTextField(4);
+		pmonthPanel.add(pmonthLabel); pmonthPanel.add(pmonthField);
+		
+		//panel.add(new JLabel(" "));
+		panel.add(pmonthPanel);
+		
+		// Day published
+		JPanel pdayPanel = new JPanel();
+		JLabel pdayLabel = new JLabel("Day:");
+		pdayField = new JTextField(4);
+		pdayPanel.add(pdayLabel); pdayPanel.add(pdayField);
+		
+		//panel.add(new JLabel(" "));
+		panel.add(pdayPanel);
 		
 		// Publisher name entry field
 		JPanel publisherPanel = new JPanel();
@@ -129,13 +152,70 @@ public class AddBook extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			
-			System.out.println(titleField.getText() + pdateField.getText() + publisherField.getText());
+			String isbn = isbnfield.getText(); 
 			
-			if(type == "add") {
-				//Add Query
-			}
-			else if(type == "update") {
-				//Update Query
+			Pattern ipattern = Pattern.compile("[0-9]{10}"); //isbn is 10 digits
+			Matcher imatcher = ipattern.matcher(isbn);
+			
+			String author = authorfield.getText();
+			
+			String title = titleField.getText(); 
+			String pubName = publisherField.getText(); 
+			String pubAddr = paddrField.getText();
+			
+			String year = pyearField.getText();
+			String month = pmonthField.getText();
+			String day = pdayField.getText();
+			
+			Pattern yrpattern = Pattern.compile("[0-9]{4}"); //year format ####
+			Matcher yrmatcher = yrpattern.matcher(year);
+			
+			int currYr = Integer.parseInt(Server.getDate().substring(0, 4));
+			
+			Pattern mopattern = Pattern.compile("((0?[1-9])|(1[0-2]))"); //month format from 01 to 12
+			Matcher momatcher = mopattern.matcher(month);
+			
+			Pattern dpattern = Pattern.compile("((0?[1-9])|([1-2][0-9])|(3[01]))"); //day format from 01 or 31
+			Matcher dmatcher = mopattern.matcher(day);
+			
+			if (imatcher.matches() && Server.isbnExists(isbn)) {
+				if (yrmatcher.matches() && momatcher.matches() && dmatcher.matches()) {
+					if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0 || isbn.compareTo("") == 0 || author.compareTo("") == 0)) {
+						
+						String pubDate = "";
+						if (Integer.parseInt(month) < 10) {
+							month = "0" + month;
+						}
+						
+						if (Integer.parseInt(day) < 10) {
+							day = "0" + day;
+						}
+						
+						if (Integer.parseInt(year) < currYr) {
+							pubDate = year+"-"+month+"-"+day;
+						} else {
+							pubDate = "2017-"+month+"-"+day;
+							pyearField.setText("2017");
+						}
+						
+						System.out.println(pubDate);
+						if(type == 0) {
+							boolean DocAdded = Server.addNewDoc(title, pubDate, pubName, pubAddr);
+							if (DocAdded)
+								Server.addNewBook(isbn, author, title);
+							
+						}
+						else if(type == 1) {
+							//Update Query
+						}
+					} else {
+						new popupMsg("Error", "Document information is missing.");
+					}
+				} else {
+					new popupMsg("Error", "Date is invalid.");
+				}
+			} else {
+				new popupMsg("Error", "ISBN must be a unique 10-digit number.");
 			}
 			
 		}

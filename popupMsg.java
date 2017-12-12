@@ -66,7 +66,7 @@ public class popupMsg extends JFrame {
 		panel.add(submit);
 		
         add(panel);
-		setSize(350,150);
+		setSize(500,150);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setResizable(false);

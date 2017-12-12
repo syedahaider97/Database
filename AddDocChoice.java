@@ -10,16 +10,19 @@ import javax.swing.JPanel;
 
 public class AddDocChoice extends JFrame {
 
-    public AddDocChoice() {
+	private int choice = 0; // 0 = add, 1 = update
+	
+    public AddDocChoice(int decision) {
+    	this.choice = decision;
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 
-        JLabel title = new JLabel("Which type of Document");
+        JLabel title = new JLabel("Document Types");
         title.setFont(new Font("Helvetica",Font.BOLD,18));
         title.setAlignmentX(CENTER_ALIGNMENT);
 
-        JLabel label = new JLabel("would you like to add?");
+        JLabel label = new JLabel("Select a Document Type:");
         label.setFont(new Font("Helvetica",Font.BOLD,18));
         label.setAlignmentX(CENTER_ALIGNMENT);
 
@@ -58,7 +61,7 @@ public class AddDocChoice extends JFrame {
         add(panel);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setVisible(true);
-        setSize(300,400);
+        setSize(300,300);
         setLocationRelativeTo(null);
         setResizable(false);
     }
@@ -66,21 +69,21 @@ public class AddDocChoice extends JFrame {
     class addBook implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            new AddBook("add","Add a Book");
+            new AddBook(choice,"Add a Book"); // 0 is add, 1 is update
         }
     }
 
     class addJournal implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            new AddJournal("add","Add a Journal");
+            new AddJournal(choice,"Add a Journal"); // 0 is add, 1 is update
         }
     }
 
     class addProceeding implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            new AddProceeding("add","Add a Conference Proceeding");
+            new AddProceeding(choice,"Add a Conference Proceeding"); // 0 is add, 1 is update
         }
     }
     

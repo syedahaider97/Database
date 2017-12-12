@@ -364,7 +364,9 @@ class Server {
 	}
 
 	// Used in AdminFunctions.java
-	public static boolean addReader(String addReaderType, String addReaderName, String addReaderAddress) { // passed in																					// from text
+	public static boolean addReader(String addReaderType, String addReaderName, String addReaderAddress) { // passed in
+																											// // from
+																											// text
 																											// field
 
 		connectToDB();
@@ -372,11 +374,11 @@ class Server {
 		ResultSet checkExistsRS;
 		try {
 
-			ResultSet rs = stmt.executeQuery("SELECT READERID FROM READER;");
+			ResultSet rs = stmt.executeQuery("SELECT MAX(READERID) FROM READER;");
 			System.out.println("Current copies:");
 			int lastRID = 0;
-			while (rs.next()) {
-				lastRID = rs.getInt("READERID");
+			if (rs.next()) {
+				lastRID = rs.getInt("MAX(READERID)");
 				System.out.println(lastRID);
 			}
 
@@ -414,12 +416,13 @@ class Server {
 				checkExistsRS = stmt.executeQuery("SELECT * FROM DOCUMENT AS D WHERE D.DOCID = '" + docID + "';");
 				if (checkExistsRS.next()) {
 					// Figure out new Copy Number
-					String query = "SELECT COPYNO FROM COPY WHERE LIBID='" + libID + "' AND DOCID='" + docID + "';";
+					String query = "SELECT MAX(COPYNO) FROM COPY WHERE LIBID='" + libID + "' AND DOCID='" + docID
+							+ "';";
 					ResultSet rs = stmt.executeQuery(query);
 					System.out.println("Current copies:");
 					int lastCopyNum = 0;
-					while (rs.next()) {
-						lastCopyNum = rs.getInt("COPYNO");
+					if (rs.next()) {
+						lastCopyNum = rs.getInt("MAX(COPYNO)");
 						System.out.println(lastCopyNum);
 					}
 
@@ -783,6 +786,170 @@ class Server {
 		}
 		return false;
 
+	}
+
+	// Used in AddBook.java, AddJournal, AddProceeding
+	public static boolean addNewDoc(String titleField, String pdateField, String publisherField, String paddrField) {
+
+		connectToDB();
+		// Query to add Reader by passed in ReaderID
+		ResultSet checkExistsRS;
+		try {
+
+			// Check if document already exists
+			checkExistsRS = stmt.executeQuery(
+					"SELECT * FROM DOCUMENT WHERE TITLE='" + titleField + "' AND PDATE='" + pdateField + "'");
+			if (!checkExistsRS.next()) {
+
+				// Find last DOCID in list
+				checkExistsRS = stmt.executeQuery("SELECT MAX(DOCID) FROM DOCUMENT;");
+				System.out.println("Current docs:");
+				int lastID = 1;
+				if (checkExistsRS.next()) {
+					lastID = checkExistsRS.getInt("MAX(DOCID)") + 1;
+					System.out.println(lastID);
+				}
+
+				// Check if publisher already exists
+				checkExistsRS = stmt
+						.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBNAME='" + publisherField + "';");
+				boolean current = checkExistsRS.next();
+				int lastpID = 1;
+				if (!current) {
+					// Find last PUBLISHERID in list
+					checkExistsRS = stmt.executeQuery("SELECT MAX(PUBLISHERID) FROM PUBLISHER;");
+					System.out.println("PID list:");
+
+					if (checkExistsRS.next()) {
+						lastpID = checkExistsRS.getInt("MAX(PUBLISHERID)") + 1;
+						System.out.println("PID " + lastpID);
+					}
+
+					// Insert new Publisher Data
+					stmt.executeUpdate("INSERT INTO PUBLISHER (PUBLISHERID, PUBNAME, ADDRESS) " + "VALUES (" + lastpID
+							+ ",'" + publisherField + "','" + paddrField + "')");
+					System.out.println("New Publisher Added!");
+				} else {
+					if (current) {
+						lastpID = checkExistsRS.getInt("PUBLISHERID");
+						System.out.println(lastpID);
+					}
+
+				}
+
+				// Insert new Document Data
+				stmt.executeUpdate("INSERT INTO DOCUMENT (DOCID, TITLE, PDATE, PUBLISHERID) " + "VALUES (" + lastID
+						+ ",'" + titleField + "','" + pdateField + "','" + lastpID + "')");
+				System.out.println("New Document Added!");
+
+				new popupMsg("Document Added", "Added '" + titleField + "' to library!");
+				return true;
+			} else {
+				new popupMsg("Error", "'" + titleField + "' already exists in the library.");
+			}
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to add new document to library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddBook.java
+	public static boolean addNewBook(String isbn, String author, String title) {
+
+		connectToDB();
+		// Query to add Reader by passed in ReaderID
+		ResultSet checkExistsRS;
+		try {
+			// Check if author already exists
+			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='"+author+"';");
+			int lastID = 0;
+			if (!checkExistsRS.next()) {
+
+				// Find last Author ID
+				checkExistsRS = stmt.executeQuery("SELECT MAX(AUTHORID) FROM AUTHOR;");
+				
+				if (checkExistsRS.next()) {
+					lastID = checkExistsRS.getInt("MAX(AUTHORID)") + 1;
+					System.out.println(lastID);
+				}
+
+				// Insert new Author Data
+				stmt.executeUpdate("INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID
+						+ ",'" + author + "')");
+				System.out.println("New Author Added!");
+			} else {
+				checkExistsRS = stmt.executeQuery("SELECT AUTHORID FROM AUTHOR WHERE ANAME='"+author+"';");
+				if (checkExistsRS.next()) {
+					lastID = checkExistsRS.getInt("AUTHORID");
+					System.out.println(lastID);
+				}
+
+			}
+			
+			// Get DocID that ISBN belongs to
+			int docid = 0;
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			if (checkExistsRS.next()) {
+				docid = checkExistsRS.getInt("DOCID");
+			}
+			
+			// Check if ISBN already exists
+			checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='"+isbn+"';");
+			String lastISBN = isbn;
+			if (!checkExistsRS.next()) {
+				
+				// Insert new Book Data
+				stmt.executeUpdate("INSERT INTO BOOK (DOCID, ISBN) " + "VALUES (" + docid
+						+ ",'" + isbn + "')");
+				System.out.println("New Book Added!");
+			}
+			
+			checkExistsRS = stmt.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='"+lastID+"' AND DOCID='"+docid+"';");
+			if (!checkExistsRS.next()) {
+				// Insert new Writes Data
+				stmt.executeUpdate("INSERT INTO WRITES (AUTHORID, DOCID) " + "VALUES (" + lastID
+						+ ",'" + docid + "')");
+				System.out.println("Writes Data Added!");
+			}
+			
+			System.out.println("Success");
+			return true;
+			
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to add new book to library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddBook.java
+	public static boolean isbnExists(String isbn) {
+		// Check if ISBN already exists
+		try {
+			ResultSet checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='"+isbn+"';");
+			if (!checkExistsRS.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 
 	// For Use with ReaderFunction -> Borrow.java

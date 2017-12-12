@@ -75,7 +75,7 @@ public class Modify extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			new AddDocChoice();
+			new AddDocChoice(0);
 		}
 	
 	}
@@ -103,7 +103,7 @@ public class Modify extends JFrame {
 	class UpdateDoc implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			new AddBook("update","Update a Document");
+			new AddDocChoice(1);
 		}
 	}
 	
