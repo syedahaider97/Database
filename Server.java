@@ -726,68 +726,6 @@ class Server {
 		return rtn;
 	}
 
-	// For Use with ReaderFunction -> Reserve
-	public static boolean reserve(int readerId, String docId, String libId) {
-
-		connectToDB();
-		int resNumber = 0;
-		int copyno = 0;
-		try {
-			// Integer.parseInt(docId); Integer.parseInt(libId);
-
-			String resCountQuery = "SELECT COUNT(*) FROM RESERVES;";
-			ResultSet rs = stmt.executeQuery(resCountQuery);
-			if (rs.next()) {
-				resNumber = rs.getInt("COUNT(*)") + 1;
-			}
-
-			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
-			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
-			ResultSet rs1 = stmt.executeQuery(resCountCopy);
-			while (rs1.next()) {
-				copiesTaken.add(rs1.getInt("COPYNO"));
-			}
-
-			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
-			ResultSet rs2 = stmt.executeQuery(copyQuery);
-			while (rs2.next()) {
-				if (!copiesTaken.contains(rs2.getInt("COPYNO"))) {
-					copyno = rs2.getInt("COPYNO");
-					break;
-				}
-			}
-			if (copyno == 0) {
-				new popupMsg("Error", "No more copies left. Please check again later");
-				return false;
-			} else {
-				String date = getDate();
-				System.out.println(date);
-				String query = String.format("INSERT INTO RESERVES (RESUMBER,READERID,DOCID,COPYNO,LIBID,DTIME) "
-						+ "VALUES (%d,%d,%s,%d,%s,'%s');", resNumber, readerId, docId, copyno, libId, date);
-				System.out.println(query);
-				stmt.execute(query);
-			}
-			stmt.close();
-			con.close();
-			return true;
-		} catch (SQLException e) {
-			new popupMsg("Error", "Unable to process request.");
-			System.err.println(" SQL Exceptions \n");
-			while (e != null) {
-				System.out.println("Error Description: " + e.getMessage());
-				System.out.println("SQL State:  " + e.getSQLState());
-				System.out.println("Vendor Error Code: " + e.getErrorCode());
-				e = e.getNextException();
-				System.out.println("");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			new popupMsg("Error", "Please enter valid Document Id and Library Id");
-		}
-		return false;
-
-	}
-
 	// Used in AddBook.java, AddJournal, AddProceeding
 	public static boolean addNewDoc(String titleField, String pdateField, String publisherField, String paddrField) {
 
@@ -1180,6 +1118,68 @@ class Server {
 			}
 		}
 		return false;
+	}
+	
+	// For Use with ReaderFunction -> Reserve
+	public static boolean reserve(int readerId, String docId, String libId) {
+
+		connectToDB();
+		int resNumber = 0;
+		int copyno = 0;
+		try {
+			// Integer.parseInt(docId); Integer.parseInt(libId);
+
+			String resCountQuery = "SELECT COUNT(*) FROM RESERVES;";
+			ResultSet rs = stmt.executeQuery(resCountQuery);
+			if (rs.next()) {
+				resNumber = rs.getInt("COUNT(*)") + 1;
+			}
+
+			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
+			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
+			ResultSet rs1 = stmt.executeQuery(resCountCopy);
+			while (rs1.next()) {
+				copiesTaken.add(rs1.getInt("COPYNO"));
+			}
+
+			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
+			ResultSet rs2 = stmt.executeQuery(copyQuery);
+			while (rs2.next()) {
+				if (!copiesTaken.contains(rs2.getInt("COPYNO"))) {
+					copyno = rs2.getInt("COPYNO");
+					break;
+				}
+			}
+			if (copyno == 0) {
+				new popupMsg("Error", "No more copies left. Please check again later");
+				return false;
+			} else {
+				String date = getDate();
+				System.out.println(date);
+				String query = String.format("INSERT INTO RESERVES (RESUMBER,READERID,DOCID,COPYNO,LIBID,DTIME) "
+						+ "VALUES (%d,%d,%s,%d,%s,'%s');", resNumber, readerId, docId, copyno, libId, date);
+				System.out.println(query);
+				stmt.execute(query);
+			}
+			stmt.close();
+			con.close();
+			return true;
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to process request.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			new popupMsg("Error", "Please enter valid Document Id and Library Id");
+		}
+		return false;
+
 	}
 
 	// For Use with ReaderFunction -> Borrow.java

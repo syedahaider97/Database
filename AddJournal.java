@@ -200,21 +200,25 @@ public class AddJournal extends JFrame {
 			Pattern mopattern = Pattern.compile("((0?[1-9])|(1[0-2]))"); //month format from 01 to 12
 			Matcher momatcher = mopattern.matcher(month);
 			
-			Pattern dpattern = Pattern.compile("((0?[1-9])|([1-2][0-9])|(3[01]))"); //day format from 01 or 31
-			Matcher dmatcher = mopattern.matcher(day);
-			
 			if (jiss.compareTo("") != 0 && (Integer.parseInt(jiss) > 10 || Integer.parseInt(jiss) < 1)) {
 				new popupMsg("Error", "Journal Issue must be between 1-10");
 			} else {
-				if (yrmatcher.matches() && momatcher.matches() && dmatcher.matches()) {
+				if (yrmatcher.matches() && momatcher.matches()) {
 					if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0 || jvol.compareTo("") == 0 || jiss.compareTo("") == 0 || scope.compareTo("") == 0 || ceditor.compareTo("") == 0 || inveditor.compareTo("") == 0)) {
 						String pubDate = "";
 						if (Integer.parseInt(month) < 10) {
-							month = "0" + month;
+							month = "0" + Integer.parseInt(month);
+						} else if (Integer.parseInt(month) > 31) {
+							month = "31";
+							pmonthField.setText("31");
 						}
 						
-						if (Integer.parseInt(day) < 10) {
-							day = "0" + day;
+						if (Integer.parseInt(day) < 1) {
+							day = "1";
+							pdayField.setText("1");
+						} else if (Integer.parseInt(day) > 31) {
+							day = "31";
+							pdayField.setText("31");
 						}
 						
 						if (Integer.parseInt(year) < currYr) {
