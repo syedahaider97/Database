@@ -200,10 +200,13 @@ public class AddBook extends JFrame {
 						
 						System.out.println(pubDate);
 						if(type == 0) {
+							boolean success = false;
 							boolean DocAdded = Server.addNewDoc(title, pubDate, pubName, pubAddr);
 							if (DocAdded)
-								Server.addNewBook(isbn, author, title);
+								success = Server.addNewBook(isbn, author, title);
 							
+							if (success)
+								new popupMsg("Document Added", "'"+title+"' with ISBN "+isbn+" Added.");
 						}
 						else if(type == 1) {
 							//Update Query

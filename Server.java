@@ -842,7 +842,7 @@ class Server {
 						+ ",'" + titleField + "','" + pdateField + "','" + lastpID + "')");
 				System.out.println("New Document Added!");
 
-				new popupMsg("Document Added", "Added '" + titleField + "' to library!");
+				//new popupMsg("Document Added", "Added '" + titleField + "' to library!");
 				return true;
 			} else {
 				new popupMsg("Error", "'" + titleField + "' already exists in the library.");
@@ -953,7 +953,7 @@ class Server {
 	}
 	
 	// Used in AddJournal.java
-	public static boolean addNewJournal(String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
+	public static boolean addNewJournal(String titleField, String pdateField, String publisherField, String paddrField, String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
 		
 		/*
 		 * Arguments
@@ -971,18 +971,86 @@ class Server {
 		ResultSet checkExistsRS;
 		try {
 			
-			/*
-			 * Get DOCID by searching for TITLE='title' in DOCUMENT
-			 */
-			int docid = 0;
-			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
-			if (checkExistsRS.next()) {
-				docid = checkExistsRS.getInt("DOCID");
-			}
+			System.out.println("test1");
+			// Check if document already exists
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + titleField + "' AND PDATE='" + pdateField + "'");
 			
-			/* Check if Journal Volume already exists
-			 * -- If volume already exists, show popupMsg that Journal Volume must be changed
-			 */
+			int docid = 0;
+			boolean addJVol = false;
+			
+			 if (checkExistsRS.next()) {
+				 System.out.println("test2");
+				docid = checkExistsRS.getInt("DOCID");
+				
+				/* Check if Journal Volume already exists
+				 * -- If volume already exists, set flag to use same Journal
+				 */
+				checkExistsRS = stmt.executeQuery("SELECT JVOLUME FROM JOURNAL_VOLUME WHERE JVOLUME='"+jvol+"' AND DOCID='"+docid+"';");
+				if (!checkExistsRS.next()) {
+					System.out.println("in1");
+					addJVol = true;
+				} else {
+					/*
+					 * Check if Journal issue already exists for selected Journal Volume
+					 * -- If already exists, show popupMsg and return false
+					 * -- If does not exist, proceed
+					 */
+					addJVol = false;
+					System.out.println("test3");
+					checkExistsRS = stmt.executeQuery("SELECT ISSUE_NO FROM JOURNAL_ISSUE WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"';");
+					if (checkExistsRS.next()) {
+						System.out.println("in3");
+						new popupMsg("Error", "Journal Issue "+jiss+" for Volume "+jvol+" already exists.");
+						return false;
+					}
+				}
+			} else {
+				System.out.println("test4");
+				// Find last DOCID in list
+				checkExistsRS = stmt.executeQuery("SELECT MAX(DOCID) FROM DOCUMENT;");
+				System.out.println("Current docs:");
+				int lastID = 1;
+				if (checkExistsRS.next()) {
+					lastID = checkExistsRS.getInt("MAX(DOCID)") + 1;
+					System.out.println(lastID);
+				}
+
+				// Check if publisher already exists
+				System.out.println("test5");
+				checkExistsRS = stmt
+						.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBNAME='" + publisherField + "';");
+				boolean current = checkExistsRS.next();
+				int lastpID = 1;
+				if (!current) {
+					System.out.println("test6");
+					// Find last PUBLISHERID in list
+					checkExistsRS = stmt.executeQuery("SELECT MAX(PUBLISHERID) FROM PUBLISHER;");
+					System.out.println("PID list:");
+
+					if (checkExistsRS.next()) {
+						lastpID = checkExistsRS.getInt("MAX(PUBLISHERID)") + 1;
+						System.out.println("PID " + lastpID);
+					}
+
+					// Insert new Publisher Data
+					stmt.executeUpdate("INSERT INTO PUBLISHER (PUBLISHERID, PUBNAME, ADDRESS) " + "VALUES (" + lastpID
+							+ ",'" + publisherField + "','" + paddrField + "')");
+					System.out.println("New Publisher Added!");
+				} else {
+					if (current) {
+						lastpID = checkExistsRS.getInt("PUBLISHERID");
+						System.out.println(lastpID);
+					}
+
+				}
+				System.out.println("test7");
+				// Insert new Document Data
+				stmt.executeUpdate("INSERT INTO DOCUMENT (DOCID, TITLE, PDATE, PUBLISHERID) " + "VALUES (" + lastID
+						+ ",'" + titleField + "','" + pdateField + "','" + lastpID + "')");
+				System.out.println("New Document Added!");
+				docid = lastID;
+				addJVol=true;
+			}
 			
 			/*
 			 * Check if Chief Editor already exists
@@ -990,22 +1058,50 @@ class Server {
 			 * - If Chief Editor does not exists, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
 			 */
 			
-			/*
-			 * Check if Journal issue already exists for selected Journal Volume
-			 * -- If already exists, show popupMsg and return false
-			 * -- If does not exist, proceed
-			 */
-			
+			int ceditorID = 1;
+			System.out.println("test8");
+			checkExistsRS = stmt.executeQuery("SELECT EDITOR_ID FROM CHIEF_EDITOR WHERE ENAME='"+ceditor+"';");
+			if (!checkExistsRS.next()) {
+				// Insert new CHIEF_EDITOR Data
+				System.out.println("test9");
+				checkExistsRS = stmt.executeQuery("SELECT MAX(EDITOR_ID) FROM CHIEF_EDITOR;");
+				if (checkExistsRS.next()) {
+					ceditorID = checkExistsRS.getInt("MAX(EDITOR_ID)") + 1;
+				}
+				
+				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID
+						+ ",'" + ceditor + "')");
+			}
 			/*
 			 * 1. Insert new JOURNAL_VOLUME
 			 * 2. Insert new JOURNAL_ISSUE
 			 */
+			
+			if (addJVol) {
+				System.out.println("test10");
+				// Insert new JOURNAL_VOLUME Data
+				stmt.executeUpdate("INSERT INTO JOURNAL_VOLUME (DOCID, JVOLUME, EDITOR_ID) " + "VALUES (" + docid
+						+ ",'" + jvol + "','" + ceditorID + "')");
+			}
+			
+			// Insert new JOURNAL_ISSUE Data
+			System.out.println("test11");
+			stmt.executeUpdate("INSERT INTO JOURNAL_ISSUE (DOCID, ISSUE_NO, SCOPE) " + "VALUES (" + docid
+					+ ",'" + jiss + "','" + scope + "')");
 			
 			/*
 			 * Check if INV Editor already exists
 			 * -- If Inv editor exists, (IENAME matches inveditor) do nothing
 			 * -- If Inv editor does not exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
 			 */
+			System.out.println("test12");
+			checkExistsRS = stmt.executeQuery("SELECT * FROM INV_EDITOR WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"' AND IENAME='"+inveditor+"';");
+			if (!checkExistsRS.next()) {
+				// Insert new INV_EDITOR Data
+				System.out.println("test13");
+				stmt.executeUpdate("INSERT INTO INV_EDITOR (DOCID, ISSUE_NO, IENAME) " + "VALUES (" + docid
+						+ ",'" + jiss + "','" + inveditor + "')");
+			}
 			
 			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has been added.
 			System.out.println("Success");
@@ -1025,7 +1121,7 @@ class Server {
 		return false;
 	}
 	
-	// Used in AddJournal.java
+	// Used in AddProceeding.java
 	public static boolean addNewProceeding(String pubDate, String cloc, String chair, String title) {
 		
 		/*
@@ -1068,7 +1164,7 @@ class Server {
 			}
 			
 			// SHOW POPUPMSG stating that Conference Proceedings has been added.
-			new popupMsg("Document Added", "Conference Proceeding Added.");
+			
 			System.out.println("Success");
 			return true;
 			

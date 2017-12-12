@@ -184,7 +184,7 @@ public class AddProceeding extends JFrame {
 			Matcher dmatcher = mopattern.matcher(day);
 			
 			if (yrmatcher.matches() && momatcher.matches() && dmatcher.matches()) {
-				if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0)) {
+				if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0 || cloc.compareTo("") == 0 || chair.compareTo("") == 0)) {
 					String pubDate = "";
 					if (Integer.parseInt(month) < 10) {
 						month = "0" + month;
@@ -203,9 +203,13 @@ public class AddProceeding extends JFrame {
 					
 					System.out.println(pubDate);
 					if(type == 0) {
+						boolean success = false;
 						boolean DocAdded = Server.addNewDoc(title, pubDate, pubName, pubAddr);
 						if (DocAdded)
-							Server.addNewProceeding(pubDate, cloc, chair, title);
+							success = Server.addNewProceeding(pubDate, cloc, chair, title);
+						
+						if (success)
+							new popupMsg("Document Added", "Conference Proceeding '"+title+"' Added.");
 					}
 					else if(type == 1) {
 						//Update Query

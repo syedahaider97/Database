@@ -92,7 +92,7 @@ public class AddJournal extends JFrame {
 		
 		// Journal Volume entry field
 		JPanel jvolpanel = new JPanel();
-		JLabel jvollabel = new JLabel("Volume #:");
+		JLabel jvollabel = new JLabel("Volume:");
 		jvolfield = new JTextField(15);
 		jvolpanel.add(jvollabel); jvolpanel.add(jvolfield);
 		
@@ -110,7 +110,7 @@ public class AddJournal extends JFrame {
 		
 		// Journal Scope entry field
 		JPanel scopepanel = new JPanel();
-		JLabel scopelabel = new JLabel("Issue #:");
+		JLabel scopelabel = new JLabel("Scope:");
 		scopefield = new JTextField(15);
 		scopepanel.add(scopelabel); scopepanel.add(scopefield);
 		
@@ -203,11 +203,11 @@ public class AddJournal extends JFrame {
 			Pattern dpattern = Pattern.compile("((0?[1-9])|([1-2][0-9])|(3[01]))"); //day format from 01 or 31
 			Matcher dmatcher = mopattern.matcher(day);
 			
-			if (Integer.parseInt(jiss) > 10 || Integer.parseInt(jiss) < 1) {
+			if (jiss.compareTo("") != 0 && (Integer.parseInt(jiss) > 10 || Integer.parseInt(jiss) < 1)) {
 				new popupMsg("Error", "Journal Issue must be between 1-10");
 			} else {
 				if (yrmatcher.matches() && momatcher.matches() && dmatcher.matches()) {
-					if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0)) {
+					if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0 || jvol.compareTo("") == 0 || jiss.compareTo("") == 0 || scope.compareTo("") == 0 || ceditor.compareTo("") == 0 || inveditor.compareTo("") == 0)) {
 						String pubDate = "";
 						if (Integer.parseInt(month) < 10) {
 							month = "0" + month;
@@ -226,9 +226,9 @@ public class AddJournal extends JFrame {
 						
 						System.out.println(pubDate);
 						if(type == 0) {
-							boolean DocAdded = Server.addNewDoc(title, pubDate, pubName, pubAddr);
-							if (DocAdded)
-								Server.addNewJournal(jvol, jiss, scope, ceditor, inveditor, title);
+							boolean success = Server.addNewJournal(title, pubDate, pubName, pubAddr, jvol, jiss, scope, ceditor, inveditor, title);
+							if (success)
+								new popupMsg("Document Added", "Journal Issue "+jiss+" added to Volume "+jvol);
 						}
 						else if(type == 1) {
 							//Update Query
