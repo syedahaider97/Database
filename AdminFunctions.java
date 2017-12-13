@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import java.text.DecimalFormat;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -232,7 +234,10 @@ public class AdminFunctions extends JFrame {
 		panel.add(searchField);
 
 		// Average Fine display
-		JLabel fineLabel = new JLabel("Avg. Fine for All:");
+		Server.avgFine(libId);
+		double avgFineData = Server.avgFine(libId);
+		DecimalFormat df = new DecimalFormat("#.##");
+		JLabel fineLabel = new JLabel("Avg. Fine for All: $" + df.format(avgFineData));
 		panel.add(fineLabel);
 		Dimension sizeFine = fineLabel.getPreferredSize();
 		fineLabel.setBounds(25, 465, sizeFine.width, sizeFine.height);
@@ -449,6 +454,11 @@ public class AdminFunctions extends JFrame {
 	public Object[][] topTenBooksYr(int libid) {
 		return Server.topTenBooksYr(libid);
 	}
+	
+	public double avgFine(int libid) {
+		return Server.avgFine(libid);
+	}
+
 
 	/*
 	 * public static void main(String[] args) {
