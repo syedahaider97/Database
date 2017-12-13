@@ -213,7 +213,7 @@ public class ReaderFunctions extends JFrame{
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setSize(550,600);
+		setSize(650,600);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
