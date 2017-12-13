@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.TableColumnModel;
 
 public class ReaderFunctions extends JFrame{
 	private int readerID = 0;
@@ -155,7 +156,7 @@ public class ReaderFunctions extends JFrame{
 		reservation.setAlignmentX(CENTER_ALIGNMENT);
 		reservation.setFont(new Font("Helvetica",Font.BOLD,24));
 		
-		String[] columns = {"Title","Status","Fine","Date Borrowed"};
+		String[] columns = {"DocId","LibId","Title","Status","Fine","Date Borrowed"};
 		
 		
 		//COMPUTE ACTUAL DATA BASED ON PASSED IN READER ID
@@ -163,6 +164,13 @@ public class ReaderFunctions extends JFrame{
 		
 		JTable table = new JTable(data,columns);
 		JScrollPane scroll = new JScrollPane(table);
+		TableColumnModel model = table.getColumnModel();
+		model.getColumn(0).setPreferredWidth(1*getWidth()/10);
+		model.getColumn(1).setPreferredWidth(1*getWidth()/10);
+		model.getColumn(2).setPreferredWidth(3*getWidth()/10);
+		model.getColumn(0).setPreferredWidth(2*getWidth()/10);
+		model.getColumn(0).setPreferredWidth(1*getWidth()/10);
+		model.getColumn(0).setPreferredWidth(2*getWidth()/10);
 		
 		JPanel buttonPanel = new JPanel();
 		
@@ -213,7 +221,7 @@ public class ReaderFunctions extends JFrame{
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setSize(650,600);
+		setSize(600,600);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
