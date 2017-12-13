@@ -1721,7 +1721,7 @@ class Server {
 	}
 
 	// Used to find average. fine in AdminFunctions.java
-	public static double avgFine(int libid) {
+	public static float avgFine(int libid) {
 
 		connectToDB();
 
@@ -1782,12 +1782,12 @@ class Server {
 			return 0;
 		}
 
-		int total = 0;
+		float total = 0;
 		for (Float i : readerFines) {
 			total += i;
 		}
 
-		double result;
+		float result;
 		if (total == 0) {
 			result = 0;
 		}
