@@ -1726,16 +1726,14 @@ class Server {
 	}
 
 	// Used to find average. fine in AdminFunctions.java
-	public static double avgFine(int libid) {
+	public static float avgFine(int libid) {
 
 		connectToDB();
 
 		ArrayList<String[]> data = new ArrayList<String[]>();
-		ArrayList<Integer> readerFines = new ArrayList<>();
 
 		try {
-			ResultSet rs = stmt.executeQuery(
-					"SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
+			ResultSet rs = stmt.executeQuery("SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
 			while (rs.next()) {
 				int num = rs.getInt("READERID");
 				Timestamp ts = rs.getTimestamp("BDTIME");
@@ -1744,7 +1742,7 @@ class Server {
 				String dateString = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
 				SimpleDateFormat sd = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
 				Date d = sd.parse(dateString);
-				data.add(new String[] { String.valueOf(num), Long.toString(d.getTime()) });
+				data.add(new String[] {String.valueOf(num), Long.toString(d.getTime())});
 			}
 		} catch (SQLException e) {
 			System.out.println("Error! " + "\n" + e.getMessage() + "\n" + e.getSQLState() + "\n" + e.getErrorCode());
@@ -1752,34 +1750,16 @@ class Server {
 			e.printStackTrace();
 		}
 
-		int currReaderID;
-		try {
-			currReaderID = Integer.parseInt(data.get(0)[0]); // Nobody borrowed
-																// anything at
-																// this libID.
-		} catch (IndexOutOfBoundsException e) {
-			return 0;
-		}
-
-		int sum = 0;
+		float sum = 0;
+		int count = 0;
 
 		for (String[] aData : data) {
-			if (Integer.parseInt(aData[0]) != currReaderID) {
-				readerFines.add(sum);
-				sum = 0;
-				currReaderID = Integer.parseInt(aData[0]);
-			}
+			
+			count++;
 
 			long borrowedMillis = Long.valueOf(aData[1]);
 			long currMillis = System.currentTimeMillis();
-			long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How
-																					// long
-																					// has
-																					// it
-																					// been
-																					// borrowed
-																					// in
-																					// days
+			long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How long has it been borrowed in days
 
 			if (days > 20) {
 				double numDaysOverDue = Math.ceil(days - 20);
@@ -1788,23 +1768,14 @@ class Server {
 			}
 		}
 
-		if (readerFines.size() == 0) {
+		float result = 0;
+		
+		if (count == 0) {
 			return 0;
 		}
-
-		int total = 0;
-		for (Integer i : readerFines) {
-			total += i;
+		else {
+			result = sum / count;
 		}
-
-		double result;
-		if (total == 0) {
-			result = 0;
-		} else {
-			result = total / readerFines.size();
-		}
-
-		System.out.println(result);
 
 		return result;
 	}
