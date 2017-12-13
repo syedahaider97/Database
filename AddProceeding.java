@@ -36,7 +36,7 @@ public class AddProceeding extends JFrame {
 		
 		// Title entry field
 		JPanel titlePanel = new JPanel();
-		JLabel titleLabel = new JLabel("Title:                         ");
+		JLabel titleLabel = new JLabel("Title:                              ");
 		titleField = new JTextField(15);
 		titlePanel.add(titleLabel); titlePanel.add(titleField);
 		
@@ -46,7 +46,7 @@ public class AddProceeding extends JFrame {
 		if (type == 1) { // If we are updating, prompt for a replacement title
 			// Title entry field
 			JPanel newtitlePanel = new JPanel();
-			JLabel newtitleLabel = new JLabel("New Title:                   ");
+			JLabel newtitleLabel = new JLabel("New Title:                     ");
 			newtitleField = new JTextField(15);
 			newtitlePanel.add(newtitleLabel); newtitlePanel.add(newtitleField);
 			
@@ -58,8 +58,8 @@ public class AddProceeding extends JFrame {
 		
 		// Year published
 		JPanel pyearPanel = new JPanel();
-		JLabel pyearLabel = new JLabel("Year:");
-		pyearField = new JTextField(4);
+		JLabel pyearLabel = new JLabel("Year:                              ");
+		pyearField = new JTextField(15);
 		pyearPanel.add(pyearLabel); pyearPanel.add(pyearField);
 		
 		//panel.add(new JLabel(" "));
@@ -67,8 +67,8 @@ public class AddProceeding extends JFrame {
 		
 		// Month published
 		JPanel pmonthPanel = new JPanel();
-		JLabel pmonthLabel = new JLabel("Month:");
-		pmonthField = new JTextField(4);
+		JLabel pmonthLabel = new JLabel("Month:                           ");
+		pmonthField = new JTextField(15);
 		pmonthPanel.add(pmonthLabel); pmonthPanel.add(pmonthField);
 		
 		//panel.add(new JLabel(" "));
@@ -76,8 +76,8 @@ public class AddProceeding extends JFrame {
 		
 		// Day published
 		JPanel pdayPanel = new JPanel();
-		JLabel pdayLabel = new JLabel("Day:");
-		pdayField = new JTextField(4);
+		JLabel pdayLabel = new JLabel("Day:                                ");
+		pdayField = new JTextField(15);
 		pdayPanel.add(pdayLabel); pdayPanel.add(pdayField);
 		
 		//panel.add(new JLabel(" "));
@@ -85,7 +85,7 @@ public class AddProceeding extends JFrame {
 		
 		// Publisher name entry field
 		JPanel publisherPanel = new JPanel();
-		JLabel publisherLabel = new JLabel("Publisher Name:");
+		JLabel publisherLabel = new JLabel("Publisher Name:         ");
 		publisherField = new JTextField(15);
 		publisherPanel.add(publisherLabel); publisherPanel.add(publisherField);
 		
@@ -94,7 +94,7 @@ public class AddProceeding extends JFrame {
 		
 		// Publisher address entry field
 		JPanel paddrPanel = new JPanel();
-		JLabel paddrLabel = new JLabel("Publisher Addr:");
+		JLabel paddrLabel = new JLabel("Publisher Addr:           ");
 		paddrField = new JTextField(15);
 		paddrPanel.add(paddrLabel); paddrPanel.add(paddrField);
 		
@@ -112,7 +112,7 @@ public class AddProceeding extends JFrame {
 		
 		// Conference Location entry field
 		JPanel clocpanel = new JPanel();
-		JLabel cloclabel = new JLabel("Location:");
+		JLabel cloclabel = new JLabel("Location:                       ");
 		clocfield = new JTextField(15);
 		clocpanel.add(cloclabel); clocpanel.add(clocfield);
 		
@@ -121,7 +121,7 @@ public class AddProceeding extends JFrame {
 		
 		// Conference Chair entry field
 		JPanel chairpanel = new JPanel();
-		JLabel chairlabel = new JLabel("Chairman Name:");
+		JLabel chairlabel = new JLabel("Chairman Name:         ");
 		chairfield = new JTextField(15);
 		chairpanel.add(chairlabel); chairpanel.add(chairfield);
 		

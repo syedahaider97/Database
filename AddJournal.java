@@ -36,7 +36,7 @@ public class AddJournal extends JFrame {
 		
 		// Title entry field
 		JPanel titlePanel = new JPanel();
-		JLabel titleLabel = new JLabel("Title:");
+		JLabel titleLabel = new JLabel("Title:                              ");
 		titleField = new JTextField(15);
 		titlePanel.add(titleLabel); titlePanel.add(titleField);
 		
@@ -46,7 +46,7 @@ public class AddJournal extends JFrame {
 		if (type == 1) { // If we are updating, prompt for a replacement title
 			// Title entry field
 			JPanel newtitlePanel = new JPanel();
-			JLabel newtitleLabel = new JLabel("New Title:");
+			JLabel newtitleLabel = new JLabel("New Title:                     ");
 			newtitleField = new JTextField(15);
 			newtitlePanel.add(newtitleLabel); newtitlePanel.add(newtitleField);
 			
@@ -58,8 +58,8 @@ public class AddJournal extends JFrame {
 		
 		// Year published
 		JPanel pyearPanel = new JPanel();
-		JLabel pyearLabel = new JLabel("Year:");
-		pyearField = new JTextField(4);
+		JLabel pyearLabel = new JLabel("Year:                              ");
+		pyearField = new JTextField(15);
 		pyearPanel.add(pyearLabel); pyearPanel.add(pyearField);
 		
 		//panel.add(new JLabel(" "));
@@ -67,8 +67,8 @@ public class AddJournal extends JFrame {
 		
 		// Month published
 		JPanel pmonthPanel = new JPanel();
-		JLabel pmonthLabel = new JLabel("Month:");
-		pmonthField = new JTextField(4);
+		JLabel pmonthLabel = new JLabel("Month:                           ");
+		pmonthField = new JTextField(15);
 		pmonthPanel.add(pmonthLabel); pmonthPanel.add(pmonthField);
 		
 		//panel.add(new JLabel(" "));
@@ -76,8 +76,8 @@ public class AddJournal extends JFrame {
 		
 		// Day published
 		JPanel pdayPanel = new JPanel();
-		JLabel pdayLabel = new JLabel("Day:");
-		pdayField = new JTextField(4);
+		JLabel pdayLabel = new JLabel("Day:                                ");
+		pdayField = new JTextField(15);
 		pdayPanel.add(pdayLabel); pdayPanel.add(pdayField);
 		
 		//panel.add(new JLabel(" "));
@@ -85,7 +85,7 @@ public class AddJournal extends JFrame {
 		
 		// Publisher name entry field
 		JPanel publisherPanel = new JPanel();
-		JLabel publisherLabel = new JLabel("Publisher Name:");
+		JLabel publisherLabel = new JLabel("Publisher Name:         ");
 		publisherField = new JTextField(15);
 		publisherPanel.add(publisherLabel); publisherPanel.add(publisherField);
 		
@@ -94,7 +94,7 @@ public class AddJournal extends JFrame {
 		
 		// Publisher address entry field
 		JPanel paddrPanel = new JPanel();
-		JLabel paddrLabel = new JLabel("Publisher Addr:");
+		JLabel paddrLabel = new JLabel("Publisher Addr:           ");
 		paddrField = new JTextField(15);
 		paddrPanel.add(paddrLabel); paddrPanel.add(paddrField);
 		
@@ -103,7 +103,7 @@ public class AddJournal extends JFrame {
 		
 		// Journal Volume entry field
 		JPanel jvolpanel = new JPanel();
-		JLabel jvollabel = new JLabel("Volume:");
+		JLabel jvollabel = new JLabel("Volume:                         ");
 		jvolfield = new JTextField(15);
 		jvolpanel.add(jvollabel); jvolpanel.add(jvolfield);
 		
@@ -112,7 +112,7 @@ public class AddJournal extends JFrame {
 		
 		// Journal Issue entry field
 		JPanel jisspanel = new JPanel();
-		JLabel jisslabel = new JLabel("Issue #:");
+		JLabel jisslabel = new JLabel("Issue #:                          ");
 		jissfield = new JTextField(15);
 		jisspanel.add(jisslabel); jisspanel.add(jissfield);
 		
@@ -121,7 +121,7 @@ public class AddJournal extends JFrame {
 		
 		// Journal Scope entry field
 		JPanel scopepanel = new JPanel();
-		JLabel scopelabel = new JLabel("Scope:");
+		JLabel scopelabel = new JLabel("Scope:                            ");
 		scopefield = new JTextField(15);
 		scopepanel.add(scopelabel); scopepanel.add(scopefield);
 		
@@ -130,7 +130,7 @@ public class AddJournal extends JFrame {
 		
 		// Chief Editor entry field
 		JPanel cedpanel = new JPanel();
-		JLabel cedlabel = new JLabel("Chief Editor:");
+		JLabel cedlabel = new JLabel("Chief Editor:                   ");
 		cedfield = new JTextField(15);
 		cedpanel.add(cedlabel); cedpanel.add(cedfield);
 		
@@ -139,7 +139,8 @@ public class AddJournal extends JFrame {
 		
 		// Inv Editor entry field
 		JPanel invpanel = new JPanel();
-		JLabel invlabel = new JLabel("Guest Editor:");
+		JLabel invlabel = new JLabel("Guest Editor:            "
+				+ "     ");
 		invfield = new JTextField(15);
 		invpanel.add(invlabel); invpanel.add(invfield);
 		
