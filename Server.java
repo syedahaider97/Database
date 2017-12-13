@@ -1467,136 +1467,217 @@ class Server {
 		return false;
 	}
 	
-	// For Use with ReaderFunction -> Reserve
+	//For Use with ReaderFunction -> Reserve
 	public static boolean reserve(int readerId, String docId, String libId) {
 
 		connectToDB();
 		int resNumber = 0;
 		int copyno = 0;
 		try {
-			// Integer.parseInt(docId); Integer.parseInt(libId);
+			//Integer.parseInt(docId); Integer.parseInt(libId);
 
-			String resCountQuery = "SELECT COUNT(*) FROM RESERVES;";
+			String resCountQuery = "SELECT MAX(RESUMBER) FROM RESERVES;";
 			ResultSet rs = stmt.executeQuery(resCountQuery);
-			if (rs.next()) {
-				resNumber = rs.getInt("COUNT(*)") + 1;
+			if(rs.next()) {
+				resNumber = rs.getInt("MAX(RESUMBER)") + 1;
 			}
-
+			
 			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
-			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
+			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
 			ResultSet rs1 = stmt.executeQuery(resCountCopy);
-			while (rs1.next()) {
+			while(rs1.next()) {
 				copiesTaken.add(rs1.getInt("COPYNO"));
 			}
-
-			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
-			ResultSet rs2 = stmt.executeQuery(copyQuery);
-			while (rs2.next()) {
-				if (!copiesTaken.contains(rs2.getInt("COPYNO"))) {
-					copyno = rs2.getInt("COPYNO");
+			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId + " AND DOCID = " + docId +";";
+			ResultSet rs2 = stmt.executeQuery(borCountCopy);
+			while(rs2.next()) {
+				copiesTaken.add(rs2.getInt("COPYNO"));
+			}
+			
+			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+			ResultSet rs3 = stmt.executeQuery(copyQuery);
+			while(rs3.next()) {
+				if(!copiesTaken.contains(rs3.getInt("COPYNO"))) {
+					copyno = rs3.getInt("COPYNO");
 					break;
 				}
 			}
-			if (copyno == 0) {
-				new popupMsg("Error", "No more copies left. Please check again later");
-				return false;
-			} else {
-				String date = getDate();
+			if(copyno == 0) {
+				 new popupMsg("Error","No more copies left. Please check again later");
+				 return false;
+			} else{
+				DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Calendar cal = Calendar.getInstance();
+				String date = sdf.format(cal.getTime());
 				System.out.println(date);
 				String query = String.format("INSERT INTO RESERVES (RESUMBER,READERID,DOCID,COPYNO,LIBID,DTIME) "
-						+ "VALUES (%d,%d,%s,%d,%s,'%s');", resNumber, readerId, docId, copyno, libId, date);
+										    +"VALUES (%d,%d,%s,%d,%s,'%s');",resNumber,readerId,docId,copyno,libId,date);
 				System.out.println(query);
 				stmt.execute(query);
 			}
 			stmt.close();
 			con.close();
 			return true;
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			new popupMsg("Error", "Unable to process request.");
 			System.err.println(" SQL Exceptions \n");
-			while (e != null) {
-				System.out.println("Error Description: " + e.getMessage());
-				System.out.println("SQL State:  " + e.getSQLState());
-				System.out.println("Vendor Error Code: " + e.getErrorCode());
-				e = e.getNextException();
-				System.out.println("");
-			}
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            } 
 		} catch (Exception e) {
 			e.printStackTrace();
-			new popupMsg("Error", "Please enter valid Document Id and Library Id");
+			new popupMsg("Error","Please enter valid Document Id and Library Id");
 		}
 		return false;
-
+		
 	}
-
-	// For Use with ReaderFunction -> Borrow.java
+	//For Use with ReaderFunction -> Borrow.java
 	public static boolean borrow(int readerId, String docId, String libId) {
 		connectToDB();
 		int borNumber = 0;
 		int copyno = 0;
 		try {
-			// Integer.parseInt(docId); Integer.parseInt(libId);
+			//Integer.parseInt(docId); Integer.parseInt(libId);
 
-			String borCountQuery = "SELECT COUNT(*) FROM BORROWS;";
+			String borCountQuery = "SELECT MAX(BORNUMBER) FROM BORROWS;";
 			ResultSet rs = stmt.executeQuery(borCountQuery);
-			if (rs.next()) {
-				borNumber = rs.getInt("COUNT(*)") + 1;
+			if(rs.next()) {
+				borNumber = rs.getInt("MAX(BORNUMBER)") + 1;
 			}
-
+			
 			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
-			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
+			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
 			ResultSet rs1 = stmt.executeQuery(resCountCopy);
-			while (rs1.next()) {
+			while(rs1.next()) {
 				copiesTaken.add(rs1.getInt("COPYNO"));
 			}
-			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId
-					+ " AND DOCID = " + docId + ";";
+			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId + " AND DOCID = " + docId +";";
 			ResultSet rs2 = stmt.executeQuery(borCountCopy);
-			while (rs2.next()) {
+			while(rs2.next()) {
 				copiesTaken.add(rs2.getInt("COPYNO"));
 			}
-
-			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
+			
+			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
 			ResultSet rs3 = stmt.executeQuery(copyQuery);
-			while (rs3.next()) {
-				if (!copiesTaken.contains(rs3.getInt("COPYNO"))) {
+			while(rs3.next()) {
+				if(!copiesTaken.contains(rs3.getInt("COPYNO"))) {
 					copyno = rs3.getInt("COPYNO");
 					break;
 				}
 			}
-			if (copyno == 0) {
-				new popupMsg("Error", "No more copies left. Please check again later");
-				return false;
-			} else {
+			if(copyno == 0) {
+				 new popupMsg("Error","No more copies left. Please check again later");
+				 return false;
+			} else{
 				DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				String date = sdf.format(cal.getTime());
 				System.out.println(date);
-				String query = String.format(
-						"INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
-								+ "VALUES (%d,%d,%s,%d,%s,'%s',NULL);",
-						borNumber, readerId, docId, copyno, libId, date);
+				String query = String.format("INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
+										    +"VALUES (%d,%d,%s,%d,%s,'%s',NULL);",borNumber,readerId,docId,copyno,libId,date);
 				System.out.println(query);
 				stmt.execute(query);
 			}
 			stmt.close();
 			con.close();
 			return true;
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			new popupMsg("Error", "Unable to process request.");
 			System.err.println(" SQL Exceptions \n");
-			while (e != null) {
-				System.out.println("Error Description: " + e.getMessage());
-				System.out.println("SQL State:  " + e.getSQLState());
-				System.out.println("Vendor Error Code: " + e.getErrorCode());
-				e = e.getNextException();
-				System.out.println("");
-			}
+            while (e != null) {
+                System.out.println("Error Description: " + e.getMessage());
+                System.out.println("SQL State:  " + e.getSQLState());
+                System.out.println("Vendor Error Code: " + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+            } 
 		} catch (Exception e) {
 			e.printStackTrace();
-			new popupMsg("Error", "Please enter valid Document Id and Library Id");
+			new popupMsg("Error","Please enter valid Document Id and Library Id");
 		}
 		return false;
+		
+		
+	}
+
+	public static boolean pickup(int readerId, String docId) {
+		
+		connectToDB();
+		
+
+		int resNumber = 0;
+		int copyno = 0;
+		int borNumber = 0;
+		int libId = 0;
+		try {
+			String borCountQuery = "SELECT MAX(BORNUMBER) FROM BORROWS;";
+			ResultSet rs = stmt.executeQuery(borCountQuery);
+			if(rs.next()) {
+				borNumber = rs.getInt("MAX(BORNUMBER)") + 1;
+			}
+			
+			
+			String query = "SELECT R.RESUMBER, R.COPYNO, R.LIBID "
+					+ "FROM RESERVES R WHERE READERID = " + readerId + " AND DOCID = " + docId + ";";
+			System.out.println(query);
+			ResultSet rs1 = stmt.executeQuery(query);
+			
+
+			if(rs1.next()) {
+				resNumber = rs1.getInt("RESUMBER");
+				copyno = rs1.getInt("COPYNO");
+				libId = rs1.getInt("LIBID");
+			}
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Calendar cal = Calendar.getInstance();
+			String date = sdf.format(cal.getTime());
+			
+			String insertQuery = String.format("INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
+				    +"VALUES (%d,%d,%s,%d,%s,'%s',NULL);",borNumber,readerId,docId,copyno,libId,date);
+
+			stmt.execute(insertQuery);
+			
+			String removeQuery = "DELETE FROM RESERVES WHERE RESUMBER = " + resNumber + ";";
+			stmt.execute(removeQuery);
+			
+			stmt.close();
+			con.close();
+			return true;
+		} catch (SQLException e) {
+			new popupMsg("Error","Please enter a valid document id");
+			return false;
+		}
+	}
+
+	public static boolean returnCopy(int readerId, String docId, String libId) {
+		
+		connectToDB();
+		String query = "SELECT B.BORNUMBER "
+				+ "FROM BORROWS B WHERE READERID = " + readerId + " AND DOCID = " + docId + " AND LIBID = " + libId + " AND RDTIME IS NULL;"; 
+		System.out.println(query);
+		int borNumber = 0;
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				borNumber = rs.getInt("BORNUMBER");
+			}
+			System.out.println(borNumber);
+			String date = getDate();
+			String updateQuery = "UPDATE BORROWS "
+					+ "SET RDTIME = '" + date + "' WHERE BORNUMBER = " + borNumber + ";";
+			System.out.println(updateQuery);
+			stmt.execute(updateQuery);
+			stmt.close();
+			con.close();
+			return true;
+		} catch (SQLException e) {
+			new popupMsg("Error","Unable to return copy");
+			return false;
+		}
 	}
 	
 	// Used to find average. fine in AdminFunctions.java
@@ -1674,8 +1755,5 @@ class Server {
 	return result;
 }
 
-	public static boolean pickup(int readerId, String text, int libId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 }
