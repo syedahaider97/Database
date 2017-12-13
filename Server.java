@@ -509,20 +509,20 @@ class Server {
 	public static Object[][] getReservationData(int readerId) {
 		connectToDB();
 		Object rtn[][] = new Object[30][4];
-		String query = "SELECT D.TITLE, R.DTIME " + "FROM DOCUMENT D, RESERVES R, COPY C "
+		String query = "SELECT D.TITLE, R.DTIME, D.DOCID, C.LIBID " + "FROM DOCUMENT D, RESERVES R, COPY C "
 				+ "WHERE C.DOCID = R.DOCID AND C.LIBID = R.LIBID AND C.COPYNO = R.COPYNO AND R.READERID = " + readerId
 				+ " AND C.DOCID = D.DOCID;";
 		int i = 0;
 		try {
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				Object entry[] = { rs.getString("TITLE"), "Reserved", "$0", rs.getTimestamp("DTIME") };
+				Object entry[] = { rs.getInt("DOCID"), rs.getInt("LIBID"), rs.getString("TITLE"), "Reserved", "$0", rs.getTimestamp("DTIME") };
 				rtn[i++] = entry;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		String query2 = "SELECT D.TITLE ,B.BDTIME " + "FROM DOCUMENT D, BORROWS B, COPY C "
+		String query2 = "SELECT D.TITLE, B.BDTIME, C.LIBID, D.DOCID " + "FROM DOCUMENT D, BORROWS B, COPY C "
 				+ "WHERE C.DOCID = B.DOCID AND C.LIBID = B.LIBID AND C.COPYNO = B.COPYNO AND C.DOCID = D.DOCID AND B.READERID = "
 				+ readerId + " AND RDTIME IS NULL;";
 		try {
@@ -543,7 +543,7 @@ class Server {
 			    	fine =  0.2 * ddays;
 			    }
 			    String fine2 = String.format("$%.2f", fine);
-				Object entry[] = { rs.getString("TITLE"), "Borrowed", fine2, rs.getTimestamp("BDTIME") };
+				Object entry[] = { rs.getInt("DOCID"), rs.getInt("LIBID"), rs.getString("TITLE"), "Borrowed", fine2, rs.getTimestamp("BDTIME") };
 				rtn[i++] = entry;
 			}
 			stmt.close();
