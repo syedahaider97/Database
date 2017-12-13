@@ -236,7 +236,7 @@ public class AdminFunctions extends JFrame {
 		// Average Fine display
 		Server.avgFine(libId);
 		double avgFineData = Server.avgFine(libId);
-		DecimalFormat df = new DecimalFormat("#.##");
+		DecimalFormat df = new DecimalFormat("0.00");
 		JLabel fineLabel = new JLabel("Avg. Fine for All: $" + df.format(avgFineData));
 		panel.add(fineLabel);
 		Dimension sizeFine = fineLabel.getPreferredSize();
