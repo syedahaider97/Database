@@ -1745,13 +1745,15 @@ class Server {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
+		
+		/*
 		int currReaderID;
 		try {
 			currReaderID = Integer.parseInt(data.get(0)[0]);
 		} catch (IndexOutOfBoundsException e) { // Nobody borrowed anything at this libID.
 			return 0;
 		}
+		*/
 
 		float sum = 0;
 
