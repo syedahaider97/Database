@@ -508,12 +508,17 @@ class Server {
 	// Used in ReaderFunctions.java
 	public static Object[][] getReservationData(int readerId) {
 		connectToDB();
-		Object rtn[][] = new Object[30][4];
+		Object rtn[][] = new Object[30][6];
 		String query = "SELECT D.TITLE, R.DTIME, D.DOCID, C.LIBID " + "FROM DOCUMENT D, RESERVES R, COPY C "
 				+ "WHERE C.DOCID = R.DOCID AND C.LIBID = R.LIBID AND C.COPYNO = R.COPYNO AND R.READERID = " + readerId
 				+ " AND C.DOCID = D.DOCID;";
 		int i = 0;
 		try {
+			int curTime = Integer.parseInt(getDate().substring(11, 13));
+			if (curTime > 12) {
+				System.out.println(curTime);
+				stmt.execute("DELETE FROM RESERVES;");
+			}
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				Object entry[] = { rs.getInt("DOCID"), rs.getInt("LIBID"), rs.getString("TITLE"), "Reserved", "$0", rs.getTimestamp("DTIME") };
