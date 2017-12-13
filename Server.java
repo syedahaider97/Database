@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -527,18 +528,22 @@ class Server {
 		try {
 			ResultSet rs = stmt.executeQuery(query2);
 			while (rs.next()) {
-				rs.getTimestamp("BDTIME");
+				Timestamp time = rs.getTimestamp("BDTIME");
+				double fine = 0;
+				
 				Calendar calendar1 = Calendar.getInstance();
 			    Calendar calendar2 = Calendar.getInstance();
-			    calendar2.set(2012, 04, 04);
+			    calendar2.setTimeInMillis(time.getTime());	
+			    calendar2.set(calendar2.get(Calendar.YEAR), calendar2.get(Calendar.MONTH), calendar2.get(Calendar.DAY_OF_MONTH));
 			    long milsecs1= calendar1.getTimeInMillis();
 			    long milsecs2 = calendar2.getTimeInMillis();
-			    long diff = milsecs2 - milsecs1;
-			    long dsecs = diff / 1000;
-			    long dminutes = diff / (60 * 1000);
-			    long dhours = diff / (60 * 60 * 1000);
-			    long ddays = diff / (24 * 60 * 60 * 1000);
-				Object entry[] = { rs.getString("TITLE"), "Borrowed", "$2", rs.getTimestamp("BDTIME") };
+			    long diff = milsecs1 - milsecs2;
+			    long ddays = diff / (24 * 60 * 60 * 1000) - 20;
+			    if (ddays > 0) {
+			    	fine =  0.2 * ddays;
+			    }
+			    String fine2 = String.format("$%.2f", fine);
+				Object entry[] = { rs.getString("TITLE"), "Borrowed", fine2, rs.getTimestamp("BDTIME") };
 				rtn[i++] = entry;
 			}
 			stmt.close();
@@ -1721,15 +1726,16 @@ class Server {
 	}
 
 	// Used to find average. fine in AdminFunctions.java
-	public static float avgFine(int libid) {
+	public static double avgFine(int libid) {
 
 		connectToDB();
 
 		ArrayList<String[]> data = new ArrayList<String[]>();
-		ArrayList<Float> readerFines = new ArrayList<>();
+		ArrayList<Integer> readerFines = new ArrayList<>();
 
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
+			ResultSet rs = stmt.executeQuery(
+					"SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
 			while (rs.next()) {
 				int num = rs.getInt("READERID");
 				Timestamp ts = rs.getTimestamp("BDTIME");
@@ -1738,36 +1744,42 @@ class Server {
 				String dateString = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
 				SimpleDateFormat sd = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
 				Date d = sd.parse(dateString);
-				data.add(new String[] {String.valueOf(num), Long.toString(d.getTime())});
+				data.add(new String[] { String.valueOf(num), Long.toString(d.getTime()) });
 			}
 		} catch (SQLException e) {
 			System.out.println("Error! " + "\n" + e.getMessage() + "\n" + e.getSQLState() + "\n" + e.getErrorCode());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		/*
+
 		int currReaderID;
 		try {
-			currReaderID = Integer.parseInt(data.get(0)[0]);
-		} catch (IndexOutOfBoundsException e) { // Nobody borrowed anything at this libID.
+			currReaderID = Integer.parseInt(data.get(0)[0]); // Nobody borrowed
+																// anything at
+																// this libID.
+		} catch (IndexOutOfBoundsException e) {
 			return 0;
 		}
-		*/
 
-		float sum = 0;
+		int sum = 0;
 
 		for (String[] aData : data) {
-
-		/* if (Integer.parseInt(aData[0]) != currReaderID) {
-			readerFines.add(sum);
-			sum = 0;
-			currReaderID = Integer.parseInt(aData[0]);
-		} */
+			if (Integer.parseInt(aData[0]) != currReaderID) {
+				readerFines.add(sum);
+				sum = 0;
+				currReaderID = Integer.parseInt(aData[0]);
+			}
 
 			long borrowedMillis = Long.valueOf(aData[1]);
 			long currMillis = System.currentTimeMillis();
-			long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How long has it been borrowed in days
+			long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How
+																					// long
+																					// has
+																					// it
+																					// been
+																					// borrowed
+																					// in
+																					// days
 
 			if (days > 20) {
 				double numDaysOverDue = Math.ceil(days - 20);
@@ -1776,22 +1788,19 @@ class Server {
 			}
 		}
 
-		readerFines.add(sum);
-
 		if (readerFines.size() == 0) {
 			return 0;
 		}
 
-		float total = 0;
-		for (Float i : readerFines) {
+		int total = 0;
+		for (Integer i : readerFines) {
 			total += i;
 		}
 
-		float result;
+		double result;
 		if (total == 0) {
 			result = 0;
-		}
-		else {
+		} else {
 			result = total / readerFines.size();
 		}
 
