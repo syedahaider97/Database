@@ -224,7 +224,7 @@ public class AddProceeding extends JFrame {
 							success = Server.addNewProceeding(pubDate, cloc, chair, title);
 						
 						if (success)
-							new popupMsg("Document Added ", "Conference Proceeding '"+title+"' Added.");
+							new popupMsg("Document Added", "Conference Proceeding '"+title+"' Added.");
 					}
 					else if(type == 1) {
 						//Update Query
@@ -238,7 +238,7 @@ public class AddProceeding extends JFrame {
 									success = Server.updateProceeding(docid, pubDate, cloc, chair, newtitle);
 								
 								if (success)
-									new popupMsg("Document Added ", "Conference Proceeding '"+title+"' Updated.");
+									new popupMsg("Document Updated", "Conference Proceeding '"+title+"' Updated.");
 							}
 						}
 					}

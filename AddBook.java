@@ -221,7 +221,7 @@ public class AddBook extends JFrame {
 								success = Server.addNewBook(isbn, author, title);
 							
 							if (success)
-								new popupMsg("Document Added ", "'"+title+"' with ISBN "+isbn+" Added.");
+								new popupMsg("Document Added", "'"+title+"' with ISBN "+isbn+" Added.");
 						}
 						else if(type == 1) {
 							//Update Query
@@ -235,7 +235,7 @@ public class AddBook extends JFrame {
 										success = Server.updateBook(docid, isbn, author, newtitle);
 									
 									if (success)
-										new popupMsg("Document Updated ", "'"+title+"' with ISBN "+isbn+" Added.");
+										new popupMsg("Document Updated", "'"+title+"' with ISBN "+isbn+" Updated.");
 								}
 							}
 						}

@@ -81,9 +81,9 @@ public class AddDocChoice extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
         	if (choice == 0) {
-        		new AddBook(choice,"Add a Journal"); // 0 is add, 1 is update
+        		new AddJournal(choice,"Add a Journal"); // 0 is add, 1 is update
         	} else {
-        		new AddBook(choice,"Update a Journal"); // 0 is add, 1 is update
+        		new AddJournal(choice,"Update a Journal"); // 0 is add, 1 is update
         	}
         }
     }
@@ -92,9 +92,9 @@ public class AddDocChoice extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
         	if (choice == 0) {
-        		new AddBook(choice,"Add a Proceeding"); // 0 is add, 1 is update
+        		new AddProceeding(choice,"Add a Proceeding"); // 0 is add, 1 is update
         	} else {
-        		new AddBook(choice,"Update a Proceeding"); // 0 is add, 1 is update
+        		new AddProceeding(choice,"Update a Proceeding"); // 0 is add, 1 is update
         	}
         }
     }

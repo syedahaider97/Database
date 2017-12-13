@@ -243,7 +243,7 @@ public class AddJournal extends JFrame {
 						if(type == 0) {
 							boolean success = Server.addNewJournal(title, pubDate, pubName, pubAddr, jvol, jiss, scope, ceditor, inveditor, title);
 							if (success)
-								new popupMsg("Document Added ", "Journal Issue "+jiss+", Volume "+jvol);
+								new popupMsg("Document Added", "Journal Issue "+jiss+", Volume "+jvol+" Added.");
 						} else if(type == 1) {
 							//Update Query
 							int docid = Server.findJournalDocID(title); 
@@ -255,7 +255,7 @@ public class AddJournal extends JFrame {
 									if (DocAdded)
 										success = Server.updateJournal(docid, jvol, jiss, scope, ceditor, inveditor, newtitle);
 									if (success)
-										new popupMsg("Document Updated ", "Journal Issue "+jiss+", Volume "+jvol);
+										new popupMsg("Document Updated", "Journal Issue "+jiss+", Volume "+jvol+" Updated.");
 								}
 							}
 						}
