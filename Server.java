@@ -820,6 +820,8 @@ class Server {
 			} else {
 				new popupMsg("Error", "'" + titleField + "' already exists in the library.");
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new document to library.");
 			System.err.println(" SQL Exceptions \n");
@@ -842,7 +844,7 @@ class Server {
 		ResultSet checkExistsRS;
 		try {
 			// Check if author already exists
-			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='" + author + "';");
+			checkExistsRS = stmt.executeQuery("SELECT AUTHORID FROM AUTHOR WHERE ANAME='" + author + "';");
 			int lastID = 0;
 			if (!checkExistsRS.next()) {
 
@@ -859,11 +861,8 @@ class Server {
 						"INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID + ",'" + author + "')");
 				System.out.println("New Author Added!");
 			} else {
-				if (checkExistsRS.next()) {
-					lastID = checkExistsRS.getInt("AUTHORID");
-					System.out.println(lastID);
-				}
-
+				lastID = checkExistsRS.getInt("AUTHORID");
+				System.out.println(lastID);
 			}
 
 			// Get DocID that ISBN belongs to
@@ -892,6 +891,8 @@ class Server {
 			}
 
 			System.out.println("Success");
+			stmt.close();
+			con.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -911,11 +912,16 @@ class Server {
 	// Used in AddBook.java
 	public static boolean isbnExists(String isbn) {
 		// Check if ISBN already exists
+		
+		connectToDB();
+		
 		try {
 			ResultSet checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='" + isbn + "';");
 			if (!checkExistsRS.next()) {
 				return true;
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1082,6 +1088,8 @@ class Server {
 			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has
 			// been added.
 			System.out.println("Success");
+			stmt.close();
+			con.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -1144,6 +1152,8 @@ class Server {
 			// SHOW POPUPMSG stating that Conference Proceedings has been added.
 
 			System.out.println("Success");
+			stmt.close();
+			con.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -1224,6 +1234,8 @@ class Server {
 			} else {
 				new popupMsg("Error", "'" + titleField + "' does not exist in the library.");
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to update document in library.");
 			System.err.println(" SQL Exceptions \n");
@@ -1240,10 +1252,14 @@ class Server {
 
 	// Used in AddBook.java
 	public static int findBookDocID(String title) {
+		
+		connectToDB();
+		
 		// Get DocID that ISBN belongs to
 		int docid = 0;
+		ResultSet checkExistsRS;
 		try {
-			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 				// Make sure document is a Book
@@ -1253,6 +1269,8 @@ class Server {
 					return 0;
 				}
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1266,9 +1284,19 @@ class Server {
 
 		ResultSet checkExistsRS;
 		try {
+			// Check if ISBN already exists for different document
+			checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='" + isbn + "' AND DOCID!='"+docid+"';");
+			if (!checkExistsRS.next()) {
+				// Update Book Data
+				stmt.executeUpdate("UPDATE BOOK SET ISBN='" + isbn + "' WHERE DOCID='" + docid + "';");
+				System.out.println("Book Updated!");
+			} else {
+				new popupMsg("Error", "Another book with ISBN "+isbn+" exists. Please enter a unique ISBN.");
+				return false;
+			}
 
 			// Check if author already exists
-			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='" + author + "';");
+			checkExistsRS = stmt.executeQuery("SELECT AUTHORID FROM AUTHOR WHERE ANAME='" + author + "';");
 			int lastID = 0;
 			if (!checkExistsRS.next()) {
 
@@ -1286,16 +1314,9 @@ class Server {
 				System.out.println("New Author Added!");
 			} else {
 				// Find current Author ID, if exists
-				if (checkExistsRS.next()) {
-					lastID = checkExistsRS.getInt("AUTHORID");
-					System.out.println(lastID);
-				}
-
+				lastID = checkExistsRS.getInt("AUTHORID");
+				System.out.println(lastID);
 			}
-
-			// Update Book Data
-			stmt.executeUpdate("UPDATE BOOK SET ISBN='" + isbn + "' WHERE DOCID='" + docid + "';");
-			System.out.println("Book Updated!");
 
 			checkExistsRS = stmt
 					.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='" + lastID + "' AND DOCID='" + docid + "';");
@@ -1306,6 +1327,8 @@ class Server {
 			}
 
 			System.out.println("Success");
+			stmt.close();
+			con.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -1324,6 +1347,9 @@ class Server {
 
 	// Used in AddBook.java
 	public static int findJournalDocID(String title) {
+		
+		connectToDB();
+		
 		// Get DocID that ISBN belongs to
 		int docid = 0;
 		ResultSet checkExistsRS;
@@ -1342,6 +1368,8 @@ class Server {
 					return 0;
 				}
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1420,6 +1448,8 @@ class Server {
 			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has
 			// been added.
 			System.out.println("Success");
+			stmt.close();
+			con.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -1438,14 +1468,18 @@ class Server {
 
 	// Used in AddBook.java
 	public static int findProceedingDocID(String title) {
+		
+		connectToDB();
+		
 		// Get DocID that ISBN belongs to
 		int docid = 0;
+		ResultSet checkExistsRS;
 		try {
 			System.out.println("test1");
 			/*
 			 * Get DOCID by searching for TITLE='title' in DOCUMENT
 			 */
-			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 				// Make sure document is a Proceeding
@@ -1455,6 +1489,8 @@ class Server {
 					return 0;
 				}
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1496,6 +1532,8 @@ class Server {
 			// SHOW POPUPMSG stating that Conference Proceedings has been added.
 
 			System.out.println("Success");
+			stmt.close();
+			con.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -1647,7 +1685,7 @@ class Server {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			new popupMsg("Error", "Please enter valid Document Id and Library Id");
+			new popupMsg("Error", "Please enter valid Document ID and Library ID");
 		}
 		return false;
 
@@ -1744,6 +1782,8 @@ class Server {
 				Date d = sd.parse(dateString);
 				data.add(new String[] {String.valueOf(num), Long.toString(d.getTime())});
 			}
+			stmt.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.println("Error! " + "\n" + e.getMessage() + "\n" + e.getSQLState() + "\n" + e.getErrorCode());
 		} catch (ParseException e) {
