@@ -53,7 +53,7 @@ public class RemoveDocument extends JFrame {
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setVisible(true);
 		setSize(300,300);
 		setLocationRelativeTo(null);

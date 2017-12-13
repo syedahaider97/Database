@@ -59,7 +59,7 @@ public class Modify extends JFrame {
 		panel.add(back);
 		
 		add(panel);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(280,355);
 		setVisible(true);
 		setLocationRelativeTo(null);

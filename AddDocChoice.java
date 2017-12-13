@@ -59,7 +59,7 @@ public class AddDocChoice extends JFrame {
 
 
         add(panel);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setVisible(true);
         setSize(300,300);
         setLocationRelativeTo(null);

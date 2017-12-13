@@ -74,7 +74,7 @@ public class AddDocument extends JFrame {
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setVisible(true);
 		setSize(300,400);
 		setLocationRelativeTo(null);

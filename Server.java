@@ -527,6 +527,17 @@ class Server {
 		try {
 			ResultSet rs = stmt.executeQuery(query2);
 			while (rs.next()) {
+				rs.getTimestamp("BDTIME");
+				Calendar calendar1 = Calendar.getInstance();
+			    Calendar calendar2 = Calendar.getInstance();
+			    calendar2.set(2012, 04, 04);
+			    long milsecs1= calendar1.getTimeInMillis();
+			    long milsecs2 = calendar2.getTimeInMillis();
+			    long diff = milsecs2 - milsecs1;
+			    long dsecs = diff / 1000;
+			    long dminutes = diff / (60 * 1000);
+			    long dhours = diff / (60 * 60 * 1000);
+			    long ddays = diff / (24 * 60 * 60 * 1000);
 				Object entry[] = { rs.getString("TITLE"), "Borrowed", "$2", rs.getTimestamp("BDTIME") };
 				rtn[i++] = entry;
 			}

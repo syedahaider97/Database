@@ -78,7 +78,7 @@ public class SearchResult extends JFrame {
 		add(panel);
 		
 		
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(480,275);
 		setVisible(true);
 		setResizable(false);

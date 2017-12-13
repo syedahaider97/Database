@@ -168,7 +168,7 @@ public class AddJournal extends JFrame {
 		
 		// Panel characteristics
 		add(panel);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setVisible(true);
 		setSize(500,500);
 		setLocationRelativeTo(null);

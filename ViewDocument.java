@@ -26,7 +26,6 @@ public class ViewDocument extends JFrame{
 		
 		String[] columns = {"Document ID","Title","Publisher Name","Publisher Date"};
 		
-		JPanel tablePanel = new JPanel();
 		
 		JTable data = new JTable(entries,columns);
 		JScrollPane scroll = new JScrollPane(data);

@@ -36,7 +36,7 @@ public class AddProceeding extends JFrame {
 		
 		// Title entry field
 		JPanel titlePanel = new JPanel();
-		JLabel titleLabel = new JLabel("Title:");
+		JLabel titleLabel = new JLabel("Title:                         ");
 		titleField = new JTextField(15);
 		titlePanel.add(titleLabel); titlePanel.add(titleField);
 		
@@ -46,7 +46,7 @@ public class AddProceeding extends JFrame {
 		if (type == 1) { // If we are updating, prompt for a replacement title
 			// Title entry field
 			JPanel newtitlePanel = new JPanel();
-			JLabel newtitleLabel = new JLabel("New Title:");
+			JLabel newtitleLabel = new JLabel("New Title:                   ");
 			newtitleField = new JTextField(15);
 			newtitlePanel.add(newtitleLabel); newtitlePanel.add(newtitleField);
 			
@@ -150,7 +150,7 @@ public class AddProceeding extends JFrame {
 		
 		// Panel characteristics
 		add(panel);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setVisible(true);
 		setSize(500,500);
 		setLocationRelativeTo(null);
