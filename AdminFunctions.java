@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdminFunctions extends JFrame {
+	JFrame frame;
 	private int libId = 0;
 	private JTextField addCopyDocID, addCopyLoc, addReaderType, addReaderName, addReaderAddress, searchField;
 
@@ -28,7 +29,7 @@ public class AdminFunctions extends JFrame {
 		System.out.println(libId);
 
 		// Create frame for content
-		JFrame frame = new JFrame("Administrator Functions");
+		frame = new JFrame("Administrator Functions");
 
 		// Create panel to display content on frame
 		JPanel panel = (JPanel) frame.getContentPane();
@@ -335,7 +336,8 @@ public class AdminFunctions extends JFrame {
 	class Quit implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			System.exit(0);
+			frame.dispose();
+			new Welcome();
 		}
 	}
 
@@ -353,8 +355,6 @@ public class AdminFunctions extends JFrame {
 			String readerType = addReaderType.getText();
 			String readerName = addReaderName.getText();
 			String readerAddr = addReaderAddress.getText();
-
-			boolean isValidInput = false; // flag if input is valid
 
 			// Check if input is not null
 			if (readerType != null && readerName != null && readerAddr != null) {
