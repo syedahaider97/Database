@@ -55,7 +55,7 @@ public class RemoveDocument extends JFrame {
 		add(panel);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setVisible(true);
-		setSize(300,300);
+		setSize(300,200);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		
