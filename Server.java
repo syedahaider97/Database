@@ -458,13 +458,15 @@ class Server {
 
 		try {
 			Integer.parseInt(docId);
-			String query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";";
+			String query = "DELETE FROM INV_EDITOR WHERE DOCID='"+docId+"';"; // Delete INV_EDITOR in the case of a Journal being removed
+			stmt.execute(query);
+			query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";"; // Delete Document
 			stmt.execute(query);
 			stmt.close();
 			con.close();
 			return true;
 		} catch (SQLException e) {
-			new popupMsg("Error", "Unable to search for document.");
+			new popupMsg("Error", "Unable to remove for document.");
 			System.err.println(" SQL Exceptions \n");
 			while (e != null) {
 				System.out.println("Error Description: " + e.getMessage());

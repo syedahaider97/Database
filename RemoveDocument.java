@@ -76,7 +76,6 @@ public class RemoveDocument extends JFrame {
 			String docId = docField.getText();
 			if(Server.removeByID(docId)) {;
 				new popupMsg("Success","Document succesfully removed");
-				dispose();
 			}
 		}
 	}
