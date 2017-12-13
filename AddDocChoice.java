@@ -13,18 +13,15 @@ public class AddDocChoice extends JFrame {
 	private int choice = 0; // 0 = add, 1 = update
 	
     public AddDocChoice(int decision) {
+    	super("Document Selection");
     	this.choice = decision;
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 
-        JLabel title = new JLabel("Document Types");
+        JLabel title = new JLabel("Select a Document Type:");
         title.setFont(new Font("Helvetica",Font.BOLD,18));
         title.setAlignmentX(CENTER_ALIGNMENT);
-
-        JLabel label = new JLabel("Select a Document Type:");
-        label.setFont(new Font("Helvetica",Font.BOLD,18));
-        label.setAlignmentX(CENTER_ALIGNMENT);
 
         JButton addBook = new JButton("Book");
         addBook.setAlignmentX(CENTER_ALIGNMENT);
@@ -46,7 +43,6 @@ public class AddDocChoice extends JFrame {
 
         panel.add(new JLabel(" "));
         panel.add(title);
-        panel.add(label);
         panel.add(new JLabel(" "));
         panel.add(new JLabel(" "));
         panel.add(addBook);
