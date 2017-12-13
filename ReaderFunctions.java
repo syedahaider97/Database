@@ -181,8 +181,11 @@ public class ReaderFunctions extends JFrame{
 		JButton rtnCopy = new JButton("Return Book");
 		rtnCopy.setAlignmentX(CENTER_ALIGNMENT);
 		rtnCopy.addActionListener(new Return());
+		
 		buttonPanel.add(reserve);
+		buttonPanel.add(pickup);
 		buttonPanel.add(borrow);
+		buttonPanel.add(rtnCopy);
 		
 		JButton quit = new JButton("Quit");
 		quit.setAlignmentX(CENTER_ALIGNMENT);
@@ -210,7 +213,7 @@ public class ReaderFunctions extends JFrame{
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setSize(500,600);
+		setSize(550,600);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -305,7 +308,7 @@ public class ReaderFunctions extends JFrame{
 	class Return implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			new Reservation(frame,readerID,"Reserve");
+			new ReturnCopy(frame,readerID);
 			
 		}
 	}

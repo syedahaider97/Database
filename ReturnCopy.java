@@ -10,21 +10,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
-public class PickupReservation extends JFrame {
+public class ReturnCopy extends JFrame {
 	
-	JTextField docField, libField;
 	int readerId;
 	ReaderFunctions frame;
-	
-	public PickupReservation(ReaderFunctions frame,int readerId) {
+	JTextField docField,libField;
+	public ReturnCopy(ReaderFunctions frame, int readerId) {
 		
-		super("Pickup a Reservation");
+		super("Return a Copy");
 		this.readerId = readerId;
 		this.frame = frame;
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 		
-		JLabel title = new JLabel("Pickup A Reservation");
+		JLabel title = new JLabel("Return a Copy");
 		title.setFont(new Font("Helvetica",Font.BOLD,24));
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -58,11 +57,10 @@ public class PickupReservation extends JFrame {
 		setVisible(true);
 		setLocationRelativeTo(null);
 	}
-	
 	class Submit implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			if(Server.pickup(readerId,docField.getText(),libField.getText())) {
+			if(Server.returnCopy(readerId,docField.getText(),libField.getText())) {
 				dispose();
 				frame.dispose();
 				new ReaderFunctions(readerId);

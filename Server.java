@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-
 class Server {
 	private static Connection con;
 	private static Statement stmt;
@@ -42,7 +41,7 @@ class Server {
 			// String URL = "jdbc:mysql://localhost.njit.edu/UCID";
 			// for server
 			String UCID = "root";
-			String passwd = "mySQLroot";
+			String passwd = "root";
 			String URL = "jdbc:mysql://localhost/cs631";
 			// String URL = "jdbc:mysql://sql2.njit.edu/" + UCID;
 			//
@@ -257,16 +256,22 @@ class Server {
 
 			while (searchDocCopyRS.next()) {
 				String searchDocCopy = searchDocCopyRS.getString("DOCID");
-				System.out.println(searchDocCopy); // Outputs Search Results for Document Copies. If empty, doesn't
+				System.out.println(searchDocCopy); // Outputs Search Results for
+													// Document Copies. If
+													// empty, doesn't
 													// exist.
 			}
 			while (searchDocBorrowsRS.next()) {
 				String searchDocBorrows = searchDocBorrowsRS.getString("DOCID");
-				System.out.println(searchDocBorrows); // Outputs Search Results for Documents Borrowed
+				System.out.println(searchDocBorrows); // Outputs Search Results
+														// for Documents
+														// Borrowed
 			}
 			while (searchDocReservesRS.next()) {
 				String searchDocReserves = searchDocReservesRS.getString("DOCID");
-				System.out.println(searchDocReserves); // Outputs Search Results for Documents Reserves
+				System.out.println(searchDocReserves); // Outputs Search Results
+														// for Documents
+														// Reserves
 			}
 
 		} catch (SQLException e) {
@@ -370,8 +375,10 @@ class Server {
 	}
 
 	// Used in AdminFunctions.java
-	public static boolean addReader(String addReaderType, String addReaderName, String addReaderAddress) { // passed in
-																											// // from
+	public static boolean addReader(String addReaderType, String addReaderName, String addReaderAddress) { // passed
+																											// in
+																											// //
+																											// from
 																											// text
 																											// field
 
@@ -411,7 +418,7 @@ class Server {
 	public static boolean addDocCopy(int docID, int libID, String position) {
 
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		ResultSet POSrs;
 		try {
@@ -464,9 +471,19 @@ class Server {
 
 		try {
 			Integer.parseInt(docId);
-			String query = "DELETE FROM INV_EDITOR WHERE DOCID='"+docId+"';"; // Delete INV_EDITOR in the case of a Journal being removed
+			String query = "DELETE FROM INV_EDITOR WHERE DOCID='" + docId + "';"; // Delete
+																					// INV_EDITOR
+																					// in
+																					// the
+																					// case
+																					// of
+																					// a
+																					// Journal
+																					// being
+																					// removed
 			stmt.execute(query);
-			query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";"; // Delete Document
+			query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";"; // Delete
+																			// Document
 			stmt.execute(query);
 			stmt.close();
 			con.close();
@@ -506,7 +523,7 @@ class Server {
 		}
 		String query2 = "SELECT D.TITLE ,B.BDTIME " + "FROM DOCUMENT D, BORROWS B, COPY C "
 				+ "WHERE C.DOCID = B.DOCID AND C.LIBID = B.LIBID AND C.COPYNO = B.COPYNO AND C.DOCID = D.DOCID AND B.READERID = "
-				+ readerId + ";";
+				+ readerId + " AND RDTIME IS NULL;";
 		try {
 			ResultSet rs = stmt.executeQuery(query2);
 			while (rs.next()) {
@@ -731,7 +748,7 @@ class Server {
 	public static boolean addNewDoc(String titleField, String pdateField, String publisherField, String paddrField) {
 
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
 
@@ -781,7 +798,8 @@ class Server {
 						+ ",'" + titleField + "','" + pdateField + "','" + lastpID + "')");
 				System.out.println("New Document Added!");
 
-				//new popupMsg("Document Added", "Added '" + titleField + "' to library!");
+				// new popupMsg("Document Added", "Added '" + titleField + "' to
+				// library!");
 				return true;
 			} else {
 				new popupMsg("Error", "'" + titleField + "' already exists in the library.");
@@ -799,30 +817,30 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddBook.java
 	public static boolean addNewBook(String isbn, String author, String title) {
 
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
 			// Check if author already exists
-			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='"+author+"';");
+			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='" + author + "';");
 			int lastID = 0;
 			if (!checkExistsRS.next()) {
 
 				// Find last Author ID
 				checkExistsRS = stmt.executeQuery("SELECT MAX(AUTHORID) FROM AUTHOR;");
-				
+
 				if (checkExistsRS.next()) {
 					lastID = checkExistsRS.getInt("MAX(AUTHORID)") + 1;
 					System.out.println(lastID);
 				}
 
 				// Insert new Author Data
-				stmt.executeUpdate("INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID
-						+ ",'" + author + "')");
+				stmt.executeUpdate(
+						"INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID + ",'" + author + "')");
 				System.out.println("New Author Added!");
 			} else {
 				if (checkExistsRS.next()) {
@@ -831,36 +849,35 @@ class Server {
 				}
 
 			}
-			
+
 			// Get DocID that ISBN belongs to
 			int docid = 0;
-			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 			}
-			
+
 			// Check if ISBN already exists
-			checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='"+isbn+"';");
+			checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='" + isbn + "';");
 			String lastISBN = isbn;
 			if (!checkExistsRS.next()) {
-				
+
 				// Insert new Book Data
-				stmt.executeUpdate("INSERT INTO BOOK (DOCID, ISBN) " + "VALUES (" + docid
-						+ ",'" + isbn + "')");
+				stmt.executeUpdate("INSERT INTO BOOK (DOCID, ISBN) " + "VALUES (" + docid + ",'" + isbn + "')");
 				System.out.println("New Book Added!");
 			}
-			
-			checkExistsRS = stmt.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='"+lastID+"' AND DOCID='"+docid+"';");
+
+			checkExistsRS = stmt
+					.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='" + lastID + "' AND DOCID='" + docid + "';");
 			if (!checkExistsRS.next()) {
 				// Insert new Writes Data
-				stmt.executeUpdate("INSERT INTO WRITES (AUTHORID, DOCID) " + "VALUES (" + lastID
-						+ ",'" + docid + "')");
+				stmt.executeUpdate("INSERT INTO WRITES (AUTHORID, DOCID) " + "VALUES (" + lastID + ",'" + docid + "')");
 				System.out.println("Writes Data Added!");
 			}
-			
+
 			System.out.println("Success");
 			return true;
-			
+
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new book to library.");
 			System.err.println(" SQL Exceptions \n");
@@ -874,71 +891,73 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddBook.java
 	public static boolean isbnExists(String isbn) {
 		// Check if ISBN already exists
 		try {
-			ResultSet checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='"+isbn+"';");
+			ResultSet checkExistsRS = stmt.executeQuery("SELECT ISBN FROM BOOK WHERE ISBN='" + isbn + "';");
 			if (!checkExistsRS.next()) {
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	// Used in AddJournal.java
-	public static boolean addNewJournal(String titleField, String pdateField, String publisherField, String paddrField, String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
-		
+	public static boolean addNewJournal(String titleField, String pdateField, String publisherField, String paddrField,
+			String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
+
 		/*
 		 * Arguments
 		 * 
-		 * jvol = Journal Volume #
-		 * jiss = Journal Issue #
-		 * scope = Scope
-		 * ceditor = Chief Editor Name
-		 * inveditor = Inv Editor Name
-		 * title = Document title
+		 * jvol = Journal Volume # jiss = Journal Issue # scope = Scope ceditor
+		 * = Chief Editor Name inveditor = Inv Editor Name title = Document
+		 * title
 		 */
-		
+
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
-			
+
 			System.out.println("test1");
 			// Check if document already exists
-			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + titleField + "' AND PDATE='" + pdateField + "'");
-			
+			checkExistsRS = stmt.executeQuery(
+					"SELECT DOCID FROM DOCUMENT WHERE TITLE='" + titleField + "' AND PDATE='" + pdateField + "'");
+
 			int docid = 0;
 			boolean addJVol = false;
-			
-			 if (checkExistsRS.next()) {
-				 System.out.println("test2");
+
+			if (checkExistsRS.next()) {
+				System.out.println("test2");
 				docid = checkExistsRS.getInt("DOCID");
-				
-				/* Check if Journal Volume already exists
-				 * -- If volume already exists, set flag to use same Journal
+
+				/*
+				 * Check if Journal Volume already exists -- If volume already
+				 * exists, set flag to use same Journal
 				 */
-				checkExistsRS = stmt.executeQuery("SELECT JVOLUME FROM JOURNAL_VOLUME WHERE JVOLUME='"+jvol+"' AND DOCID='"+docid+"';");
+				checkExistsRS = stmt.executeQuery(
+						"SELECT JVOLUME FROM JOURNAL_VOLUME WHERE JVOLUME='" + jvol + "' AND DOCID='" + docid + "';");
 				if (!checkExistsRS.next()) {
 					System.out.println("in1");
 					addJVol = true;
 				} else {
 					/*
-					 * Check if Journal issue already exists for selected Journal Volume
-					 * -- If already exists, show popupMsg and return false
-					 * -- If does not exist, proceed
+					 * Check if Journal issue already exists for selected
+					 * Journal Volume -- If already exists, show popupMsg and
+					 * return false -- If does not exist, proceed
 					 */
 					addJVol = false;
 					System.out.println("test3");
-					checkExistsRS = stmt.executeQuery("SELECT ISSUE_NO FROM JOURNAL_ISSUE WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"';");
+					checkExistsRS = stmt.executeQuery("SELECT ISSUE_NO FROM JOURNAL_ISSUE WHERE DOCID='" + docid
+							+ "' AND ISSUE_NO='" + jiss + "';");
 					if (checkExistsRS.next()) {
 						System.out.println("in3");
-						new popupMsg("Error", "Journal Issue "+jiss+" for Volume "+jvol+" already exists.");
+						new popupMsg("Error", "Journal Issue " + jiss + " for Volume " + jvol + " already exists.");
 						return false;
 					}
 				}
@@ -987,18 +1006,19 @@ class Server {
 						+ ",'" + titleField + "','" + pdateField + "','" + lastpID + "')");
 				System.out.println("New Document Added!");
 				docid = lastID;
-				addJVol=true;
+				addJVol = true;
 			}
-			
+
 			/*
-			 * Check if Chief Editor already exists
-			 * -- If Chief Editor exists, save Chief Editor's EDITOR_ID
-			 * - If Chief Editor does not exist, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
+			 * Check if Chief Editor already exists -- If Chief Editor exists,
+			 * save Chief Editor's EDITOR_ID - If Chief Editor does not exist,
+			 * INSERT new Chief Editor with name ceditor and new EDITOR_ID using
+			 * MAX() function
 			 */
-			
+
 			int ceditorID = 1;
 			System.out.println("test8");
-			checkExistsRS = stmt.executeQuery("SELECT EDITOR_ID FROM CHIEF_EDITOR WHERE ENAME='"+ceditor+"';");
+			checkExistsRS = stmt.executeQuery("SELECT EDITOR_ID FROM CHIEF_EDITOR WHERE ENAME='" + ceditor + "';");
 			if (!checkExistsRS.next()) {
 				// Insert new CHIEF_EDITOR Data
 				System.out.println("test9");
@@ -1006,47 +1026,48 @@ class Server {
 				if (checkExistsRS.next()) {
 					ceditorID = checkExistsRS.getInt("MAX(EDITOR_ID)") + 1;
 				}
-				
-				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID
-						+ ",'" + ceditor + "')");
+
+				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID + ",'"
+						+ ceditor + "')");
 			} else {
 				ceditorID = checkExistsRS.getInt("EDITOR_ID");
 			}
 			/*
-			 * 1. Insert new JOURNAL_VOLUME
-			 * 2. Insert new JOURNAL_ISSUE
+			 * 1. Insert new JOURNAL_VOLUME 2. Insert new JOURNAL_ISSUE
 			 */
-			
+
 			if (addJVol) {
 				System.out.println("test10");
 				// Insert new JOURNAL_VOLUME Data
-				stmt.executeUpdate("INSERT INTO JOURNAL_VOLUME (DOCID, JVOLUME, EDITOR_ID) " + "VALUES (" + docid
-						+ ",'" + jvol + "','" + ceditorID + "')");
+				stmt.executeUpdate("INSERT INTO JOURNAL_VOLUME (DOCID, JVOLUME, EDITOR_ID) " + "VALUES (" + docid + ",'"
+						+ jvol + "','" + ceditorID + "')");
 			}
-			
+
 			// Insert new JOURNAL_ISSUE Data
 			System.out.println("test11");
-			stmt.executeUpdate("INSERT INTO JOURNAL_ISSUE (DOCID, ISSUE_NO, SCOPE) " + "VALUES (" + docid
-					+ ",'" + jiss + "','" + scope + "')");
-			
+			stmt.executeUpdate("INSERT INTO JOURNAL_ISSUE (DOCID, ISSUE_NO, SCOPE) " + "VALUES (" + docid + ",'" + jiss
+					+ "','" + scope + "')");
+
 			/*
-			 * Check if INV Editor already exists
-			 * -- If Inv editor exists, (IENAME matches inveditor) do nothing
-			 * -- If Inv editor does not exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
+			 * Check if INV Editor already exists -- If Inv editor exists,
+			 * (IENAME matches inveditor) do nothing -- If Inv editor does not
+			 * exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
 			 */
 			System.out.println("test12");
-			checkExistsRS = stmt.executeQuery("SELECT * FROM INV_EDITOR WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"' AND IENAME='"+inveditor+"';");
+			checkExistsRS = stmt.executeQuery("SELECT * FROM INV_EDITOR WHERE DOCID='" + docid + "' AND ISSUE_NO='"
+					+ jiss + "' AND IENAME='" + inveditor + "';");
 			if (!checkExistsRS.next()) {
 				// Insert new INV_EDITOR Data
 				System.out.println("test13");
-				stmt.executeUpdate("INSERT INTO INV_EDITOR (DOCID, ISSUE_NO, IENAME) " + "VALUES (" + docid
-						+ ",'" + jiss + "','" + inveditor + "')");
+				stmt.executeUpdate("INSERT INTO INV_EDITOR (DOCID, ISSUE_NO, IENAME) " + "VALUES (" + docid + ",'"
+						+ jiss + "','" + inveditor + "')");
 			}
-			
-			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has been added.
+
+			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has
+			// been added.
 			System.out.println("Success");
 			return true;
-			
+
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new Journal to library.");
 			System.err.println(" SQL Exceptions \n");
@@ -1060,37 +1081,38 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddProceeding.java
 	public static boolean addNewProceeding(String pubDate, String cloc, String chair, String title) {
-		
+
 		/*
 		 * Arguments
 		 * 
-		 * pubDate = Conference Date
-		 * cloc = Conference Location
-		 * chair = Conference Chair Name
-		 * title = Document title
+		 * pubDate = Conference Date cloc = Conference Location chair =
+		 * Conference Chair Name title = Document title
 		 */
-		
+
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
-			
+
 			/*
 			 * Get DOCID by searching for TITLE='title' in DOCUMENT
 			 */
 			int docid = 0;
-			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 			}
-			
-			/* Check if Proceedings already exists (same Date, Location, and Editor)
-			 * -- If exists, do nothing and show popupMsg and return false;
+
+			/*
+			 * Check if Proceedings already exists (same Date, Location, and
+			 * Editor) -- If exists, do nothing and show popupMsg and return
+			 * false;
 			 */
-			checkExistsRS = stmt.executeQuery("SELECT * FROM PROCEEDINGS WHERE DOCID='"+docid+"' AND CDATE='"+pubDate+"' AND CLOCATION='"+cloc+"' AND CEDITOR='"+chair+"';");
+			checkExistsRS = stmt.executeQuery("SELECT * FROM PROCEEDINGS WHERE DOCID='" + docid + "' AND CDATE='"
+					+ pubDate + "' AND CLOCATION='" + cloc + "' AND CEDITOR='" + chair + "';");
 			if (!checkExistsRS.next()) {
 				/*
 				 * INSERT new Proceedings
@@ -1102,12 +1124,12 @@ class Server {
 				new popupMsg("Error", "Conference Proceeding already exists.");
 				return false;
 			}
-			
+
 			// SHOW POPUPMSG stating that Conference Proceedings has been added.
-			
+
 			System.out.println("Success");
 			return true;
-			
+
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to add new Conference Proceeding to library.");
 			System.err.println(" SQL Exceptions \n");
@@ -1121,28 +1143,28 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddBook.java, AddProceeding
-	public static boolean updateDoc(String titleField, String pdateField, String publisherField, String paddrField, String newTitle) {
+	public static boolean updateDoc(String titleField, String pdateField, String publisherField, String paddrField,
+			String newTitle) {
 
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
 
 			// Check if document already exists
-			checkExistsRS = stmt.executeQuery(
-					"SELECT DOCID, PUBLISHERID FROM DOCUMENT WHERE TITLE='" + titleField + "';");
+			checkExistsRS = stmt
+					.executeQuery("SELECT DOCID, PUBLISHERID FROM DOCUMENT WHERE TITLE='" + titleField + "';");
 			int docid = 0;
 			int pubid = 0;
 			if (checkExistsRS.next()) { // if exists, update
 				docid = checkExistsRS.getInt("DOCID");
 				pubid = checkExistsRS.getInt("PUBLISHERID");
-				
 
 				// Check if publisher already exists
-				checkExistsRS = stmt
-						.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBLISHERID='"+pubid+"' AND PUBNAME='" + publisherField + "';");
+				checkExistsRS = stmt.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBLISHERID='" + pubid
+						+ "' AND PUBNAME='" + publisherField + "';");
 				boolean current = checkExistsRS.next();
 				int lastpID = 1;
 				if (!current) { // If no publisher found, create a new one
@@ -1159,25 +1181,29 @@ class Server {
 					stmt.executeUpdate("INSERT INTO PUBLISHER (PUBLISHERID, PUBNAME, ADDRESS) " + "VALUES (" + lastpID
 							+ ",'" + publisherField + "','" + paddrField + "')");
 					System.out.println("New Publisher Added!");
-				} else { // If publisher exists, save PUBLISHERID for Update operation
+				} else { // If publisher exists, save PUBLISHERID for Update
+							// operation
 					// Check if publisher already exists with same Address
-					checkExistsRS = stmt
-						.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBLISHERID='" + pubid + "' AND ADDRESS!='"+paddrField+"';");
+					checkExistsRS = stmt.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBLISHERID='" + pubid
+							+ "' AND ADDRESS!='" + paddrField + "';");
 					if (checkExistsRS.next()) {
 						lastpID = checkExistsRS.getInt("PUBLISHERID");
 						System.out.println(lastpID);
 
 						// UPDATE Publisher Address
-						stmt.executeUpdate("UPDATE PUBISHER SET ADDRESS='"+paddrField+"' WHERE PUBLISHERID='"+lastpID+"';");
+						stmt.executeUpdate("UPDATE PUBISHER SET ADDRESS='" + paddrField + "' WHERE PUBLISHERID='"
+								+ lastpID + "';");
 						System.out.println("Document Updated!");
 					}
 				}
 
 				// UPDATE new Document Data
-				stmt.executeUpdate("UPDATE DOCUMENT SET TITLE='"+newTitle+"', PDATE='"+pdateField+"', PUBLISHERID='"+lastpID+"' WHERE DOCID='"+docid+"';");
+				stmt.executeUpdate("UPDATE DOCUMENT SET TITLE='" + newTitle + "', PDATE='" + pdateField
+						+ "', PUBLISHERID='" + lastpID + "' WHERE DOCID='" + docid + "';");
 				System.out.println("Document Updated!");
 
-				//new popupMsg("Document Added", "Added '" + titleField + "' to library!");
+				// new popupMsg("Document Added", "Added '" + titleField + "' to
+				// library!");
 				return true;
 			} else {
 				new popupMsg("Error", "'" + titleField + "' does not exist in the library.");
@@ -1195,17 +1221,17 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddBook.java
 	public static int findBookDocID(String title) {
 		// Get DocID that ISBN belongs to
 		int docid = 0;
 		try {
-			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 				// Make sure document is a Book
-				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM BOOK WHERE DOCID='"+docid+"';");
+				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM BOOK WHERE DOCID='" + docid + "';");
 				if (!checkExistsRS.next()) {
 					new popupMsg("Error", "'" + title + "' is not a Book. Please enter a valid Book.");
 					return 0;
@@ -1216,31 +1242,31 @@ class Server {
 		}
 		return docid;
 	}
-	
+
 	// Used in AddBook.java
 	public static boolean updateBook(int docid, String isbn, String author, String title) {
 
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
-			
+
 			// Check if author already exists
-			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='"+author+"';");
+			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='" + author + "';");
 			int lastID = 0;
 			if (!checkExistsRS.next()) {
 
 				// Find last Author ID
 				checkExistsRS = stmt.executeQuery("SELECT MAX(AUTHORID) FROM AUTHOR;");
-				
+
 				if (checkExistsRS.next()) {
 					lastID = checkExistsRS.getInt("MAX(AUTHORID)") + 1;
 					System.out.println(lastID);
 				}
 
 				// Insert new Author Data
-				stmt.executeUpdate("INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID
-						+ ",'" + author + "')");
+				stmt.executeUpdate(
+						"INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID + ",'" + author + "')");
 				System.out.println("New Author Added!");
 			} else {
 				// Find current Author ID, if exists
@@ -1250,21 +1276,22 @@ class Server {
 				}
 
 			}
-				
+
 			// Update Book Data
-			stmt.executeUpdate("UPDATE BOOK SET ISBN='" + isbn + "' WHERE DOCID='"+docid+"';");
+			stmt.executeUpdate("UPDATE BOOK SET ISBN='" + isbn + "' WHERE DOCID='" + docid + "';");
 			System.out.println("Book Updated!");
-			
-			checkExistsRS = stmt.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='"+lastID+"' AND DOCID='"+docid+"';");
+
+			checkExistsRS = stmt
+					.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='" + lastID + "' AND DOCID='" + docid + "';");
 			if (!checkExistsRS.next()) {
 				// Insert new Writes Data
-				stmt.executeUpdate("UPDATE WRITES SET AUTHORID='"+lastID+"' WHERE DOCID='"+docid+"';");
+				stmt.executeUpdate("UPDATE WRITES SET AUTHORID='" + lastID + "' WHERE DOCID='" + docid + "';");
 				System.out.println("Writes Data Added!");
 			}
-			
+
 			System.out.println("Success");
 			return true;
-			
+
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to update book in library.");
 			System.err.println(" SQL Exceptions \n");
@@ -1278,7 +1305,7 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddBook.java
 	public static int findJournalDocID(String title) {
 		// Get DocID that ISBN belongs to
@@ -1289,11 +1316,11 @@ class Server {
 			/*
 			 * Get DOCID by searching for TITLE='title' in DOCUMENT
 			 */
-			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 				// Make sure document is a Journal
-				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM JOURNAL_VOLUME WHERE DOCID='"+docid+"';");
+				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM JOURNAL_VOLUME WHERE DOCID='" + docid + "';");
 				if (!checkExistsRS.next()) {
 					new popupMsg("Error", "'" + title + "' is not a Journal. Please enter a valid Journal.");
 					return 0;
@@ -1304,35 +1331,34 @@ class Server {
 		}
 		return docid;
 	}
-	
+
 	// Used in AddJournal.java
-	public static boolean updateJournal(int docid, String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
-		
+	public static boolean updateJournal(int docid, String jvol, String jiss, String scope, String ceditor,
+			String inveditor, String title) {
+
 		/*
 		 * Arguments
 		 * 
-		 * jvol = Journal Volume #
-		 * jiss = Journal Issue #
-		 * scope = Scope
-		 * ceditor = Chief Editor Name
-		 * inveditor = Inv Editor Name
-		 * title = Document title
+		 * jvol = Journal Volume # jiss = Journal Issue # scope = Scope ceditor
+		 * = Chief Editor Name inveditor = Inv Editor Name title = Document
+		 * title
 		 */
-		
+
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
-			
+
 			/*
-			 * Check if Chief Editor already exists
-			 * -- If Chief Editor exists, save Chief Editor's EDITOR_ID
-			 * - If Chief Editor does not exist, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
+			 * Check if Chief Editor already exists -- If Chief Editor exists,
+			 * save Chief Editor's EDITOR_ID - If Chief Editor does not exist,
+			 * INSERT new Chief Editor with name ceditor and new EDITOR_ID using
+			 * MAX() function
 			 */
-			
+
 			int ceditorID = 1;
 			System.out.println("test8");
-			checkExistsRS = stmt.executeQuery("SELECT EDITOR_ID FROM CHIEF_EDITOR WHERE ENAME='"+ceditor+"';");
+			checkExistsRS = stmt.executeQuery("SELECT EDITOR_ID FROM CHIEF_EDITOR WHERE ENAME='" + ceditor + "';");
 			if (!checkExistsRS.next()) {
 				// Insert new CHIEF_EDITOR Data
 				System.out.println("test9");
@@ -1340,43 +1366,46 @@ class Server {
 				if (checkExistsRS.next()) {
 					ceditorID = checkExistsRS.getInt("MAX(EDITOR_ID)") + 1;
 				}
-				
-				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID
-						+ ",'" + ceditor + "')");
+
+				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID + ",'"
+						+ ceditor + "')");
 			} else {
 				ceditorID = checkExistsRS.getInt("EDITOR_ID");
 			}
 			/*
-			 * 1. Update new JOURNAL_VOLUME
-			 * 2. Update new JOURNAL_ISSUE
+			 * 1. Update new JOURNAL_VOLUME 2. Update new JOURNAL_ISSUE
 			 */
 
 			System.out.println("test10");
 			// Update JOURNAL_VOLUME Data
-			stmt.executeUpdate("UPDATE JOURNAL_VOLUME SET JVOLUME='"+jvol+"', EDITOR_ID='"+ceditorID+"' WHERE DOCID='"+docid+"';");
-			
+			stmt.executeUpdate("UPDATE JOURNAL_VOLUME SET JVOLUME='" + jvol + "', EDITOR_ID='" + ceditorID
+					+ "' WHERE DOCID='" + docid + "';");
+
 			// Update JOURNAL_ISSUE Data
 			System.out.println("test11");
-			stmt.executeUpdate("UPDATE JOURNAL_ISSUE SET SCOPE='"+scope+"' WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"'");
-			
+			stmt.executeUpdate("UPDATE JOURNAL_ISSUE SET SCOPE='" + scope + "' WHERE DOCID='" + docid
+					+ "' AND ISSUE_NO='" + jiss + "'");
+
 			/*
-			 * Check if INV Editor already exists
-			 * -- If Inv editor exists, (IENAME matches inveditor) do nothing
-			 * -- If Inv editor does not exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
+			 * Check if INV Editor already exists -- If Inv editor exists,
+			 * (IENAME matches inveditor) do nothing -- If Inv editor does not
+			 * exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
 			 */
 			System.out.println("test12");
-			checkExistsRS = stmt.executeQuery("SELECT * FROM INV_EDITOR WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"' AND IENAME='"+inveditor+"';");
+			checkExistsRS = stmt.executeQuery("SELECT * FROM INV_EDITOR WHERE DOCID='" + docid + "' AND ISSUE_NO='"
+					+ jiss + "' AND IENAME='" + inveditor + "';");
 			if (!checkExistsRS.next()) {
 				// Insert new INV_EDITOR Data
 				System.out.println("test13");
-				stmt.executeUpdate("INSERT INTO INV_EDITOR (DOCID, ISSUE_NO, IENAME) " + "VALUES (" + docid
-						+ ",'" + jiss + "','" + inveditor + "')");
+				stmt.executeUpdate("INSERT INTO INV_EDITOR (DOCID, ISSUE_NO, IENAME) " + "VALUES (" + docid + ",'"
+						+ jiss + "','" + inveditor + "')");
 			}
-			
-			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has been added.
+
+			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has
+			// been added.
 			System.out.println("Success");
 			return true;
-			
+
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to update Journal in library.");
 			System.err.println(" SQL Exceptions \n");
@@ -1390,7 +1419,7 @@ class Server {
 		}
 		return false;
 	}
-	
+
 	// Used in AddBook.java
 	public static int findProceedingDocID(String title) {
 		// Get DocID that ISBN belongs to
@@ -1400,11 +1429,11 @@ class Server {
 			/*
 			 * Get DOCID by searching for TITLE='title' in DOCUMENT
 			 */
-			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='" + title + "';");
 			if (checkExistsRS.next()) {
 				docid = checkExistsRS.getInt("DOCID");
 				// Make sure document is a Proceeding
-				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM PROCEEDINGS WHERE DOCID='"+docid+"';");
+				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM PROCEEDINGS WHERE DOCID='" + docid + "';");
 				if (!checkExistsRS.next()) {
 					new popupMsg("Error", "'" + title + "' is not a Proceeding. Please enter a valid Proceeding.");
 					return 0;
@@ -1415,44 +1444,44 @@ class Server {
 		}
 		return docid;
 	}
-	
+
 	// Used in AddProceeding.java
 	public static boolean updateProceeding(int docid, String pubDate, String cloc, String chair, String title) {
-		
+
 		/*
 		 * Arguments
 		 * 
-		 * pubDate = Conference Date
-		 * cloc = Conference Location
-		 * chair = Conference Chair Name
-		 * title = Document title
+		 * pubDate = Conference Date cloc = Conference Location chair =
+		 * Conference Chair Name title = Document title
 		 */
-		
+
 		connectToDB();
-		
+
 		ResultSet checkExistsRS;
 		try {
-			
-			/* Check if Proceedings already exists (same Date, Location, and Editor)
-			 * -- If exists, update
+
+			/*
+			 * Check if Proceedings already exists (same Date, Location, and
+			 * Editor) -- If exists, update
 			 */
-			checkExistsRS = stmt.executeQuery("SELECT * FROM PROCEEDINGS WHERE DOCID='"+docid+"';");
+			checkExistsRS = stmt.executeQuery("SELECT * FROM PROCEEDINGS WHERE DOCID='" + docid + "';");
 			if (checkExistsRS.next()) {
 				/*
 				 * UPDATE Proceedings
 				 */
-				stmt.executeUpdate("UPDATE PROCEEDINGS SET CDATE='"+pubDate+"', CLOCATION='"+cloc+"', CEDITOR='"+chair+"' WHERE DOCID='"+docid+"';");
+				stmt.executeUpdate("UPDATE PROCEEDINGS SET CDATE='" + pubDate + "', CLOCATION='" + cloc + "', CEDITOR='"
+						+ chair + "' WHERE DOCID='" + docid + "';");
 				System.out.println("Proceedings Updated!");
 			} else {
 				new popupMsg("Error", "Conference Proceeding does not exist.");
 				return false;
 			}
-			
+
 			// SHOW POPUPMSG stating that Conference Proceedings has been added.
-			
+
 			System.out.println("Success");
 			return true;
-			
+
 		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to update Conference Proceeding in library.");
 			System.err.println(" SQL Exceptions \n");
@@ -1466,231 +1495,232 @@ class Server {
 		}
 		return false;
 	}
-	
-	//For Use with ReaderFunction -> Reserve
+
+	// For Use with ReaderFunction -> Reserve
 	public static boolean reserve(int readerId, String docId, String libId) {
 
 		connectToDB();
 		int resNumber = 0;
 		int copyno = 0;
 		try {
-			//Integer.parseInt(docId); Integer.parseInt(libId);
+			// Integer.parseInt(docId); Integer.parseInt(libId);
 
 			String resCountQuery = "SELECT MAX(RESUMBER) FROM RESERVES;";
 			ResultSet rs = stmt.executeQuery(resCountQuery);
-			if(rs.next()) {
+			if (rs.next()) {
 				resNumber = rs.getInt("MAX(RESUMBER)") + 1;
 			}
-			
+
 			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
-			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
 			ResultSet rs1 = stmt.executeQuery(resCountCopy);
-			while(rs1.next()) {
+			while (rs1.next()) {
 				copiesTaken.add(rs1.getInt("COPYNO"));
 			}
-			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId + " AND DOCID = " + docId +";";
+			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId
+					+ " AND DOCID = " + docId + ";";
 			ResultSet rs2 = stmt.executeQuery(borCountCopy);
-			while(rs2.next()) {
+			while (rs2.next()) {
 				copiesTaken.add(rs2.getInt("COPYNO"));
 			}
-			
-			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+
+			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
 			ResultSet rs3 = stmt.executeQuery(copyQuery);
-			while(rs3.next()) {
-				if(!copiesTaken.contains(rs3.getInt("COPYNO"))) {
+			while (rs3.next()) {
+				if (!copiesTaken.contains(rs3.getInt("COPYNO"))) {
 					copyno = rs3.getInt("COPYNO");
 					break;
 				}
 			}
-			if(copyno == 0) {
-				 new popupMsg("Error","No more copies left. Please check again later");
-				 return false;
-			} else{
+			if (copyno == 0) {
+				new popupMsg("Error", "No more copies left. Please check again later");
+				return false;
+			} else {
 				DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				String date = sdf.format(cal.getTime());
 				System.out.println(date);
 				String query = String.format("INSERT INTO RESERVES (RESUMBER,READERID,DOCID,COPYNO,LIBID,DTIME) "
-										    +"VALUES (%d,%d,%s,%d,%s,'%s');",resNumber,readerId,docId,copyno,libId,date);
+						+ "VALUES (%d,%d,%s,%d,%s,'%s');", resNumber, readerId, docId, copyno, libId, date);
 				System.out.println(query);
 				stmt.execute(query);
 			}
 			stmt.close();
 			con.close();
 			return true;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to process request.");
 			System.err.println(" SQL Exceptions \n");
-            while (e != null) {
-                System.out.println("Error Description: " + e.getMessage());
-                System.out.println("SQL State:  " + e.getSQLState());
-                System.out.println("Vendor Error Code: " + e.getErrorCode());
-                e = e.getNextException();
-                System.out.println("");
-            } 
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			new popupMsg("Error","Please enter valid Document Id and Library Id");
+			new popupMsg("Error", "Please enter valid Document Id and Library Id");
 		}
 		return false;
-		
+
 	}
-	//For Use with ReaderFunction -> Borrow.java
+
+	// For Use with ReaderFunction -> Borrow.java
 	public static boolean borrow(int readerId, String docId, String libId) {
 		connectToDB();
 		int borNumber = 0;
 		int copyno = 0;
 		try {
-			//Integer.parseInt(docId); Integer.parseInt(libId);
+			// Integer.parseInt(docId); Integer.parseInt(libId);
 
 			String borCountQuery = "SELECT MAX(BORNUMBER) FROM BORROWS;";
 			ResultSet rs = stmt.executeQuery(borCountQuery);
-			if(rs.next()) {
+			if (rs.next()) {
 				borNumber = rs.getInt("MAX(BORNUMBER)") + 1;
 			}
-			
+
 			ArrayList<Integer> copiesTaken = new ArrayList<Integer>();
-			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+			String resCountCopy = "SELECT COPYNO FROM RESERVES WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
 			ResultSet rs1 = stmt.executeQuery(resCountCopy);
-			while(rs1.next()) {
+			while (rs1.next()) {
 				copiesTaken.add(rs1.getInt("COPYNO"));
 			}
-			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId + " AND DOCID = " + docId +";";
+			String borCountCopy = "SELECT COPYNO FROM BORROWS WHERE RDTIME IS NULL AND LIBID = " + libId
+					+ " AND DOCID = " + docId + ";";
 			ResultSet rs2 = stmt.executeQuery(borCountCopy);
-			while(rs2.next()) {
+			while (rs2.next()) {
 				copiesTaken.add(rs2.getInt("COPYNO"));
 			}
-			
-			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId +";";
+
+			String copyQuery = "SELECT COPYNO FROM COPY WHERE LIBID = " + libId + " AND DOCID = " + docId + ";";
 			ResultSet rs3 = stmt.executeQuery(copyQuery);
-			while(rs3.next()) {
-				if(!copiesTaken.contains(rs3.getInt("COPYNO"))) {
+			while (rs3.next()) {
+				if (!copiesTaken.contains(rs3.getInt("COPYNO"))) {
 					copyno = rs3.getInt("COPYNO");
 					break;
 				}
 			}
-			if(copyno == 0) {
-				 new popupMsg("Error","No more copies left. Please check again later");
-				 return false;
-			} else{
+			if (copyno == 0) {
+				new popupMsg("Error", "No more copies left. Please check again later");
+				return false;
+			} else {
 				DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				String date = sdf.format(cal.getTime());
 				System.out.println(date);
-				String query = String.format("INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
-										    +"VALUES (%d,%d,%s,%d,%s,'%s',NULL);",borNumber,readerId,docId,copyno,libId,date);
+				String query = String.format(
+						"INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
+								+ "VALUES (%d,%d,%s,%d,%s,'%s',NULL);",
+						borNumber, readerId, docId, copyno, libId, date);
 				System.out.println(query);
 				stmt.execute(query);
 			}
 			stmt.close();
 			con.close();
 			return true;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			new popupMsg("Error", "Unable to process request.");
 			System.err.println(" SQL Exceptions \n");
-            while (e != null) {
-                System.out.println("Error Description: " + e.getMessage());
-                System.out.println("SQL State:  " + e.getSQLState());
-                System.out.println("Vendor Error Code: " + e.getErrorCode());
-                e = e.getNextException();
-                System.out.println("");
-            } 
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			new popupMsg("Error","Please enter valid Document Id and Library Id");
+			new popupMsg("Error", "Please enter valid Document Id and Library Id");
 		}
 		return false;
-		
-		
+
 	}
 
-	public static boolean pickup(int readerId, String docId) {
-		
+	public static boolean pickup(int readerId, String docId, String libId) {
+
 		connectToDB();
-		
 
 		int resNumber = 0;
 		int copyno = 0;
 		int borNumber = 0;
-		int libId = 0;
+
 		try {
 			String borCountQuery = "SELECT MAX(BORNUMBER) FROM BORROWS;";
 			ResultSet rs = stmt.executeQuery(borCountQuery);
-			if(rs.next()) {
+			if (rs.next()) {
 				borNumber = rs.getInt("MAX(BORNUMBER)") + 1;
 			}
-			
-			
-			String query = "SELECT R.RESUMBER, R.COPYNO, R.LIBID "
-					+ "FROM RESERVES R WHERE READERID = " + readerId + " AND DOCID = " + docId + ";";
+
+			String query = "SELECT R.RESUMBER, R.COPYNO, R.LIBID " + "FROM RESERVES R WHERE READERID = " + readerId
+					+ " AND DOCID = " + docId + " AND LIBID = " + libId +";";
 			System.out.println(query);
 			ResultSet rs1 = stmt.executeQuery(query);
-			
 
-			if(rs1.next()) {
+			if (rs1.next()) {
 				resNumber = rs1.getInt("RESUMBER");
 				copyno = rs1.getInt("COPYNO");
-				libId = rs1.getInt("LIBID");
 			}
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			String date = sdf.format(cal.getTime());
-			
-			String insertQuery = String.format("INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
-				    +"VALUES (%d,%d,%s,%d,%s,'%s',NULL);",borNumber,readerId,docId,copyno,libId,date);
+
+			String insertQuery = String
+					.format("INSERT INTO BORROWS (BORNUMBER,READERID,DOCID,COPYNO,LIBID,BDTIME,RDTIME) "
+							+ "VALUES (%d,%d,%s,%d,%s,'%s',NULL);", borNumber, readerId, docId, copyno, libId, date);
 
 			stmt.execute(insertQuery);
-			
+
 			String removeQuery = "DELETE FROM RESERVES WHERE RESUMBER = " + resNumber + ";";
 			stmt.execute(removeQuery);
-			
+
 			stmt.close();
 			con.close();
 			return true;
 		} catch (SQLException e) {
-			new popupMsg("Error","Please enter a valid document id");
+			new popupMsg("Error", "Please enter a valid document id");
 			return false;
 		}
 	}
 
 	public static boolean returnCopy(int readerId, String docId, String libId) {
-		
+
 		connectToDB();
-		String query = "SELECT B.BORNUMBER "
-				+ "FROM BORROWS B WHERE READERID = " + readerId + " AND DOCID = " + docId + " AND LIBID = " + libId + " AND RDTIME IS NULL;"; 
+		String query = "SELECT B.BORNUMBER " + "FROM BORROWS B WHERE READERID = " + readerId + " AND DOCID = " + docId
+				+ " AND LIBID = " + libId + " AND RDTIME IS NULL;";
 		System.out.println(query);
 		int borNumber = 0;
 		try {
 			ResultSet rs = stmt.executeQuery(query);
-			if(rs.next()) {
+			if (rs.next()) {
 				borNumber = rs.getInt("BORNUMBER");
 			}
 			System.out.println(borNumber);
 			String date = getDate();
-			String updateQuery = "UPDATE BORROWS "
-					+ "SET RDTIME = '" + date + "' WHERE BORNUMBER = " + borNumber + ";";
+			String updateQuery = "UPDATE BORROWS " + "SET RDTIME = '" + date + "' WHERE BORNUMBER = " + borNumber + ";";
 			System.out.println(updateQuery);
 			stmt.execute(updateQuery);
 			stmt.close();
 			con.close();
 			return true;
 		} catch (SQLException e) {
-			new popupMsg("Error","Unable to return copy");
+			new popupMsg("Error", "Unable to return copy");
 			return false;
 		}
 	}
-	
+
 	// Used to find average. fine in AdminFunctions.java
 	public static double avgFine(int libid) {
 
-	connectToDB();
+		connectToDB();
 
-	ArrayList<String[]> data = new ArrayList<String[]>();
-	ArrayList<Integer> readerFines = new ArrayList<>();
+		ArrayList<String[]> data = new ArrayList<String[]>();
+		ArrayList<Integer> readerFines = new ArrayList<>();
 
-	try {
-		ResultSet rs = stmt.executeQuery("SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
-		while (rs.next()) {
+		try {
+			ResultSet rs = stmt.executeQuery(
+					"SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
+			while (rs.next()) {
 				int num = rs.getInt("READERID");
 				Timestamp ts = rs.getTimestamp("BDTIME");
 				Date date = new Date();
@@ -1698,62 +1728,69 @@ class Server {
 				String dateString = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
 				SimpleDateFormat sd = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
 				Date d = sd.parse(dateString);
-				data.add(new String[] {String.valueOf(num), Long.toString(d.getTime())});
+				data.add(new String[] { String.valueOf(num), Long.toString(d.getTime()) });
+			}
+		} catch (SQLException e) {
+			System.out.println("Error! " + "\n" + e.getMessage() + "\n" + e.getSQLState() + "\n" + e.getErrorCode());
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-	} catch (SQLException e) {
-		System.out.println("Error! " + "\n" + e.getMessage() + "\n" + e.getSQLState() + "\n" + e.getErrorCode());
-	} catch (ParseException e) {
-		e.printStackTrace();
-	}
 
-	int currReaderID;
-	try {
-		currReaderID = Integer.parseInt(data.get(0)[0]); // Nobody borrowed anything at this libID.
-	} catch (IndexOutOfBoundsException e) {
+		int currReaderID;
+		try {
+			currReaderID = Integer.parseInt(data.get(0)[0]); // Nobody borrowed
+																// anything at
+																// this libID.
+		} catch (IndexOutOfBoundsException e) {
 			return 0;
-	}
-
-	int sum = 0;
-
-	for (String[] aData : data) {
-		if (Integer.parseInt(aData[0]) != currReaderID) {
-			readerFines.add(sum);
-			sum = 0;
-			currReaderID = Integer.parseInt(aData[0]);
 		}
 
-		long borrowedMillis = Long.valueOf(aData[1]);
-		long currMillis = System.currentTimeMillis();
-		long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How long has it been borrowed in days
+		int sum = 0;
 
-		if (days > 20) {
-			double numDaysOverDue = Math.ceil(days - 20);
-			double fineInDollars = numDaysOverDue * .2;
-			sum += fineInDollars;
+		for (String[] aData : data) {
+			if (Integer.parseInt(aData[0]) != currReaderID) {
+				readerFines.add(sum);
+				sum = 0;
+				currReaderID = Integer.parseInt(aData[0]);
+			}
+
+			long borrowedMillis = Long.valueOf(aData[1]);
+			long currMillis = System.currentTimeMillis();
+			long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How
+																					// long
+																					// has
+																					// it
+																					// been
+																					// borrowed
+																					// in
+																					// days
+
+			if (days > 20) {
+				double numDaysOverDue = Math.ceil(days - 20);
+				double fineInDollars = numDaysOverDue * .2;
+				sum += fineInDollars;
+			}
 		}
+
+		if (readerFines.size() == 0) {
+			return 0;
+		}
+
+		int total = 0;
+		for (Integer i : readerFines) {
+			total += i;
+		}
+
+		double result;
+		if (total == 0) {
+			result = 0;
+		} else {
+			result = total / readerFines.size();
+		}
+
+		System.out.println(result);
+
+		return result;
 	}
-
-	if (readerFines.size() == 0) {
-		return 0;
-	}
-
-	int total = 0;
-	for (Integer i : readerFines) {
-		total += i;
-	}
-
-	double result;
-	if (total == 0) {
-		result = 0;
-	}
-	else {
-		result = total / readerFines.size();
-	}
-
-	System.out.println(result);
-
-	return result;
-}
-
 
 }
