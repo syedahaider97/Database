@@ -7,11 +7,17 @@
  */
 
 import java.sql.*;
+
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 
 class Server {
 	private static Connection con;
@@ -1592,6 +1598,81 @@ class Server {
 		}
 		return false;
 	}
+	
+	// Used to find average. fine in AdminFunctions.java
+	public static double avgFine(int libid) {
+
+	connectToDB();
+
+	ArrayList<String[]> data = new ArrayList<String[]>();
+	ArrayList<Integer> readerFines = new ArrayList<>();
+
+	try {
+		ResultSet rs = stmt.executeQuery("SELECT READERID, BDTIME FROM BORROWS WHERE LIBID =" + libid + " AND RDTIME IS NULL" + ";");
+		while (rs.next()) {
+				int num = rs.getInt("READERID");
+				Timestamp ts = rs.getTimestamp("BDTIME");
+				Date date = new Date();
+				date.setTime(ts.getTime());
+				String dateString = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
+				SimpleDateFormat sd = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
+				Date d = sd.parse(dateString);
+				data.add(new String[] {String.valueOf(num), Long.toString(d.getTime())});
+		}
+	} catch (SQLException e) {
+		System.out.println("Error! " + "\n" + e.getMessage() + "\n" + e.getSQLState() + "\n" + e.getErrorCode());
+	} catch (ParseException e) {
+		e.printStackTrace();
+	}
+
+	int currReaderID;
+	try {
+		currReaderID = Integer.parseInt(data.get(0)[0]); // Nobody borrowed anything at this libID.
+	} catch (IndexOutOfBoundsException e) {
+			return 0;
+	}
+
+	int sum = 0;
+
+	for (String[] aData : data) {
+		if (Integer.parseInt(aData[0]) != currReaderID) {
+			readerFines.add(sum);
+			sum = 0;
+			currReaderID = Integer.parseInt(aData[0]);
+		}
+
+		long borrowedMillis = Long.valueOf(aData[1]);
+		long currMillis = System.currentTimeMillis();
+		long days = TimeUnit.MILLISECONDS.toDays(currMillis - borrowedMillis); // How long has it been borrowed in days
+
+		if (days > 20) {
+			double numDaysOverDue = Math.ceil(days - 20);
+			double fineInDollars = numDaysOverDue * .2;
+			sum += fineInDollars;
+		}
+	}
+
+	if (readerFines.size() == 0) {
+		return 0;
+	}
+
+	int total = 0;
+	for (Integer i : readerFines) {
+		total += i;
+	}
+
+	double result;
+	if (total == 0) {
+		result = 0;
+	}
+	else {
+		result = total / readerFines.size();
+	}
+
+	System.out.println(result);
+
+	return result;
+}
 
 	public static boolean pickup(int readerId, String text, int libId) {
 		// TODO Auto-generated method stub
