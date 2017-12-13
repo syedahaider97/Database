@@ -13,14 +13,14 @@ import javax.swing.JTextField;
 
 public class AddProceeding extends JFrame {
 	
-	private JTextField titleField, pyearField, pmonthField, pdayField, publisherField, paddrField, clocfield, chairfield;
+	private JTextField titleField, newtitleField, pyearField, pmonthField, pdayField, publisherField, paddrField, clocfield, chairfield;
 	
 	private int type = 0; // 0 = add, 1 = update
 	
 	public AddProceeding(int type, String line) {
 		// Set Title and Type of Operation to perform (type Add or Update)
 		super(line);
-		type = this.type;
+		this.type = type;
 		
 		// Set Panel layout
 		JPanel panel = new JPanel();
@@ -42,6 +42,17 @@ public class AddProceeding extends JFrame {
 		
 		//panel.add(new JLabel(" "));
 		panel.add(titlePanel);
+
+		if (type == 1) { // If we are updating, prompt for a replacement title
+			// Title entry field
+			JPanel newtitlePanel = new JPanel();
+			JLabel newtitleLabel = new JLabel("New Title:");
+			newtitleField = new JTextField(15);
+			newtitlePanel.add(newtitleLabel); newtitlePanel.add(newtitleField);
+			
+			//panel.add(new JLabel(" "));
+			panel.add(newtitlePanel);
+		}
 		
 		// Publisher date entry field
 		
@@ -213,10 +224,23 @@ public class AddProceeding extends JFrame {
 							success = Server.addNewProceeding(pubDate, cloc, chair, title);
 						
 						if (success)
-							new popupMsg("Document Added", "Conference Proceeding '"+title+"' Added.");
+							new popupMsg("Document Added ", "Conference Proceeding '"+title+"' Added.");
 					}
 					else if(type == 1) {
 						//Update Query
+						int docid = Server.findProceedingDocID(title); 
+						if (docid != 0) {
+							String newtitle = newtitleField.getText();
+							if (newtitle.compareTo("") != 0) {
+								boolean success = false;
+								boolean DocAdded = Server.updateDoc(title, pubDate, pubName, pubAddr, newtitle);
+								if (DocAdded)
+									success = Server.updateProceeding(docid, pubDate, cloc, chair, newtitle);
+								
+								if (success)
+									new popupMsg("Document Added ", "Conference Proceeding '"+title+"' Updated.");
+							}
+						}
 					}
 				} else {
 					new popupMsg("Error", "Document information is missing.");

@@ -14,14 +14,14 @@ import javax.swing.JTextField;
 
 public class AddBook extends JFrame {
 	
-	private JTextField titleField, pyearField, pmonthField, pdayField, publisherField, paddrField, isbnfield, authorfield;
+	private JTextField titleField, newtitleField, pyearField, pmonthField, pdayField, publisherField, paddrField, isbnfield, authorfield;
 	
 	private int type = 0; // 0 = add, 1 = update
 	
 	public AddBook(int type, String line) {
 		// Set Title and Type of Operation to perform (type Add or Update)
 		super(line);
-		type = this.type;
+		this.type = type;
 		
 		// Set Panel layout
 		JPanel panel = new JPanel();
@@ -43,6 +43,17 @@ public class AddBook extends JFrame {
 		
 		//panel.add(new JLabel(" "));
 		panel.add(titlePanel);
+		
+		if (type == 1) { // If we are updating, prompt for a replacement title
+			// Title entry field
+			JPanel newtitlePanel = new JPanel();
+			JLabel newtitleLabel = new JLabel("New Title:");
+			newtitleField = new JTextField(15);
+			newtitlePanel.add(newtitleLabel); newtitlePanel.add(newtitleField);
+			
+			//panel.add(new JLabel(" "));
+			panel.add(newtitlePanel);
+		}
 		
 		// Publisher date entry field
 		
@@ -175,7 +186,7 @@ public class AddBook extends JFrame {
 			Pattern mopattern = Pattern.compile("((0?[1-9])|(1[0-2]))"); //month format from 01 to 12
 			Matcher momatcher = mopattern.matcher(month);
 			
-			if (imatcher.matches() && Server.isbnExists(isbn)) {
+			if (imatcher.matches() && (type == 1 || Server.isbnExists(isbn))) {
 				if (yrmatcher.matches() && momatcher.matches()) {
 					if (!(title.compareTo("") == 0 || pubName.compareTo("") == 0 || pubAddr.compareTo("") == 0 || isbn.compareTo("") == 0 || author.compareTo("") == 0)) {
 						
@@ -210,10 +221,23 @@ public class AddBook extends JFrame {
 								success = Server.addNewBook(isbn, author, title);
 							
 							if (success)
-								new popupMsg("Document Added", "'"+title+"' with ISBN "+isbn+" Added.");
+								new popupMsg("Document Added ", "'"+title+"' with ISBN "+isbn+" Added.");
 						}
 						else if(type == 1) {
 							//Update Query
+							int docid = Server.findBookDocID(title); 
+							if (docid != 0) {
+								String newtitle = newtitleField.getText();
+								if (newtitle.compareTo("") != 0) {
+									boolean success = false;
+									boolean DocAdded = Server.updateDoc(title, pubDate, pubName, pubAddr, newtitle);
+									if (DocAdded)
+										success = Server.updateBook(docid, isbn, author, newtitle);
+									
+									if (success)
+										new popupMsg("Document Updated ", "'"+title+"' with ISBN "+isbn+" Added.");
+								}
+							}
 						}
 					} else {
 						new popupMsg("Error", "Document information is missing.");

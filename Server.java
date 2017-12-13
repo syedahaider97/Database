@@ -455,17 +455,10 @@ class Server {
 	// Used in removeDocument.java
 	public static boolean removeByID(String docId) {
 		connectToDB();
-		String count = "SELECT COUNT(*) " + " FROM DOCUMENT WHERE DOCID = " + docId + ";";
-		String query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";";
 
 		try {
 			Integer.parseInt(docId);
-			ResultSet countSet = stmt.executeQuery(count);
-
-			if (countSet.next() && countSet.getInt("COUNT(*)") == 0) {
-				throw new Exception();
-			}
-
+			String query = "DELETE FROM DOCUMENT WHERE DOCID = " + docId + ";";
 			stmt.execute(query);
 			stmt.close();
 			con.close();
@@ -824,7 +817,6 @@ class Server {
 						+ ",'" + author + "')");
 				System.out.println("New Author Added!");
 			} else {
-				checkExistsRS = stmt.executeQuery("SELECT AUTHORID FROM AUTHOR WHERE ANAME='"+author+"';");
 				if (checkExistsRS.next()) {
 					lastID = checkExistsRS.getInt("AUTHORID");
 					System.out.println(lastID);
@@ -993,7 +985,7 @@ class Server {
 			/*
 			 * Check if Chief Editor already exists
 			 * -- If Chief Editor exists, save Chief Editor's EDITOR_ID
-			 * - If Chief Editor does not exists, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
+			 * - If Chief Editor does not exist, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
 			 */
 			
 			int ceditorID = 1;
@@ -1009,6 +1001,8 @@ class Server {
 				
 				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID
 						+ ",'" + ceditor + "')");
+			} else {
+				ceditorID = checkExistsRS.getInt("EDITOR_ID");
 			}
 			/*
 			 * 1. Insert new JOURNAL_VOLUME
@@ -1107,7 +1101,352 @@ class Server {
 			return true;
 			
 		} catch (SQLException e) {
-			new popupMsg("Error", "Unable to add new Journal to library.");
+			new popupMsg("Error", "Unable to add new Conference Proceeding to library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddBook.java, AddProceeding
+	public static boolean updateDoc(String titleField, String pdateField, String publisherField, String paddrField, String newTitle) {
+
+		connectToDB();
+		
+		ResultSet checkExistsRS;
+		try {
+
+			// Check if document already exists
+			checkExistsRS = stmt.executeQuery(
+					"SELECT DOCID, PUBLISHERID FROM DOCUMENT WHERE TITLE='" + titleField + "';");
+			int docid = 0;
+			int pubid = 0;
+			if (checkExistsRS.next()) { // if exists, update
+				docid = checkExistsRS.getInt("DOCID");
+				pubid = checkExistsRS.getInt("PUBLISHERID");
+				
+
+				// Check if publisher already exists
+				checkExistsRS = stmt
+						.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBLISHERID='"+pubid+"' AND PUBNAME='" + publisherField + "';");
+				boolean current = checkExistsRS.next();
+				int lastpID = 1;
+				if (!current) { // If no publisher found, create a new one
+					// Find last PUBLISHERID in list
+					checkExistsRS = stmt.executeQuery("SELECT MAX(PUBLISHERID) FROM PUBLISHER;");
+					System.out.println("PID list:");
+
+					if (checkExistsRS.next()) {
+						lastpID = checkExistsRS.getInt("MAX(PUBLISHERID)") + 1;
+						System.out.println("PID " + lastpID);
+					}
+
+					// Insert new Publisher Data
+					stmt.executeUpdate("INSERT INTO PUBLISHER (PUBLISHERID, PUBNAME, ADDRESS) " + "VALUES (" + lastpID
+							+ ",'" + publisherField + "','" + paddrField + "')");
+					System.out.println("New Publisher Added!");
+				} else { // If publisher exists, save PUBLISHERID for Update operation
+					// Check if publisher already exists with same Address
+					checkExistsRS = stmt
+						.executeQuery("SELECT PUBLISHERID FROM PUBLISHER WHERE PUBLISHERID='" + pubid + "' AND ADDRESS!='"+paddrField+"';");
+					if (checkExistsRS.next()) {
+						lastpID = checkExistsRS.getInt("PUBLISHERID");
+						System.out.println(lastpID);
+
+						// UPDATE Publisher Address
+						stmt.executeUpdate("UPDATE PUBISHER SET ADDRESS='"+paddrField+"' WHERE PUBLISHERID='"+lastpID+"';");
+						System.out.println("Document Updated!");
+					}
+				}
+
+				// UPDATE new Document Data
+				stmt.executeUpdate("UPDATE DOCUMENT SET TITLE='"+newTitle+"', PDATE='"+pdateField+"', PUBLISHERID='"+lastpID+"' WHERE DOCID='"+docid+"';");
+				System.out.println("Document Updated!");
+
+				//new popupMsg("Document Added", "Added '" + titleField + "' to library!");
+				return true;
+			} else {
+				new popupMsg("Error", "'" + titleField + "' does not exist in the library.");
+			}
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to update document in library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddBook.java
+	public static int findBookDocID(String title) {
+		// Get DocID that ISBN belongs to
+		int docid = 0;
+		try {
+			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			if (checkExistsRS.next()) {
+				docid = checkExistsRS.getInt("DOCID");
+				// Make sure document is a Book
+				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM BOOK WHERE DOCID='"+docid+"';");
+				if (!checkExistsRS.next()) {
+					new popupMsg("Error", "'" + title + "' is not a Book. Please enter a valid Book.");
+					return 0;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return docid;
+	}
+	
+	// Used in AddBook.java
+	public static boolean updateBook(int docid, String isbn, String author, String title) {
+
+		connectToDB();
+		
+		ResultSet checkExistsRS;
+		try {
+			
+			// Check if author already exists
+			checkExistsRS = stmt.executeQuery("SELECT ANAME FROM AUTHOR WHERE ANAME='"+author+"';");
+			int lastID = 0;
+			if (!checkExistsRS.next()) {
+
+				// Find last Author ID
+				checkExistsRS = stmt.executeQuery("SELECT MAX(AUTHORID) FROM AUTHOR;");
+				
+				if (checkExistsRS.next()) {
+					lastID = checkExistsRS.getInt("MAX(AUTHORID)") + 1;
+					System.out.println(lastID);
+				}
+
+				// Insert new Author Data
+				stmt.executeUpdate("INSERT INTO AUTHOR (AUTHORID, ANAME) " + "VALUES (" + lastID
+						+ ",'" + author + "')");
+				System.out.println("New Author Added!");
+			} else {
+				// Find current Author ID, if exists
+				if (checkExistsRS.next()) {
+					lastID = checkExistsRS.getInt("AUTHORID");
+					System.out.println(lastID);
+				}
+
+			}
+				
+			// Update Book Data
+			stmt.executeUpdate("UPDATE BOOK SET ISBN='" + isbn + "' WHERE DOCID='"+docid+"';");
+			System.out.println("Book Updated!");
+			
+			checkExistsRS = stmt.executeQuery("SELECT * FROM WRITES WHERE AUTHORID='"+lastID+"' AND DOCID='"+docid+"';");
+			if (!checkExistsRS.next()) {
+				// Insert new Writes Data
+				stmt.executeUpdate("UPDATE WRITES SET AUTHORID='"+lastID+"' WHERE DOCID='"+docid+"';");
+				System.out.println("Writes Data Added!");
+			}
+			
+			System.out.println("Success");
+			return true;
+			
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to update book in library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddBook.java
+	public static int findJournalDocID(String title) {
+		// Get DocID that ISBN belongs to
+		int docid = 0;
+		ResultSet checkExistsRS;
+		try {
+			System.out.println("test1");
+			/*
+			 * Get DOCID by searching for TITLE='title' in DOCUMENT
+			 */
+			checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			if (checkExistsRS.next()) {
+				docid = checkExistsRS.getInt("DOCID");
+				// Make sure document is a Journal
+				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM JOURNAL_VOLUME WHERE DOCID='"+docid+"';");
+				if (!checkExistsRS.next()) {
+					new popupMsg("Error", "'" + title + "' is not a Journal. Please enter a valid Journal.");
+					return 0;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return docid;
+	}
+	
+	// Used in AddJournal.java
+	public static boolean updateJournal(int docid, String jvol, String jiss, String scope, String ceditor, String inveditor, String title) {
+		
+		/*
+		 * Arguments
+		 * 
+		 * jvol = Journal Volume #
+		 * jiss = Journal Issue #
+		 * scope = Scope
+		 * ceditor = Chief Editor Name
+		 * inveditor = Inv Editor Name
+		 * title = Document title
+		 */
+		
+		connectToDB();
+		
+		ResultSet checkExistsRS;
+		try {
+			
+			/*
+			 * Check if Chief Editor already exists
+			 * -- If Chief Editor exists, save Chief Editor's EDITOR_ID
+			 * - If Chief Editor does not exist, INSERT new Chief Editor with name ceditor and new EDITOR_ID using MAX() function
+			 */
+			
+			int ceditorID = 1;
+			System.out.println("test8");
+			checkExistsRS = stmt.executeQuery("SELECT EDITOR_ID FROM CHIEF_EDITOR WHERE ENAME='"+ceditor+"';");
+			if (!checkExistsRS.next()) {
+				// Insert new CHIEF_EDITOR Data
+				System.out.println("test9");
+				checkExistsRS = stmt.executeQuery("SELECT MAX(EDITOR_ID) FROM CHIEF_EDITOR;");
+				if (checkExistsRS.next()) {
+					ceditorID = checkExistsRS.getInt("MAX(EDITOR_ID)") + 1;
+				}
+				
+				stmt.executeUpdate("INSERT INTO CHIEF_EDITOR (EDITOR_ID, ENAME) " + "VALUES (" + ceditorID
+						+ ",'" + ceditor + "')");
+			} else {
+				ceditorID = checkExistsRS.getInt("EDITOR_ID");
+			}
+			/*
+			 * 1. Update new JOURNAL_VOLUME
+			 * 2. Update new JOURNAL_ISSUE
+			 */
+
+			System.out.println("test10");
+			// Update JOURNAL_VOLUME Data
+			stmt.executeUpdate("UPDATE JOURNAL_VOLUME SET JVOLUME='"+jvol+"', EDITOR_ID='"+ceditorID+"' WHERE DOCID='"+docid+"';");
+			
+			// Update JOURNAL_ISSUE Data
+			System.out.println("test11");
+			stmt.executeUpdate("UPDATE JOURNAL_ISSUE SET SCOPE='"+scope+"' WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"'");
+			
+			/*
+			 * Check if INV Editor already exists
+			 * -- If Inv editor exists, (IENAME matches inveditor) do nothing
+			 * -- If Inv editor does not exist, INSERT new INV_EDITOR with DOCID and ISSUE NO
+			 */
+			System.out.println("test12");
+			checkExistsRS = stmt.executeQuery("SELECT * FROM INV_EDITOR WHERE DOCID='"+docid+"' AND ISSUE_NO='"+jiss+"' AND IENAME='"+inveditor+"';");
+			if (!checkExistsRS.next()) {
+				// Insert new INV_EDITOR Data
+				System.out.println("test13");
+				stmt.executeUpdate("INSERT INTO INV_EDITOR (DOCID, ISSUE_NO, IENAME) " + "VALUES (" + docid
+						+ ",'" + jiss + "','" + inveditor + "')");
+			}
+			
+			// SHOW POPUPMSG stating that Journal Volume '#' with issue '#' has been added.
+			System.out.println("Success");
+			return true;
+			
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to update Journal in library.");
+			System.err.println(" SQL Exceptions \n");
+			while (e != null) {
+				System.out.println("Error Description: " + e.getMessage());
+				System.out.println("SQL State:  " + e.getSQLState());
+				System.out.println("Vendor Error Code: " + e.getErrorCode());
+				e = e.getNextException();
+				System.out.println("");
+			}
+		}
+		return false;
+	}
+	
+	// Used in AddBook.java
+	public static int findProceedingDocID(String title) {
+		// Get DocID that ISBN belongs to
+		int docid = 0;
+		try {
+			System.out.println("test1");
+			/*
+			 * Get DOCID by searching for TITLE='title' in DOCUMENT
+			 */
+			ResultSet checkExistsRS = stmt.executeQuery("SELECT DOCID FROM DOCUMENT WHERE TITLE='"+title+"';");
+			if (checkExistsRS.next()) {
+				docid = checkExistsRS.getInt("DOCID");
+				// Make sure document is a Proceeding
+				checkExistsRS = stmt.executeQuery("SELECT DOCID FROM PROCEEDINGS WHERE DOCID='"+docid+"';");
+				if (!checkExistsRS.next()) {
+					new popupMsg("Error", "'" + title + "' is not a Proceeding. Please enter a valid Proceeding.");
+					return 0;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return docid;
+	}
+	
+	// Used in AddProceeding.java
+	public static boolean updateProceeding(int docid, String pubDate, String cloc, String chair, String title) {
+		
+		/*
+		 * Arguments
+		 * 
+		 * pubDate = Conference Date
+		 * cloc = Conference Location
+		 * chair = Conference Chair Name
+		 * title = Document title
+		 */
+		
+		connectToDB();
+		
+		ResultSet checkExistsRS;
+		try {
+			
+			/* Check if Proceedings already exists (same Date, Location, and Editor)
+			 * -- If exists, update
+			 */
+			checkExistsRS = stmt.executeQuery("SELECT * FROM PROCEEDINGS WHERE DOCID='"+docid+"';");
+			if (checkExistsRS.next()) {
+				/*
+				 * UPDATE Proceedings
+				 */
+				stmt.executeUpdate("UPDATE PROCEEDINGS SET CDATE='"+pubDate+"', CLOCATION='"+cloc+"', CEDITOR='"+chair+"' WHERE DOCID='"+docid+"';");
+				System.out.println("Proceedings Updated!");
+			} else {
+				new popupMsg("Error", "Conference Proceeding does not exist.");
+				return false;
+			}
+			
+			// SHOW POPUPMSG stating that Conference Proceedings has been added.
+			
+			System.out.println("Success");
+			return true;
+			
+		} catch (SQLException e) {
+			new popupMsg("Error", "Unable to update Conference Proceeding in library.");
 			System.err.println(" SQL Exceptions \n");
 			while (e != null) {
 				System.out.println("Error Description: " + e.getMessage());

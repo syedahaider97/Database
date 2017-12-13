@@ -26,15 +26,15 @@ public class AddDocChoice extends JFrame {
         label.setFont(new Font("Helvetica",Font.BOLD,18));
         label.setAlignmentX(CENTER_ALIGNMENT);
 
-        JButton addBook = new JButton("Add Book");
+        JButton addBook = new JButton("Book");
         addBook.setAlignmentX(CENTER_ALIGNMENT);
         addBook.addActionListener(new addBook());
 
-        JButton addJournal = new JButton("Add Journal");
+        JButton addJournal = new JButton("Journal");
         addJournal.setAlignmentX(CENTER_ALIGNMENT);
         addJournal.addActionListener(new addJournal());
 
-        JButton addProceedings = new JButton("Add Proceeding");
+        JButton addProceedings = new JButton("Proceeding");
         addProceedings.setAlignmentX(CENTER_ALIGNMENT);
         addProceedings.addActionListener(new addProceeding());
         
@@ -69,21 +69,33 @@ public class AddDocChoice extends JFrame {
     class addBook implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            new AddBook(choice,"Add a Book"); // 0 is add, 1 is update
+        	if (choice == 0) {
+        		new AddBook(choice,"Add a Book"); // 0 is add, 1 is update
+        	} else {
+        		new AddBook(choice,"Update a Book"); // 0 is add, 1 is update
+        	}
         }
     }
 
     class addJournal implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            new AddJournal(choice,"Add a Journal"); // 0 is add, 1 is update
+        	if (choice == 0) {
+        		new AddBook(choice,"Add a Journal"); // 0 is add, 1 is update
+        	} else {
+        		new AddBook(choice,"Update a Journal"); // 0 is add, 1 is update
+        	}
         }
     }
 
     class addProceeding implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            new AddProceeding(choice,"Add a Conference Proceeding"); // 0 is add, 1 is update
+        	if (choice == 0) {
+        		new AddBook(choice,"Add a Proceeding"); // 0 is add, 1 is update
+        	} else {
+        		new AddBook(choice,"Update a Proceeding"); // 0 is add, 1 is update
+        	}
         }
     }
     

@@ -13,14 +13,14 @@ import javax.swing.JTextField;
 
 public class AddJournal extends JFrame {
 	
-	private JTextField titleField, pyearField, pmonthField, pdayField, publisherField, paddrField, jvolfield, jissfield, scopefield, cedfield, invfield;
+	private JTextField titleField, newtitleField, pyearField, pmonthField, pdayField, publisherField, paddrField, jvolfield, jissfield, scopefield, cedfield, invfield;
 	
 	private int type = 0; // 0 = add, 1 = update
 	
 	public AddJournal(int type, String line) {
 		// Set Title and Type of Operation to perform (type Add or Update)
 		super(line);
-		type = this.type;
+		this.type = type;
 		
 		// Set Panel layout
 		JPanel panel = new JPanel();
@@ -42,6 +42,17 @@ public class AddJournal extends JFrame {
 		
 		//panel.add(new JLabel(" "));
 		panel.add(titlePanel);
+		
+		if (type == 1) { // If we are updating, prompt for a replacement title
+			// Title entry field
+			JPanel newtitlePanel = new JPanel();
+			JLabel newtitleLabel = new JLabel("New Title:");
+			newtitleField = new JTextField(15);
+			newtitlePanel.add(newtitleLabel); newtitlePanel.add(newtitleField);
+			
+			//panel.add(new JLabel(" "));
+			panel.add(newtitlePanel);
+		}
 		
 		// Publisher date entry field
 		
@@ -232,10 +243,21 @@ public class AddJournal extends JFrame {
 						if(type == 0) {
 							boolean success = Server.addNewJournal(title, pubDate, pubName, pubAddr, jvol, jiss, scope, ceditor, inveditor, title);
 							if (success)
-								new popupMsg("Document Added", "Journal Issue "+jiss+" added to Volume "+jvol);
-						}
-						else if(type == 1) {
+								new popupMsg("Document Added ", "Journal Issue "+jiss+", Volume "+jvol);
+						} else if(type == 1) {
 							//Update Query
+							int docid = Server.findJournalDocID(title); 
+							if (docid != 0) {
+								String newtitle = newtitleField.getText();
+								if (newtitle.compareTo("") != 0) {
+									boolean success = false;
+									boolean DocAdded = Server.updateDoc(title, pubDate, pubName, pubAddr, newtitle);
+									if (DocAdded)
+										success = Server.updateJournal(docid, jvol, jiss, scope, ceditor, inveditor, newtitle);
+									if (success)
+										new popupMsg("Document Updated ", "Journal Issue "+jiss+", Volume "+jvol);
+								}
+							}
 						}
 					} else {
 						new popupMsg("Error", "Document information is missing.");
