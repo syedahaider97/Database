@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: sql2.njit.edu
--- Generation Time: Dec 14, 2017 at 04:17 AM
+-- Generation Time: Dec 14, 2017 at 02:43 PM
 -- Server version: 5.5.29-log
 -- PHP Version: 5.6.24
 
@@ -345,6 +345,7 @@ CREATE TABLE IF NOT EXISTS `READER` (
 --
 
 INSERT INTO `READER` (`READERID`, `RTYPE`, `RNAME`, `ADDRESS`) VALUES
+(1, 'Professor', 'Dimitrios Theodoratos', 'GITC 4208, NJIT'),
 (2, 'Student', 'Beverly Butler', '2199 Irving Road'),
 (3, 'Student', 'Chris Bennett', '4772 Ashwood Drive'),
 (4, 'Staff', 'Amanda Phillips', '1215 Burnside Court'),
