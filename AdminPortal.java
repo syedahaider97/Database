@@ -24,7 +24,7 @@ public class AdminPortal extends JFrame {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
 		// Title
-		JLabel login = new JLabel("Log in as Administrator");
+		JLabel login = new JLabel("Administrator Login");
 		login.setFont(new Font("Helvetica", Font.BOLD, 32));
 		login.setAlignmentX(CENTER_ALIGNMENT);
 
