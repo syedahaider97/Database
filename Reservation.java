@@ -55,7 +55,7 @@ public class Reservation extends JFrame {
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setSize(300,250);
+		setSize(325,250);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setVisible(true);
 		setLocationRelativeTo(null);

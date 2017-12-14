@@ -182,11 +182,11 @@ public class ReaderFunctions extends JFrame{
 		pickup.setAlignmentX(CENTER_ALIGNMENT);
 		pickup.addActionListener(new Pickup());
 		
-		JButton borrow = new JButton("Borrow a Book");
+		JButton borrow = new JButton("Borrow Copy");
 		borrow.setAlignmentX(CENTER_ALIGNMENT);
 		borrow.addActionListener(new Borrow());
 		
-		JButton rtnCopy = new JButton("Return Book");
+		JButton rtnCopy = new JButton("Return Copy");
 		rtnCopy.setAlignmentX(CENTER_ALIGNMENT);
 		rtnCopy.addActionListener(new Return());
 		
@@ -221,7 +221,7 @@ public class ReaderFunctions extends JFrame{
 		panel.add(new JLabel(" "));
 		
 		add(panel);
-		setSize(600,600);
+		setSize(625,600);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
