@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: sql2.njit.edu
--- Generation Time: Dec 08, 2017 at 07:52 PM
+-- Generation Time: Dec 14, 2017 at 04:17 AM
 -- Server version: 5.5.29-log
 -- PHP Version: 5.6.24
 
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `AUTHOR` (
 --
 
 INSERT INTO `AUTHOR` (`AUTHORID`, `ANAME`) VALUES
+(1, 'J.K. Rowling'),
 (2, 'George Lucas'),
 (3, 'Suzanne Collins'),
 (4, 'JRR Tolkien'),
@@ -44,8 +45,7 @@ INSERT INTO `AUTHOR` (`AUTHORID`, `ANAME`) VALUES
 (7, 'Abraham Lincoln'),
 (8, 'Arthur Doyle'),
 (9, 'RL Stine'),
-(10, 'Dorothy Sayers'),
-(12345678, 'John Doe');
+(10, 'Dorothy Sayers');
 
 -- --------------------------------------------------------
 
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `COPY` (
   `COPYNO` int(10) unsigned NOT NULL,
   `DOCID` int(10) unsigned NOT NULL,
   `LIBID` int(10) unsigned NOT NULL,
-  `POSITION` varchar(6) NOT NULL
+  `POSITION` varchar(10) CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -230,7 +230,6 @@ CREATE TABLE IF NOT EXISTS `INV_EDITOR` (
 --
 
 INSERT INTO `INV_EDITOR` (`DOCID`, `ISSUE_NO`, `IENAME`) VALUES
-(1, 1, 'Editor'),
 (11, 1, 'Jimmy Time'),
 (13, 1, 'Tom York'),
 (11, 2, 'Jimmy Time'),
@@ -255,7 +254,6 @@ CREATE TABLE IF NOT EXISTS `JOURNAL_ISSUE` (
 --
 
 INSERT INTO `JOURNAL_ISSUE` (`DOCID`, `ISSUE_NO`, `SCOPE`) VALUES
-(1, 1, 'Editor'),
 (11, 1, 'Politics'),
 (11, 2, 'Nature'),
 (11, 3, 'Smartphones'),
@@ -271,7 +269,7 @@ INSERT INTO `JOURNAL_ISSUE` (`DOCID`, `ISSUE_NO`, `SCOPE`) VALUES
 
 CREATE TABLE IF NOT EXISTS `JOURNAL_VOLUME` (
   `DOCID` int(10) unsigned NOT NULL,
-  `JVOLUME` varchar(50) NOT NULL,
+  `JVOLUME` int(10) unsigned NOT NULL,
   `EDITOR_ID` int(10) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -280,9 +278,8 @@ CREATE TABLE IF NOT EXISTS `JOURNAL_VOLUME` (
 --
 
 INSERT INTO `JOURNAL_VOLUME` (`DOCID`, `JVOLUME`, `EDITOR_ID`) VALUES
-(1, 'Volume1', 1),
-(11, 'Volume2', 1),
-(13, 'Volume3', 6);
+(11, 1, 1),
+(13, 1, 6);
 
 -- --------------------------------------------------------
 
@@ -348,7 +345,6 @@ CREATE TABLE IF NOT EXISTS `READER` (
 --
 
 INSERT INTO `READER` (`READERID`, `RTYPE`, `RNAME`, `ADDRESS`) VALUES
-(1, 'Student', 'Walter Torres', '242 White Pine Lane'),
 (2, 'Student', 'Beverly Butler', '2199 Irving Road'),
 (3, 'Student', 'Chris Bennett', '4772 Ashwood Drive'),
 (4, 'Staff', 'Amanda Phillips', '1215 Burnside Court'),
@@ -374,6 +370,19 @@ CREATE TABLE IF NOT EXISTS `RESERVES` (
   `DTIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `RESERVES`
+--
+
+INSERT INTO `RESERVES` (`RESUMBER`, `READERID`, `DOCID`, `COPYNO`, `LIBID`, `DTIME`) VALUES
+(2, 2, 4, 3, 2, '2017-12-14 12:30:00'),
+(4, 4, 4, 4, 3, '2017-12-14 13:45:00'),
+(5, 5, 5, 5, 2, '2017-12-14 14:06:00'),
+(7, 7, 2, 7, 3, '2017-12-14 14:17:00'),
+(8, 8, 6, 9, 2, '2017-12-14 14:35:00'),
+(9, 9, 10, 13, 3, '2017-12-14 15:44:00'),
+(10, 10, 16, 19, 3, '2017-12-14 16:25:00');
+
 -- --------------------------------------------------------
 
 --
@@ -390,6 +399,7 @@ CREATE TABLE IF NOT EXISTS `WRITES` (
 --
 
 INSERT INTO `WRITES` (`AUTHORID`, `DOCID`) VALUES
+(1, 1),
 (2, 2),
 (4, 4),
 (5, 5),
@@ -514,8 +524,8 @@ ADD CONSTRAINT `BORROWS_ibfk_1` FOREIGN KEY (`COPYNO`) REFERENCES `COPY` (`COPYN
 -- Constraints for table `COPY`
 --
 ALTER TABLE `COPY`
-ADD CONSTRAINT `COPY_ibfk_2` FOREIGN KEY (`LIBID`) REFERENCES `BRANCH` (`LIBID`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `COPY_ibfk_1` FOREIGN KEY (`DOCID`) REFERENCES `DOCUMENT` (`DOCID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `COPY_ibfk_1` FOREIGN KEY (`DOCID`) REFERENCES `DOCUMENT` (`DOCID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `COPY_ibfk_2` FOREIGN KEY (`LIBID`) REFERENCES `BRANCH` (`LIBID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `DOCUMENT`
