@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -515,7 +514,7 @@ class Server {
 		int i = 0;
 		try {
 			int curTime = Integer.parseInt(getDate().substring(11, 13));
-			if (curTime > 17) {
+			if (curTime > 16) {
 				System.out.println(curTime);
 				stmt.execute("DELETE FROM RESERVES;");
 			}
@@ -1757,8 +1756,12 @@ class Server {
 			System.out.println(borNumber);
 			String date = getDate();
 			String updateQuery = "UPDATE BORROWS " + "SET RDTIME = '" + date + "' WHERE BORNUMBER = " + borNumber + ";";
-			System.out.println(updateQuery);
 			stmt.execute(updateQuery);
+			System.out.println(updateQuery);
+			if(borNumber == 0) {
+				new popupMsg("Error","Unable to return copy");
+				return false;
+			}
 			stmt.close();
 			con.close();
 			return true;
