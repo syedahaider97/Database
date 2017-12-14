@@ -15,6 +15,10 @@ public class AdminFunctions extends JFrame {
 	JFrame frame;
 	private int libId = 0;
 	private JTextField addCopyDocID, addCopyLoc, addReaderType, addReaderName, addReaderAddress, searchField;
+	private String ReaderTypeMessage = "Type";
+	private String ReaderNameMessage = "Name";
+	private String ReaderAddressMessage = "Address";
+	
 
 	// Default Constructor -- Displays error if no input passed in to menu
 	public AdminFunctions() {
@@ -119,7 +123,6 @@ public class AdminFunctions extends JFrame {
 		addReaderType = new JTextField(10);
 		addReaderType.setBounds(20, 150, 133, 20);
 
-		String ReaderTypeMessage = "Type";
 		addReaderType.setText(ReaderTypeMessage);
 		// Focus Listener
 		addReaderType.addFocusListener(new FocusListener() {
@@ -144,7 +147,6 @@ public class AdminFunctions extends JFrame {
 		addReaderName = new JTextField(10);
 		addReaderName.setBounds(153, 150, 133, 20);
 
-		String ReaderNameMessage = "Name";
 		addReaderName.setText(ReaderNameMessage);
 		// Focus Listener
 		addReaderName.addFocusListener(new FocusListener() {
@@ -169,7 +171,6 @@ public class AdminFunctions extends JFrame {
 		addReaderAddress = new JTextField(10);
 		addReaderAddress.setBounds(286, 150, 133, 20);
 
-		String ReaderAddressMessage = "Address";
 		addReaderAddress.setText(ReaderAddressMessage);
 		// Focus Listener
 		addReaderAddress.addFocusListener(new FocusListener() {
@@ -357,19 +358,22 @@ public class AdminFunctions extends JFrame {
 			String readerAddr = addReaderAddress.getText();
 
 			// Check if input is not null
-			if (readerType != null && readerName != null && readerAddr != null) {
+			if (readerType != null && readerName != null && readerAddr != null && 
+					readerType.compareTo(ReaderTypeMessage) != 0 &&
+					readerName.compareTo(ReaderNameMessage) != 0 && 
+					readerAddr.compareTo(ReaderAddressMessage) != 0) {
 
 				// Run Query
 				boolean querySuccess = Server.addReader(readerType, readerName, readerAddr);
 				if (querySuccess) {
-					addReaderType.setText("Reader Type");
-					addReaderName.setText("Name");
-					addReaderAddress.setText("Address");
+					addReaderType.setText(ReaderTypeMessage);
+					addReaderName.setText(ReaderNameMessage);
+					addReaderAddress.setText(ReaderAddressMessage);
+				} else { 
+					new popupMsg("Error", "Invalid Reader information. Check input."); 
 				}
-
-				/*
-				 * } else { new popupMsg("Error", "Invalid Reader information. Check input."); }
-				 */
+			} else { 
+				new popupMsg("Error", "Invalid Reader information. Check input."); 
 			}
 		}
 	}
