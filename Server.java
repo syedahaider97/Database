@@ -515,7 +515,7 @@ class Server {
 		int i = 0;
 		try {
 			int curTime = Integer.parseInt(getDate().substring(11, 13));
-			if (curTime > 12) {
+			if (curTime > 17) {
 				System.out.println(curTime);
 				stmt.execute("DELETE FROM RESERVES;");
 			}
